@@ -1,6 +1,6 @@
 # AS WRITTEN — Atlantis
 
-**쓰인 만큼만.** 플라톤 『크리티아스』(113c–117e)에 적힌 문장만으로 다시 지은 아틀란티스. 항구에서 포세이돈 신전까지 1인칭으로 걸어 들어가는 웹 체험입니다.
+**쓰인 만큼만.** 아틀란티스에 관한 유일한 기록인 플라톤 『티마이오스』·『크리티아스』의 문장만으로 다시 지은 아틀란티스. 항구에서 포세이돈 신전까지 1인칭으로 걸어 들어가는 웹 체험입니다.
 
 ## 경로
 
@@ -33,6 +33,24 @@
 - 은으로 덮은 포세이돈 신전, 금 장식, 상아 천장, 날개 달린 말 여섯 마리가 끄는 전차 위의 황금 신상 (116c–e)
 - 고리 섬 위의 경마장 (117c)
 
+## 원문과 다르게 해석한 부분 (고증 메모)
+
+- **신전 외관**: 원문은 "낯설고 이국적인(barbaric) 모습"이라고 적었지만, 장면은 그리스 신전 양식으로 표현됨
+- **신전 안 신상**: 원문은 "날개 달린 말 여섯 마리가 끄는 전차 위의 신". 장면 속 큰 날개는 말의 날개를 신상 뒤로 크게 해석한 것
+- **항구의 흰 성벽**: 원문상 가장 바깥 성벽은 청동으로 덮여야 함 (운하 장면 끝의 청동 고리가 원문에 가까움)
+- **운하 양쪽의 하얀 집**: 원문은 "집들이 빽빽했다"고만 적음. 집의 생김새는 상상으로 채운 부분
+- **고리 구조 단순화**: 원문은 바다 고리 3개·땅 고리 2개와 각각의 다리를 말하지만, 체험은 다리 하나로 줄여 가운데 섬에 닿음
+- **연대**: 원문은 솔론보다 9,000년 전의 일이라 하지만 삼단노선·청동·운하 같은 세부는 플라톤 당대(기원전 4세기) 그리스의 모습이라는 것이 연구자들의 일반적 해석
+
+## 참고 문헌
+
+- Plato, *Timaeus* 20d–25d, *Critias* 108e–121c (B. Jowett 영역)
+- C. Gill, "The Genre of the Atlantis Story", *Classical Philology* 72 (1977)
+- C. Gill, "Plato's Atlantis Story and the Birth of Fiction", *Philosophy and Literature* 3 (1979)
+- C. Gill, *Plato's Atlantis Story: Text, Translation and Commentary* (Liverpool UP, 2017)
+- K. A. Morgan, "Designer History: Plato's Atlantis Story and Fourth-Century Ideology", *JHS* 118 (1998)
+- P. Vidal-Naquet, *The Atlantis Story: A Short History of Plato's Myth* (Exeter UP, 2007)
+
 ## 제작 방식
 
 1. **장면 설계**: 원문에서 구조·재료·규모를 추출해 장소별 이미지를 Midjourney로 생성
@@ -54,4 +72,4 @@ videos/           Midjourney 원본 이동 영상 6개
 - 기획·아트 디렉션: KIM SOY
 - 이미지·영상 생성: Midjourney
 - 3D 월드: World Labs Marble
-- 원문: Plato, *Critias* (Benjamin Jowett 영역, 퍼블릭 도메인)
+- 원문: Plato, *Timaeus*, *Critias* (Benjamin Jowett 영역, 퍼블릭 도메인). 사이트 속 한국어 문장은 이를 바탕으로 직접 옮김
