@@ -21,14 +21,14 @@
   #fill{position:absolute;left:0;top:0;bottom:0;background:#e9c27a;width:0}
   #dot{position:absolute;top:50%;width:10px;height:10px;margin:-5px 0 0 -5px;border-radius:50%;background:#e9c27a;box-shadow:0 0 12px #e9c27a;left:0}
   #ctrl{position:fixed;left:50%;bottom:26px;transform:translateX(-50%);display:flex;gap:10px}
-  #ctrl button{background:rgba(10,8,6,.55);color:#f3e9d6;border:1px solid rgba(243,233,214,.35);border-radius:24px;padding:10px 20px;font-size:14px;font-family:inherit;cursor:pointer;backdrop-filter:blur(6px);touch-action:none}
+  #ctrl button{background:rgba(10,8,6,.72);color:#f3e9d6;border:1px solid rgba(243,233,214,.35);border-radius:24px;padding:10px 20px;font-size:14px;font-family:inherit;cursor:pointer;touch-action:none}
   #ctrl button:active{background:rgba(233,194,122,.35)}
-  #go3d{position:fixed;left:40px;top:118px;color:#f3e9d6;text-decoration:none;font-size:13px;letter-spacing:.06em;border:1px solid rgba(243,233,214,.45);border-radius:20px;padding:8px 16px;background:rgba(10,8,6,.45);backdrop-filter:blur(6px);opacity:0;pointer-events:none;transition:opacity .4s}
+  #go3d{position:fixed;left:40px;top:118px;color:#f3e9d6;text-decoration:none;font-size:13px;letter-spacing:.06em;border:1px solid rgba(243,233,214,.45);border-radius:20px;padding:8px 16px;background:rgba(10,8,6,.68);opacity:0;pointer-events:none;transition:opacity .4s}
   #go3d.on{opacity:1;pointer-events:auto}
   @media (max-width:700px){#go3d{left:22px;top:92px}}
   #choose{position:fixed;left:50%;bottom:156px;transform:translateX(-50%);display:flex;gap:12px;opacity:0;pointer-events:none;transition:opacity .4s}
   #choose.on{opacity:1;pointer-events:auto}
-  #choose button{background:rgba(10,8,6,.55);color:#f3e9d6;border:1px solid rgba(243,233,214,.45);border-radius:26px;padding:12px 22px;font-size:15px;font-family:inherit;cursor:pointer;backdrop-filter:blur(6px)}
+  #choose button{background:rgba(10,8,6,.72);color:#f3e9d6;border:1px solid rgba(243,233,214,.45);border-radius:26px;padding:12px 22px;font-size:15px;font-family:inherit;cursor:pointer;}
   #choose button.sel{background:rgba(233,194,122,.85);color:#1a1208;border-color:#e9c27a}
   @media (max-width:700px){#choose{flex-direction:column;bottom:150px}}
 
@@ -40,12 +40,12 @@
   .hs::after{content:"";position:absolute;inset:0;border-radius:50%;border:1.5px solid rgba(246,220,160,.85);animation:ping 2.4s ease-out infinite}
   .hs:hover::before,.hs.act::before{background:#fff}
   @keyframes ping{0%{transform:scale(.45);opacity:1}100%{transform:scale(1.35);opacity:0}}
-  #card{position:fixed;z-index:4;max-width:330px;background:rgba(14,11,8,.82);border:1px solid rgba(233,194,122,.45);border-radius:10px;padding:16px 18px 13px;backdrop-filter:blur(8px);opacity:0;pointer-events:none;transform:translateY(6px);transition:opacity .3s,transform .3s}
+  #card{position:fixed;z-index:4;max-width:330px;background:rgba(14,11,8,.93);border:1px solid rgba(233,194,122,.45);border-radius:10px;padding:16px 18px 13px;opacity:0;pointer-events:none;transform:translateY(6px);transition:opacity .3s,transform .3s}
   #card.on{opacity:1;transform:none;pointer-events:auto}
   #card b{display:block;font-size:15px;font-weight:600;letter-spacing:.04em;color:#e9c27a;margin-bottom:8px}
   #card p{margin:0 0 10px;font-size:14px;line-height:1.75}
   #card small{font-size:11px;letter-spacing:.12em;opacity:.6}
-  #snd{position:fixed;right:28px;bottom:30px;background:rgba(10,8,6,.5);color:#f3e9d6;border:1px solid rgba(243,233,214,.35);border-radius:18px;padding:7px 14px;font-size:12px;font-family:inherit;cursor:pointer;backdrop-filter:blur(6px)}
+  #snd{position:fixed;right:28px;bottom:30px;background:rgba(10,8,6,.68);color:#f3e9d6;border:1px solid rgba(243,233,214,.35);border-radius:18px;padding:7px 14px;font-size:12px;font-family:inherit;cursor:pointer;}
   #snd.off{opacity:.55}
   @media (max-width:700px){#snd{right:16px;bottom:84px}#card{left:16px!important;right:16px;max-width:none;bottom:150px;top:auto!important}}
   #help{position:fixed;right:28px;top:34px;font-size:12px;line-height:1.9;text-align:right;opacity:.75}
@@ -172,9 +172,9 @@ function setLive(src,restT){
 const OVER=1.08; let W=0,H=0, drawn=-1;
 function layout(){ const vw=innerWidth,vh=innerHeight,ar=1456/816;
   if(vw/vh>ar){W=vw*OVER;H=W/ar;}else{H=vh*OVER;W=H*ar;}
-  const dpr=Math.min(devicePixelRatio||1,2); cv.width=Math.round(W*dpr); cv.height=Math.round(H*dpr);
+  const cw=Math.min(Math.round(W*Math.min(devicePixelRatio||1,2)),1280); cv.width=cw; cv.height=Math.round(cw*H/W);
   for(const el of [cv,still,live]){el.style.width=W+'px';el.style.height=H+'px';}
-  ctx.imageSmoothingEnabled=true; ctx.imageSmoothingQuality='high'; drawn=-1; }
+  ctx.imageSmoothingEnabled=true; ctx.imageSmoothingQuality='medium'; drawn=-1; }
 addEventListener('resize',layout);
 
 let pos=0, vel=0, pause=0; const keys={};
@@ -203,7 +203,22 @@ function choose(name){ if(name===curName) return; const k=junIdx(); curName=name
   track.segs.forEach(sg=>segSheets(sg).forEach(img));   // 그 길 프레임 미리 불러오기
   chooser.querySelectorAll('button').forEach(b=>b.classList.toggle('sel',b.dataset.t===name)); }
 
-function draw(i){ const f=list[i], im=img(f.src); if(i===drawn) return; if(im.complete&&im.naturalWidth){ ctx.drawImage(im,f.sx,f.sy,FW,FH,0,0,cv.width,cv.height); drawn=i; } }
+const bmp=new Map(), pend=new Set();
+function warm(i){            // 지금 위치 앞뒤 프레임 묶음을 미리 풀어 둠 → 넘어갈 때 멈칫하지 않음
+  if(!window.createImageBitmap) return;
+  const want=new Set();
+  for(let k=Math.max(0,i-20);k<=Math.min(N-1,i+44);k+=4) want.add(list[k].src);
+  want.add(list[Math.min(N-1,i+46)].src);
+  want.forEach(src=>{ if(bmp.has(src)||pend.has(src)) return; const im=img(src);
+    const go=()=>{ pend.add(src); createImageBitmap(im).then(b=>{ pend.delete(src); bmp.set(src,b); }).catch(()=>pend.delete(src)); };
+    if(im.complete&&im.naturalWidth) go(); else im.addEventListener('load',go,{once:true}); });
+  if(bmp.size>40){ for(const [src,b] of bmp){ if(!want.has(src)){ b.close&&b.close(); bmp.delete(src); if(bmp.size<=30) break; } } }
+}
+let lastWarm=-99;
+function draw(i){ if(i===drawn) return; const f=list[i]; const src=bmp.get(f.src)||img(f.src);
+  if(src instanceof HTMLImageElement && !(src.complete&&src.naturalWidth)) return;
+  ctx.drawImage(src,f.sx,f.sy,FW,FH,0,0,cv.width,cv.height); drawn=i;
+  if(Math.abs(i-lastWarm)>=4){ lastWarm=i; warm(i); } }
 function setStill(src){ if(src){ if(still.dataset.k!==src){still.src=src;still.dataset.k=src;} still.style.opacity=1; } else still.style.opacity=0; }
 
 
@@ -292,7 +307,7 @@ sndBtn.addEventListener('click',e=>{ e.stopPropagation(); toggleSound(); });
 ['keydown','pointerdown','touchstart'].forEach(ev=>addEventListener(ev,()=>{ if(!muted) initAudio(); },{passive:true}));
 document.addEventListener('visibilitychange',()=>{ if(!AC) return; document.hidden?AC.suspend():(!muted&&AC.resume()); });
 
-let last=0, rest=0;
+let last=0, rest=0, lastTr='', lastP=''; const pnameEl=document.getElementById('pname');
 function tick(t){
   const dt=Math.min(.05,(t-last)/1000||0); last=t;
   const input=(keys['w']||keys['arrowup']?1:0)-(keys['s']||keys['arrowdown']?1:0)+btnDir;
@@ -311,19 +326,19 @@ function tick(t){
   setLive(rest>.15&&place&&place.loop ? place.loop : null, rest);
 
   lx+=(tx-lx)*Math.min(1,dt*3); ly+=(ty-ly)*Math.min(1,dt*3);
-  const mx=(W-innerWidth)/2,my=(H-innerHeight)/2, tr=`translate(calc(-50% + ${-lx*mx}px), calc(-50% + ${-ly*my}px))`;
-  cv.style.transform=tr; still.style.transform=tr; live.style.transform=tr;
+  const mx=(W-innerWidth)/2,my=(H-innerHeight)/2, tr=`translate(calc(-50% + ${(-lx*mx).toFixed(1)}px), calc(-50% + ${(-ly*my).toFixed(1)}px))`;
+  if(tr!==lastTr){ lastTr=tr; cv.style.transform=tr; still.style.transform=tr; live.style.transform=tr; hot.style.transform=tr; }
 
-  const p=pos/(N-1); document.getElementById('fill').style.width=(p*100)+'%'; document.getElementById('dot').style.left=(p*100)+'%';
+  const p=pos/(N-1), pp=(p*100).toFixed(2)+'%'; if(pp!==lastP){ lastP=pp; document.getElementById('fill').style.width=pp; document.getElementById('dot').style.left=pp; }
   let name; if(place) name=place.name; else { let seg=0; while(seg<stops.length-2&&pos>stops[seg+1]) seg++; name=track.moving[seg]; }
-  document.getElementById('pname').textContent=name;
+  if(pnameEl.textContent!==name) pnameEl.textContent=name;
   const g=document.getElementById('go3d'), w=(place&&rest>.15)?place.world:null;
   if(w){ if(g.href!==w) g.href=w; g.classList.add('on'); } else g.classList.remove('on');
   chooser.classList.toggle('on', rest>.15 && atJunction());
   // 원문 점: 장소에 멈춰 있을 때만
   const placeKey = (place&&rest>.35) ? track.places[at] : null;
-  showHot(placeKey); hot.classList.toggle('on',!!placeKey); hot.style.transform=tr;
-  hot.style.width=W+'px'; hot.style.height=H+'px';
+  showHot(placeKey); hot.classList.toggle('on',!!placeKey);
+  if(hot.style.width!==W+'px'){ hot.style.width=W+'px'; hot.style.height=H+'px'; }
   // 소리: 지금 있는 구간의 앞뒤 장소를 섞어서
   let sg=0; while(sg<stops.length-2&&pos>stops[sg+1]) sg++;
   const lt=(pos-stops[sg])/Math.max(1,stops[sg+1]-stops[sg]);
