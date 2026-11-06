@@ -48,6 +48,45 @@
   #snd{position:fixed;right:28px;bottom:30px;background:rgba(10,8,6,.68);color:#f3e9d6;border:1px solid rgba(243,233,214,.35);border-radius:18px;padding:7px 14px;font-size:12px;font-family:inherit;cursor:pointer;}
   #snd.off{opacity:.55}
   @media (max-width:700px){#snd{right:16px;bottom:84px}#card{left:16px!important;right:16px;max-width:none;bottom:150px;top:auto!important}}
+
+  #intro{position:fixed;inset:0;z-index:20;background:#060504;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:34px;cursor:default;transition:opacity 1.8s ease}
+  #intro.out{opacity:0;pointer-events:none}
+  #introLines{text-align:center;min-height:132px}
+  #introLines p{margin:0 0 14px;font-size:clamp(16px,2.1vw,21px);letter-spacing:.06em;line-height:1.6;min-height:1.6em}
+  #introLines span{display:inline-block;white-space:pre;transition:transform 1.6s cubic-bezier(.2,.7,.2,1),opacity 1.6s ease,filter 1.6s ease}
+  #introTitle{text-align:center;opacity:0;transition:opacity 1.6s ease}
+  #introTitle.on{opacity:1}
+  #introTitle small{display:block;font-size:11px;letter-spacing:.42em;opacity:.65;margin-bottom:12px}
+  #introTitle b{display:block;font-size:clamp(34px,5vw,54px);font-weight:400;letter-spacing:.32em;color:#e9c27a}
+  #introTitle em{display:block;margin-top:10px;font-size:12px;letter-spacing:.2em;opacity:.5;font-style:normal}
+  #introGo{font-size:13px;letter-spacing:.3em;border:1px solid rgba(243,233,214,.4);border-radius:24px;padding:11px 26px;opacity:0;transition:opacity 1s;cursor:pointer}
+  #introGo.on{opacity:1;animation:breathe 2.6s ease-in-out infinite}
+  @keyframes breathe{50%{border-color:rgba(233,194,122,.9);color:#e9c27a}}
+  #intro #load{position:absolute;bottom:36px;left:0;right:0;inset:auto 0 36px 0;display:block;background:none;text-align:center;font-size:11px;letter-spacing:.3em;opacity:.45}
+  #line{position:fixed;left:50%;bottom:150px;transform:translateX(-50%);width:min(700px,84vw);text-align:center;pointer-events:none;opacity:0;transition:opacity .8s;text-shadow:0 1px 10px rgba(0,0,0,.95),0 0 2px rgba(0,0,0,.8)}
+  #line.on{opacity:1}
+  #lineT{display:block;font-size:clamp(14px,1.6vw,17px);line-height:1.8;letter-spacing:.02em}
+  #lineR{display:block;margin-top:6px;font-size:11px;letter-spacing:.2em;opacity:.65}
+  .cur::after{content:"";display:inline-block;width:1px;height:1.05em;margin-left:3px;vertical-align:-2px;background:#f3e9d6;animation:blink 1s steps(1) infinite}
+  @keyframes blink{50%{opacity:0}}
+  #nudge{position:fixed;left:50%;bottom:238px;transform:translateX(-50%);font-size:12px;letter-spacing:.24em;color:#e9c27a;opacity:0;transition:opacity 1s;pointer-events:none;text-shadow:0 1px 8px #000}
+  #nudge.on{opacity:.9;animation:breathe 2.6s ease-in-out infinite}
+  #sea{position:fixed;left:0;right:0;bottom:0;height:0;z-index:5;pointer-events:none;background:linear-gradient(to bottom,rgba(40,70,82,.0) 0,rgba(22,44,56,.85) 70px,#0b1a22 100%);transition:height 7s cubic-bezier(.5,0,.3,1)}
+  #veil{position:fixed;inset:0;z-index:6;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:18px;padding:0 8vw;text-align:center;pointer-events:none;opacity:0;transition:opacity 1.2s,background 2s}
+  #veil.on{opacity:1}
+  #veil.edge{background:rgba(236,226,204,.95);color:#2a2016;text-shadow:none}
+  #veil.fin{background:rgba(0,0,0,.5)}
+  #veil.end{background:#0b1a22;pointer-events:auto}
+  #veilT{max-width:760px;font-size:clamp(16px,1.9vw,20px);line-height:1.95;letter-spacing:.02em;text-shadow:0 1px 10px rgba(0,0,0,.9)}
+  #veil.edge #veilT{text-shadow:none}
+  #veilS{max-width:640px;font-size:12px;line-height:1.9;letter-spacing:.06em;opacity:.7}
+  #again{margin-top:14px;display:none;background:none;color:#f3e9d6;border:1px solid rgba(243,233,214,.45);border-radius:24px;padding:10px 24px;font-family:inherit;font-size:13px;letter-spacing:.2em;cursor:pointer}
+  #veil.end #again{display:inline-block}
+  #stage{transition:filter 6s ease,transform 9s cubic-bezier(.5,0,.3,1)}
+  body.sink #stage{filter:grayscale(.85) brightness(1.35) contrast(.7) blur(1.5px);transform:translateY(7%) scale(1.05)}
+  body.edge #line,body.edge #hot,body.edge #card,body.edge #nudge,body.edge #choose,body.edge #go3d{opacity:0!important;pointer-events:none!important}
+  body.fin #place,body.fin #route,body.fin #ctrl,body.fin #help,body.fin #go3d,body.fin #choose,body.fin #hot,body.fin #line,body.fin #nudge,body.fin #card{opacity:0!important;pointer-events:none!important;transition:opacity 1s}
+  @media (max-width:700px){#line{bottom:146px}#nudge{bottom:226px}}
   #help{position:fixed;right:28px;top:34px;font-size:12px;line-height:1.9;text-align:right;opacity:.75}
   #help kbd{border:1px solid rgba(243,233,214,.5);border-radius:4px;padding:0 6px;font-family:inherit}
   #load{position:fixed;inset:0;display:flex;align-items:center;justify-content:center;background:#000;font-size:14px;letter-spacing:.2em;transition:opacity .8s;z-index:5}
@@ -65,7 +104,16 @@
 <a id="go3d" target="_blank" rel="noopener">이 자리에서 3D로 둘러보기 ↗</a>
 <div id="choose"></div>
 <div id="ctrl"><button id="bBack">▼ 뒤로</button><button id="bFwd">▲ 앞으로</button></div>
-<div id="load">불러오는 중 <span id="pct">0</span>%</div>
+<div id="line"><span id="lineT"></span><small id="lineR"></small></div>
+<div id="nudge">▲ 더 들어가기 — 글이 끝나는 곳</div>
+<div id="sea"></div>
+<div id="veil"><div id="veilT"></div><small id="veilS"></small><button id="again">처음부터 다시</button></div>
+<div id="intro">
+  <div id="introLines"><p></p><p></p><p></p></div>
+  <div id="introTitle"><small>AS WRITTEN · 쓰인 만큼만</small><b>ATLANTIS</b><em>Plato, Critias 113c–121c</em></div>
+  <div id="introGo">눌러서 들어가기</div>
+  <div id="load">불러오는 중 <span id="pct">0</span>%</div>
+</div>
 
 <script>
 // ── 영상 구간 (영상 하나 = 구간 하나) ──
@@ -134,6 +182,13 @@ const AMB = {           // 물 / 바람 / 분수 / 실내 울림
   race:    { water:.15, wind:.75, fount:0,   hall:0 },
 };
 const MOVE = { s1:['boat'], s2:['boat',.45,'walk'], s3:['walk'], s4:['walk'], s5:['walk',.4,'boat'], s6:['walk'] };
+
+// 장소에 도착하면 저절로 쓰이는 원문 한 줄 (NOTES 안에서 고름)
+const LEAD = { harbor:0, canal:0, bridge:0, plaza:0, interior:1, docks:0, race:0 };
+const INTRO = ['아틀란티스는 어디에도 남아 있지 않다.','남은 것은 플라톤이 쓴 몇 쪽의 글뿐이다.','이 도시는 그 글에 쓰인 만큼만 지었다.'];
+const FINAL = '법에 따라 다스리며 모든 것을 꿰뚫어 보는 신들의 신 제우스는, 한때 훌륭했던 종족이 비참하게 무너진 것을 보았다. 그들이 벌을 받아 깨닫고 나아지기를 바라며, 그는 세상의 한가운데에 놓여 모든 것을 내려다보는 가장 거룩한 처소로 모든 신을 불러 모았다. 그리고 신들을 다 모으자, 그는 이렇게 말했다—';
+const FINAL_REF = 'Critias 121b–c';
+const AFTER = '플라톤의 『크리티아스』는 이 문장에서 끊긴 채 전해진다.<br>『티마이오스』는 아틀란티스가 하루 낮과 하루 밤 사이에 바다 아래로 사라졌다고 적는다 (25c–d).';
 const JUNCTION = 'bridge';
 const CHOICES = [ { track:'docks', label:'← 선착장', key:'a' }, { track:'main', label:'↑ 가운데 섬 · 신전', key:'' }, { track:'race', label:'경마장 →', key:'d' } ];
 const FPS = 24;
@@ -307,10 +362,88 @@ sndBtn.addEventListener('click',e=>{ e.stopPropagation(); toggleSound(); });
 ['keydown','pointerdown','touchstart'].forEach(ev=>addEventListener(ev,()=>{ if(!muted) initAudio(); },{passive:true}));
 document.addEventListener('visibilitychange',()=>{ if(!AC) return; document.hidden?AC.suspend():(!muted&&AC.resume()); });
 
+
+// ===== 글 쓰기 효과 =====
+function typeText(el,text,speed,done){ const tok={stop:false}; let i=0; el.textContent=''; el.classList.add('cur');
+  (function go(){ if(tok.stop) return; if(i<text.length){ el.textContent+=text[i++]; setTimeout(go, text[i-1]===','||text[i-1]==='.'?speed*7:speed); } else { if(done) done(); } })();
+  return tok; }
+const sleep=ms=>new Promise(r=>setTimeout(r,ms));
+
+// ===== 도착하면 쓰이는 원문 =====
+const lineEl=document.getElementById('line'), lineT=document.getElementById('lineT'), lineR=document.getElementById('lineR');
+let lineFor=null, lineTok=null, lineDone=false;
+function showLine(key){
+  if(key===lineFor) return; lineFor=key; if(lineTok) lineTok.stop=true; lineDone=false;
+  if(!key){ lineEl.classList.remove('on'); return; }
+  const n=NOTES[key][LEAD[key]||0]; lineR.textContent=''; lineEl.classList.add('on');
+  lineTok=typeText(lineT,n.x2,34,()=>{ lineT.classList.remove('cur'); lineR.textContent=n.r; lineDone=true; });
+}
+
+// ===== 소리: 마지막 장면 =====
+function finaleSound(){
+  if(!AC||muted) return; const now=AC.currentTime;
+  const r=AC.createBufferSource(); r.buffer=A.brown; r.loop=true; const lp=biq('lowpass',110); const g=gain(0);
+  chain(r,lp,g,A.out); r.start(); g.gain.setValueAtTime(0,now); g.gain.linearRampToValueAtTime(1.1,now+5); g.gain.setTargetAtTime(0,now+8,2.2);
+  const w=AC.createBufferSource(); w.buffer=A.white; w.loop=true; const bp=biq('bandpass',300,.7); const g2=gain(0);
+  chain(w,bp,g2,A.out); w.start(); bp.frequency.setValueAtTime(300,now); bp.frequency.exponentialRampToValueAtTime(1400,now+7);
+  g2.gain.setValueAtTime(0,now+1); g2.gain.linearRampToValueAtTime(.16,now+6); g2.gain.setTargetAtTime(0,now+8,2.5);
+}
+
+// ===== 시작 =====
+let entered=false, ready=false, introTyped=false;
+const intro=document.getElementById('intro'), introGo=document.getElementById('introGo');
+(async function runIntro(){
+  const ps=[...document.querySelectorAll('#introLines p')];
+  await sleep(700);
+  for(let k=0;k<INTRO.length;k++){ await new Promise(res=>typeText(ps[k],INTRO[k],62,res)); ps[k].classList.remove('cur'); await sleep(650); }
+  document.getElementById('introTitle').classList.add('on'); await sleep(900);
+  introTyped=true; if(ready) introGo.classList.add('on');
+})();
+function enter(){
+  if(entered||!ready) return; entered=true; if(!muted) initAudio();
+  // 글자를 흩어 놓으며 도시가 나타남
+  document.querySelectorAll('#introLines p').forEach(p=>{ const t=p.textContent; p.textContent='';
+    [...t].forEach(ch=>{ const sp=document.createElement('span'); sp.textContent=ch; p.appendChild(sp); }); });
+  requestAnimationFrame(()=>document.querySelectorAll('#introLines span').forEach(sp=>{
+    sp.style.transform=`translate(${(Math.random()-.5)*260}px,${(Math.random()-.2)*200}px) rotate(${(Math.random()-.5)*60}deg)`;
+    sp.style.opacity=0; sp.style.filter='blur(4px)'; }));
+  document.getElementById('introTitle').style.opacity=0; introGo.classList.remove('on');
+  setTimeout(()=>intro.classList.add('out'),500); setTimeout(()=>intro.remove(),2600);
+}
+intro.addEventListener('click',enter);
+addEventListener('keydown',e=>{ if(!entered&&(e.key==='Enter'||e.key===' '||e.key.toLowerCase()==='w')) enter(); });
+
+// ===== 경계: 쓰이지 않은 땅 =====
+const veil=document.getElementById('veil'), veilT=document.getElementById('veilT'), veilS=document.getElementById('veilS');
+let edgeT=0, edgeOn=false;
+function setEdge(on){ if(on===edgeOn) return; edgeOn=on;
+  document.body.classList.toggle('edge',on);
+  if(on){ veil.className='on edge'; veilT.textContent='쓰이지 않은 땅'; veilS.textContent='원문은 이 너머를 말하지 않는다. 그래서 여기에는 아무것도 짓지 않았다.'; }
+  else { veil.className=''; } }
+
+// ===== 끝: 글이 끝나는 곳 =====
+let finale=false;
+async function runFinale(){
+  if(finale) return; finale=true; document.body.classList.add('fin'); keys['w']=keys['arrowup']=false; btnDir=0;
+  await sleep(900);
+  veil.className='on fin'; veilS.textContent=''; veilT.textContent='';
+  await new Promise(res=>typeText(veilT,FINAL,58,res));
+  await sleep(2600); veilT.classList.remove('cur');
+  veilS.textContent=FINAL_REF+' · 원문은 여기서 끝난다'; await sleep(2200);
+  // 글이 끝난 자리부터 도시가 지워지며 가라앉음
+  finaleSound(); document.body.classList.add('sink'); document.getElementById('sea').style.height='100%';
+  veil.style.transition='opacity 2.5s'; veil.classList.remove('on');
+  await sleep(8200);
+  veil.style.transition=''; veil.className='on end';
+  veilT.textContent='여기서부터는 쓰여 있지 않다.'; veilS.innerHTML=AFTER;
+  if(live) live.pause();
+}
+document.getElementById('again').addEventListener('click',()=>location.reload());
+
 let last=0, rest=0, lastTr='', lastP=''; const pnameEl=document.getElementById('pname');
 function tick(t){
   const dt=Math.min(.05,(t-last)/1000||0); last=t;
-  const input=(keys['w']||keys['arrowup']?1:0)-(keys['s']||keys['arrowdown']?1:0)+btnDir;
+  const input=(entered&&!finale) ? (keys['w']||keys['arrowup']?1:0)-(keys['s']||keys['arrowdown']?1:0)+btnDir : 0;
   let target=(input*FPS+wheelPush*FPS); wheelPush*=Math.pow(.02,dt);
   if(pause>0){ pause-=dt; target=0; vel=0; }
   vel+=(target-vel)*Math.min(1,dt*(input?3.2:4.5));
@@ -345,6 +478,16 @@ function tick(t){
   const amb=mix(AMB[track.places[sg]],AMB[track.places[sg+1]],Math.max(0,Math.min(1,lt)));
   const mv=MOVE[track.segs[sg]]; const move=mv.length===1?mv[0]:(lt<mv[1]?mv[0]:mv[2]);
   updateAudio(dt,amb,move,Math.abs(vel)/FPS);
+  // 도착하면 원문 한 줄
+  showLine((entered&&!finale&&place&&rest>.6) ? track.places[at] : null);
+  // 길 끝: 신전 안이면 마지막 장면, 다른 길 끝이면 '쓰이지 않은 땅'
+  const atEnd = pos>=N-1.01, atStart = pos<=0.01;
+  const pushing = (atEnd&&input>0) || (atStart&&input<0);
+  const isTemple = atEnd && track.places[track.places.length-1]==='interior';
+  document.getElementById('nudge').classList.toggle('on', isTemple && lineDone && !finale);
+  if(pushing && !finale){ edgeT+=dt; } else edgeT=Math.max(0,edgeT-dt*2);
+  if(isTemple && input>0 && edgeT>.5) runFinale();
+  else setEdge(!isTemple && edgeT>.45);
   requestAnimationFrame(tick);
 }
 
@@ -352,7 +495,7 @@ function tick(t){
 buildTrack('main'); chooser.querySelector('[data-t="main"]').classList.add('sel');
 const first=[...new Set(list.map(f=>f.src)), ...Object.values(P).map(p=>p.img)]; let loaded=0;
 first.forEach(src=>{ const im=img(src); const done=()=>{ loaded++; document.getElementById('pct').textContent=Math.round(loaded/first.length*100);
-  if(loaded===first.length){ const l=document.getElementById('load'); l.style.opacity=0; setTimeout(()=>l.remove(),900); start(); } };
+  if(loaded===first.length){ const l=document.getElementById('load'); l.style.opacity=0; ready=true; if(introTyped) introGo.classList.add('on'); start(); } };
   if(im.complete) done(); else { im.addEventListener('load',done,{once:true}); im.addEventListener('error',done,{once:true}); } });
 function start(){ layout(); draw(0); setStill(P.harbor.img); requestAnimationFrame(tick);
   setTimeout(()=>{ ['s5','s6'].forEach(sg=>segSheets(sg).forEach(img)); }, 1500); }
