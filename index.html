@@ -7,8 +7,9 @@
 <style>
   html,body{margin:0;height:100%;background:#000;overflow:hidden;font-family:"Noto Serif KR","Apple SD Gothic Neo",serif;color:#f3e9d6;user-select:none;-webkit-user-select:none}
   #stage{position:fixed;inset:0;overflow:hidden}
-  canvas,#still{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);will-change:transform}
+  canvas,#still,#live{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);will-change:transform}
   #still{opacity:1;transition:opacity .35s ease;pointer-events:none}
+  #live{opacity:0;transition:opacity .9s ease;pointer-events:none;object-fit:fill}
   .vig{position:fixed;inset:0;pointer-events:none;background:radial-gradient(ellipse at center,rgba(0,0,0,0) 55%,rgba(0,0,0,.55) 100%),linear-gradient(to top,rgba(0,0,0,.55) 0,rgba(0,0,0,0) 190px),linear-gradient(to bottom,rgba(0,0,0,.35) 0,rgba(0,0,0,0) 160px)}
   #route,#place,#help{text-shadow:0 1px 6px rgba(0,0,0,.85)}
   #place{position:fixed;left:40px;top:34px;transition:opacity .6s}
@@ -25,11 +26,11 @@
   #go3d{position:fixed;left:40px;top:118px;color:#f3e9d6;text-decoration:none;font-size:13px;letter-spacing:.06em;border:1px solid rgba(243,233,214,.45);border-radius:20px;padding:8px 16px;background:rgba(10,8,6,.45);backdrop-filter:blur(6px);opacity:0;pointer-events:none;transition:opacity .4s}
   #go3d.on{opacity:1;pointer-events:auto}
   @media (max-width:700px){#go3d{left:22px;top:92px}}
-  #choose{position:fixed;left:50%;top:50%;transform:translate(-50%,-50%);display:flex;gap:12px;opacity:0;pointer-events:none;transition:opacity .4s}
+  #choose{position:fixed;left:50%;bottom:156px;transform:translateX(-50%);display:flex;gap:12px;opacity:0;pointer-events:none;transition:opacity .4s}
   #choose.on{opacity:1;pointer-events:auto}
   #choose button{background:rgba(10,8,6,.55);color:#f3e9d6;border:1px solid rgba(243,233,214,.45);border-radius:26px;padding:12px 22px;font-size:15px;font-family:inherit;cursor:pointer;backdrop-filter:blur(6px)}
   #choose button.sel{background:rgba(233,194,122,.85);color:#1a1208;border-color:#e9c27a}
-  @media (max-width:700px){#choose{flex-direction:column;top:46%}}
+  @media (max-width:700px){#choose{flex-direction:column;bottom:150px}}
 
   #hot{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);pointer-events:none;opacity:0;transition:opacity .5s}
   #hot.on{opacity:1}
@@ -54,7 +55,7 @@
 </style>
 </head>
 <body>
-<div id="stage"><canvas id="cv"></canvas><img id="still" alt=""><div id="hot"></div></div>
+<div id="stage"><canvas id="cv"></canvas><img id="still" alt=""><video id="live" muted loop playsinline preload="auto"></video><div id="hot"></div></div>
 <div id="card"><b id="cT"></b><p id="cX"></p><small id="cR"></small></div>
 <div class="vig"></div>
 <div id="place"><small>AS WRITTEN · ATLANTIS</small><b id="pname">항구 · 운하 입구</b></div>
@@ -73,7 +74,7 @@ const SEG = { s1:'t/s1', s2:'t/s2', s3:'t/s3', s4:'t/s4', s5:'t/s5', s6:'t/s6' }
 const P = {
   harbor:  { name:'항구 · 운하 입구',        img:'harbor.jpg',   world:'https://marble.worldlabs.ai/world/783f19b6-0ab4-4ab8-a72e-e872d006cf3d' },
   canal:   { name:'운하',                    img:'canal.jpg' },
-  bridge:  { name:'다리와 성벽',              img:'bridge.jpg',   world:'https://marble.worldlabs.ai/world/58a98746-cf75-42ef-aab9-468eb81575ca' },
+  bridge:  { name:'다리와 성벽',              img:'bridge.jpg',   loop:'loops/bridge.mp4', world:'https://marble.worldlabs.ai/world/58a98746-cf75-42ef-aab9-468eb81575ca' },
   plaza:   { name:'가운데 섬 · 신전 앞 광장',  img:'plaza.jpg' },
   interior:{ name:'포세이돈 신전 안',          img:'interior.jpg' },
   docks:   { name:'바위를 파낸 선착장',        img:'docks.jpg' },
@@ -158,12 +159,21 @@ function buildRoute(){
     t.innerHTML='<i></i><em>'+P[track.places[k]].name.split(' · ')[0]+'</em>'; bar.appendChild(t); });
 }
 
-const cv=document.getElementById('cv'), ctx=cv.getContext('2d'), still=document.getElementById('still');
+const cv=document.getElementById('cv'), ctx=cv.getContext('2d'), still=document.getElementById('still'), live=document.getElementById('live');
+// 멈춘 장소가 살아 움직이는 루프 영상
+let liveTimer=0;
+function setLive(src,restT){
+  if(src){
+    if(live.dataset.k!==src){ live.src=src; live.dataset.k=src; }
+    if(live.paused){ try{ live.currentTime=0; }catch(e){} live.play().catch(()=>{}); }
+    live.style.opacity = (restT>.45 && live.readyState>=2) ? 1 : 0;
+  } else if(live.style.opacity!=='0'){ live.style.opacity=0; clearTimeout(liveTimer); liveTimer=setTimeout(()=>{ if(live.style.opacity==='0') live.pause(); },950); }
+}
 const OVER=1.08; let W=0,H=0, drawn=-1;
 function layout(){ const vw=innerWidth,vh=innerHeight,ar=1456/816;
   if(vw/vh>ar){W=vw*OVER;H=W/ar;}else{H=vh*OVER;W=H*ar;}
   const dpr=Math.min(devicePixelRatio||1,2); cv.width=Math.round(W*dpr); cv.height=Math.round(H*dpr);
-  for(const el of [cv,still]){el.style.width=W+'px';el.style.height=H+'px';}
+  for(const el of [cv,still,live]){el.style.width=W+'px';el.style.height=H+'px';}
   ctx.imageSmoothingEnabled=true; ctx.imageSmoothingQuality='high'; drawn=-1; }
 addEventListener('resize',layout);
 
@@ -298,10 +308,11 @@ function tick(t){
   let at=-1; stops.forEach((st,k)=>{ if(Math.abs(pos-st)<.6) at=k; });
   const place = at>=0 ? P[track.places[at]] : null;
   setStill(rest>.15&&place ? place.img : null);
+  setLive(rest>.15&&place&&place.loop ? place.loop : null, rest);
 
   lx+=(tx-lx)*Math.min(1,dt*3); ly+=(ty-ly)*Math.min(1,dt*3);
   const mx=(W-innerWidth)/2,my=(H-innerHeight)/2, tr=`translate(calc(-50% + ${-lx*mx}px), calc(-50% + ${-ly*my}px))`;
-  cv.style.transform=tr; still.style.transform=tr;
+  cv.style.transform=tr; still.style.transform=tr; live.style.transform=tr;
 
   const p=pos/(N-1); document.getElementById('fill').style.width=(p*100)+'%'; document.getElementById('dot').style.left=(p*100)+'%';
   let name; if(place) name=place.name; else { let seg=0; while(seg<stops.length-2&&pos>stops[seg+1]) seg++; name=track.moving[seg]; }
