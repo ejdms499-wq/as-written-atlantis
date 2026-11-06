@@ -30,6 +30,23 @@
   #choose button{background:rgba(10,8,6,.55);color:#f3e9d6;border:1px solid rgba(243,233,214,.45);border-radius:26px;padding:12px 22px;font-size:15px;font-family:inherit;cursor:pointer;backdrop-filter:blur(6px)}
   #choose button.sel{background:rgba(233,194,122,.85);color:#1a1208;border-color:#e9c27a}
   @media (max-width:700px){#choose{flex-direction:column;top:46%}}
+
+  #hot{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);pointer-events:none;opacity:0;transition:opacity .5s}
+  #hot.on{opacity:1}
+  .hs{position:absolute;width:30px;height:30px;margin:-15px 0 0 -15px;border:0;padding:0;background:none;cursor:pointer;pointer-events:none}
+  #hot.on .hs{pointer-events:auto}
+  .hs::before{content:"";position:absolute;inset:10px;border-radius:50%;background:#f6dca0;box-shadow:0 0 10px 3px rgba(246,220,160,.9)}
+  .hs::after{content:"";position:absolute;inset:0;border-radius:50%;border:1.5px solid rgba(246,220,160,.85);animation:ping 2.4s ease-out infinite}
+  .hs:hover::before,.hs.act::before{background:#fff}
+  @keyframes ping{0%{transform:scale(.45);opacity:1}100%{transform:scale(1.35);opacity:0}}
+  #card{position:fixed;z-index:4;max-width:330px;background:rgba(14,11,8,.82);border:1px solid rgba(233,194,122,.45);border-radius:10px;padding:16px 18px 13px;backdrop-filter:blur(8px);opacity:0;pointer-events:none;transform:translateY(6px);transition:opacity .3s,transform .3s}
+  #card.on{opacity:1;transform:none;pointer-events:auto}
+  #card b{display:block;font-size:15px;font-weight:600;letter-spacing:.04em;color:#e9c27a;margin-bottom:8px}
+  #card p{margin:0 0 10px;font-size:14px;line-height:1.75}
+  #card small{font-size:11px;letter-spacing:.12em;opacity:.6}
+  #snd{position:fixed;right:28px;bottom:30px;background:rgba(10,8,6,.5);color:#f3e9d6;border:1px solid rgba(243,233,214,.35);border-radius:18px;padding:7px 14px;font-size:12px;font-family:inherit;cursor:pointer;backdrop-filter:blur(6px)}
+  #snd.off{opacity:.55}
+  @media (max-width:700px){#snd{right:16px;bottom:84px}#card{left:16px!important;right:16px;max-width:none;bottom:150px;top:auto!important}}
   #help{position:fixed;right:28px;top:34px;font-size:12px;line-height:1.9;text-align:right;opacity:.75}
   #help kbd{border:1px solid rgba(243,233,214,.5);border-radius:4px;padding:0 6px;font-family:inherit}
   #load{position:fixed;inset:0;display:flex;align-items:center;justify-content:center;background:#000;font-size:14px;letter-spacing:.2em;transition:opacity .8s;z-index:5}
@@ -37,10 +54,12 @@
 </style>
 </head>
 <body>
-<div id="stage"><canvas id="cv"></canvas><img id="still" alt=""></div>
+<div id="stage"><canvas id="cv"></canvas><img id="still" alt=""><div id="hot"></div></div>
+<div id="card"><b id="cT"></b><p id="cX"></p><small id="cR"></small></div>
 <div class="vig"></div>
 <div id="place"><small>AS WRITTEN · ATLANTIS</small><b id="pname">항구 · 운하 입구</b></div>
-<div id="help"><kbd>W</kbd> / <kbd>↑</kbd> 누르고 있기 — 앞으로<br>다리 위 갈림길: <kbd>A</kbd> 선착장 · <kbd>D</kbd> 경마장<br><kbd>S</kbd> / <kbd>↓</kbd> — 뒤로<br>마우스 휠로도 이동 · 마우스로 둘러보기</div>
+<button id="snd" title="소리">소리 켜짐</button>
+<div id="help"><kbd>W</kbd> / <kbd>↑</kbd> 누르고 있기 — 앞으로<br>다리 위 갈림길: <kbd>A</kbd> 선착장 · <kbd>D</kbd> 경마장<br><kbd>S</kbd> / <kbd>↓</kbd> — 뒤로<br>마우스 휠로도 이동 · 마우스로 둘러보기<br>빛나는 점 — 원문 보기</div>
 <div id="route"></div>
 <a id="go3d" target="_blank" rel="noopener">이 자리에서 3D로 둘러보기 ↗</a>
 <div id="choose"></div>
@@ -66,6 +85,54 @@ const TRACKS = {
   docks: { segs:['s1','s2','s5'],      places:['harbor','canal','bridge','docks'],           moving:['운하로 들어가는 중','다리로 올라가는 중','선착장으로 내려가는 중'] },
   race:  { segs:['s1','s2','s6'],      places:['harbor','canal','bridge','race'],            moving:['운하로 들어가는 중','다리로 올라가는 중','경마장으로 가는 중'] },
 };
+
+// ── 원문 표시 (플라톤 『크리티아스』, 직접 번역 · 위치는 사진 기준 %) ──
+const NOTES = {
+  harbor: [
+    { x:48, y:47, t:'바다에서 들어가는 운하', r:'Critias 115d', x2:'바다에서부터 폭 300피트, 깊이 100피트, 길이 50스타디온의 운하를 뚫어 가장 바깥 고리까지 이었다. 가장 큰 배도 드나들 수 있도록 입구를 넓게 열었다.' },
+    { x:70, y:70, t:'배로 가득한 선착장', r:'Critias 117d', x2:'선착장은 삼단노선과 배에 쓰는 온갖 장비로 가득했다.' },
+    { x:24, y:57, t:'밤낮없는 소란', r:'Critias 117e', x2:'항구와 운하는 사방에서 온 배와 상인들로 붐볐고, 사람들의 목소리와 온갖 소란이 밤낮으로 끊이지 않았다.' },
+  ],
+  canal: [
+    { x:12, y:55, t:'흰 돌, 검은 돌, 붉은 돌', r:'Critias 116a–b', x2:'돌은 가운데 섬과 고리 땅 밑에서 캐냈다. 하나는 흰색, 하나는 검은색, 하나는 붉은색이었다. 어떤 건물은 단순하게, 어떤 건물은 여러 색의 돌을 섞어 보기 좋게 지었다.' },
+    { x:52, y:43, t:'청동으로 덮은 성벽', r:'Critias 116b–c', x2:'가장 바깥 고리를 두른 성벽은 둘레 전체를 청동으로 덮었다.' },
+  ],
+  bridge: [
+    { x:50, y:31, t:'오리칼쿰의 붉은 빛', r:'Critias 116c', x2:'두 번째 성벽은 주석으로 덮었고, 성채를 두른 세 번째 성벽은 오리칼쿰의 붉은 빛으로 번쩍였다.' },
+    { x:43, y:67, t:'다리 위의 탑과 문', r:'Critias 115e–116a', x2:'고리와 고리 사이에 다리를 놓았다. 바닷물이 드나드는 자리마다 다리 위에 탑과 문을 세우고, 물길 위를 덮어 배가 그 아래로 지나가게 했다.' },
+    { x:14, y:64, t:'바위를 파낸 선착장', r:'Critias 116b', x2:'돌을 캐낸 자리는 바위를 파내 이중 선착장으로 만들고, 그 바위를 그대로 지붕으로 삼았다.' },
+  ],
+  plaza: [
+    { x:38, y:38, t:'포세이돈의 신전', r:'Critias 116d', x2:'신전은 길이 1스타디온, 너비 반 스타디온이었다. 바깥은 꼭대기 장식을 빼고 온통 은으로 덮었고, 꼭대기 장식은 금으로 덮었다.' },
+    { x:46, y:61, t:'왕들의 황금상', r:'Critias 116e', x2:'신전 바깥에는 열 왕의 모든 후손과 그 아내들의 황금상이 둘러서 있었다.' },
+    { x:17, y:86, t:'찬 샘과 뜨거운 샘', r:'Critias 117a–b', x2:'찬물이 나오는 샘과 뜨거운 물이 나오는 샘이 넉넉히 흘렀다. 왕의 목욕탕과 백성의 목욕탕은 따로 두었다.' },
+  ],
+  interior: [
+    { x:50, y:12, t:'상아 천장', r:'Critias 116d', x2:'안쪽 천장은 상아로 만들고, 곳곳을 금과 은과 오리칼쿰으로 정교하게 꾸몄다.' },
+    { x:50, y:56, t:'여섯 날개 말의 전차', r:'Critias 116d', x2:'신은 날개 달린 말 여섯 마리가 끄는 전차 위에 서 있었고, 머리가 천장에 닿을 만큼 거대했다.' },
+    { x:22, y:80, t:'돌고래를 탄 네레이스', r:'Critias 116e', x2:'그 둘레에는 돌고래를 탄 네레이스 백 명이 있었다.' },
+  ],
+  docks: [
+    { x:25, y:55, t:'바위 지붕의 이중 선착장', r:'Critias 116b', x2:'고리 땅의 바위를 파내 안쪽으로 이중 선착장을 만들고, 파낸 바위를 그대로 지붕으로 삼았다.' },
+    { x:91, y:68, t:'삼단노선', r:'Critias 117d', x2:'선착장은 삼단노선과 배에 쓰는 온갖 장비로 가득했다.' },
+  ],
+  race: [
+    { x:45, y:76, t:'고리 섬의 경마장', r:'Critias 117c', x2:'두 고리 섬 가운데 더 큰 섬의 한가운데에 폭 1스타디온의 경마장을 두고, 섬을 한 바퀴 돌게 했다.' },
+    { x:12, y:42, t:'정원과 운동장', r:'Critias 117c', x2:'고리 섬에는 여러 신의 신전과 정원, 사람을 위한 운동장과 말을 위한 운동장이 있었다.' },
+    { x:84, y:44, t:'경비대 숙소', r:'Critias 117c–d', x2:'고리 땅 곳곳에 경비대 숙소를 두었다.' },
+  ],
+};
+// ── 소리 (외부 파일 없이 브라우저에서 직접 합성) ──
+const AMB = {           // 물 / 바람 / 분수 / 실내 울림
+  harbor:  { water:.85, wind:.30, fount:0,   hall:0 },
+  canal:   { water:.75, wind:.20, fount:0,   hall:0 },
+  bridge:  { water:.45, wind:.65, fount:0,   hall:0 },
+  plaza:   { water:.05, wind:.25, fount:.65, hall:0 },
+  interior:{ water:0,   wind:.05, fount:.10, hall:.85 },
+  docks:   { water:.90, wind:.15, fount:0,   hall:.35 },
+  race:    { water:.15, wind:.75, fount:0,   hall:0 },
+};
+const MOVE = { s1:['boat'], s2:['boat',.45,'walk'], s3:['walk'], s4:['walk'], s5:['walk',.4,'boat'], s6:['walk'] };
 const JUNCTION = 'bridge';
 const CHOICES = [ { track:'docks', label:'← 선착장', key:'a' }, { track:'main', label:'↑ 가운데 섬 · 신전', key:'' }, { track:'race', label:'경마장 →', key:'d' } ];
 const FPS = 24;
@@ -129,6 +196,92 @@ function choose(name){ if(name===curName) return; const k=junIdx(); curName=name
 function draw(i){ const f=list[i], im=img(f.src); if(i===drawn) return; if(im.complete&&im.naturalWidth){ ctx.drawImage(im,f.sx,f.sy,FW,FH,0,0,cv.width,cv.height); drawn=i; } }
 function setStill(src){ if(src){ if(still.dataset.k!==src){still.src=src;still.dataset.k=src;} still.style.opacity=1; } else still.style.opacity=0; }
 
+
+// ===== 원문 표시 =====
+const hot=document.getElementById('hot'), card=document.getElementById('card');
+let hotFor=null;
+function showHot(key){
+  if(hotFor===key) return; hotFor=key; hot.innerHTML=''; closeCard();
+  if(!key||!NOTES[key]) return;
+  NOTES[key].forEach((n,i)=>{ const b=document.createElement('button'); b.className='hs'; b.style.left=n.x+'%'; b.style.top=n.y+'%';
+    b.setAttribute('aria-label',n.t);
+    b.addEventListener('pointerdown',e=>e.stopPropagation());
+    b.addEventListener('click',e=>{ e.stopPropagation(); openCard(n,b); });
+    b.addEventListener('mouseenter',()=>{ if(matchMedia('(hover:hover)').matches) openCard(n,b); });
+    hot.appendChild(b); });
+}
+function openCard(n,b){
+  hot.querySelectorAll('.hs').forEach(x=>x.classList.toggle('act',x===b));
+  document.getElementById('cT').textContent=n.t; document.getElementById('cX').textContent=n.x2; document.getElementById('cR').textContent=n.r;
+  const r=b.getBoundingClientRect(), cw=330, left=Math.min(innerWidth-cw-16,Math.max(16,r.left+r.width/2-cw/2));
+  card.style.left=left+'px';
+  const above=r.top>innerHeight*.5; card.style.top=(above? Math.max(16,r.top-14-card.offsetHeight) : r.bottom+14)+'px';
+  card.classList.add('on');
+  requestAnimationFrame(()=>{ card.style.top=(above? Math.max(16,r.top-14-card.offsetHeight) : r.bottom+14)+'px'; });
+}
+function closeCard(){ card.classList.remove('on'); hot.querySelectorAll('.hs').forEach(x=>x.classList.remove('act')); }
+document.getElementById('stage').addEventListener('click',closeCard);
+addEventListener('keydown',closeCard);
+
+// ===== 소리 =====
+let AC=null, A={}, muted=false; const sndBtn=document.getElementById('snd');
+function noiseBuf(kind){ const n=AC.sampleRate*3, b=AC.createBuffer(1,n,AC.sampleRate), d=b.getChannelData(0); let last=0;
+  for(let i=0;i<n;i++){ const w=Math.random()*2-1; if(kind==='brown'){ last=(last+.02*w)/1.02; d[i]=last*3.5; } else d[i]=w; } return b; }
+function loop(buf){ const s=AC.createBufferSource(); s.buffer=buf; s.loop=true; s.start(0,Math.random()*2); return s; }
+function chain(...ns){ for(let i=0;i<ns.length-1;i++) ns[i].connect(ns[i+1]); return ns[ns.length-1]; }
+function biq(type,f,q){ const b=AC.createBiquadFilter(); b.type=type; b.frequency.value=f; if(q) b.Q.value=q; return b; }
+function gain(v){ const g=AC.createGain(); g.gain.value=v; return g; }
+function initAudio(){
+  if(AC) { if(AC.state==='suspended') AC.resume(); return; }
+  try{ AC=new (window.AudioContext||window.webkitAudioContext)(); }catch(e){ return; }
+  A.white=noiseBuf('white'); A.brown=noiseBuf('brown');
+  const m=AC.createGain(); m.gain.value=muted?0:.9; m.connect(AC.destination); A.out=m;
+  // 잔향
+  const ir=AC.createBuffer(2,AC.sampleRate*3.2,AC.sampleRate);
+  for(let c=0;c<2;c++){ const d=ir.getChannelData(c); for(let i=0;i<d.length;i++) d[i]=(Math.random()*2-1)*Math.pow(1-i/d.length,3.2); }
+  A.rev=AC.createConvolver(); A.rev.buffer=ir; A.revIn=gain(0); chain(A.revIn,A.rev,gain(.55),A.out);
+  // 물결
+  A.water=gain(0); chain(loop(A.brown),biq('lowpass',650),A.water,A.out);
+  A.sparkle=gain(0); chain(loop(A.white),biq('bandpass',1400,.6),A.sparkle,A.out);
+  // 바람
+  A.windF=biq('bandpass',500,.7); A.wind=gain(0); chain(loop(A.white),A.windF,A.wind,A.out);
+  // 분수
+  A.fount=gain(0); chain(loop(A.white),biq('highpass',1600),biq('peaking',3800,1),A.fount,A.out);
+  // 실내 울림 (낮은 공명)
+  A.hall=gain(0); A.hall.connect(A.out); A.hall.connect(A.revIn);
+  [55,82.5,110.3].forEach((f,i)=>{ const o=AC.createOscillator(); o.frequency.value=f; const g=gain([.5,.3,.12][i]); o.connect(g); g.connect(A.hall); o.start(); });
+  A.gust=.6; A.t0=AC.currentTime;
+}
+function setG(node,v,tc){ if(node) node.gain.setTargetAtTime(v,AC.currentTime,tc||.25); }
+function burst(dur,filt,peak,att,send){
+  const s=AC.createBufferSource(); s.buffer=A.white; const g=AC.createGain(); const now=AC.currentTime;
+  g.gain.setValueAtTime(0,now); g.gain.linearRampToValueAtTime(peak,now+att); g.gain.exponentialRampToValueAtTime(.0005,now+dur);
+  let last=s; filt.forEach(f=>{ last.connect(f); last=f; }); last.connect(g); g.connect(A.out); if(send) { const sg=gain(send); g.connect(sg); sg.connect(A.revIn); }
+  s.start(now,Math.random()*2,dur+.05); return filt;
+}
+function step(hall){ const f=850+Math.random()*350; burst(.11,[biq('bandpass',f,1.3),biq('lowpass',2400)],.32,.004,hall*1.4); }
+function oar(){ const lp=biq('lowpass',2600); const now=AC.currentTime; lp.frequency.setValueAtTime(2600,now); lp.frequency.exponentialRampToValueAtTime(500,now+.55);
+  burst(.6,[lp],.38,.09,0); setTimeout(()=>{ if(AC) burst(.25,[biq('bandpass',2200,2)],.12,.01,0); },240); }
+let stepPh=0, oarPh=0;
+function mix(a,b,t){ const o={}; for(const k in a) o[k]=a[k]+(b[k]-a[k])*t; return o; }
+function updateAudio(dt,amb,move,speed){
+  if(!AC||AC.state!=='running') return;
+  const tt=AC.currentTime-A.t0;
+  const lap=.55+.45*(.5+.5*Math.sin(tt*1.13))*(.6+.4*Math.sin(tt*.37+1));
+  setG(A.water,amb.water*.55*lap,.12); setG(A.sparkle,amb.water*.05*lap,.12);
+  A.gust=Math.max(.25,Math.min(1,A.gust+(Math.random()-.5)*dt*1.6));
+  setG(A.wind,amb.wind*.22*A.gust,.4); A.windF.frequency.setTargetAtTime(320+A.gust*520,AC.currentTime,.5);
+  setG(A.fount,amb.fount*.06,.3); setG(A.hall,amb.hall*.05,.5); setG(A.revIn,amb.hall*.9+.05,.3);
+  if(speed>.08){
+    if(move==='walk'){ stepPh+=speed*1.9*dt; if(stepPh>=1){ stepPh-=1; step(amb.hall); } }
+    else { oarPh+=speed*.62*dt; if(oarPh>=1){ oarPh-=1; oar(); } }
+  } else { stepPh=.6; oarPh=.7; }
+}
+function toggleSound(){ muted=!muted; sndBtn.textContent=muted?'소리 꺼짐':'소리 켜짐'; sndBtn.classList.toggle('off',muted); initAudio(); if(A.out) A.out.gain.setTargetAtTime(muted?0:.9,AC.currentTime,.1); }
+sndBtn.addEventListener('click',e=>{ e.stopPropagation(); toggleSound(); });
+['keydown','pointerdown','touchstart'].forEach(ev=>addEventListener(ev,()=>{ if(!muted) initAudio(); },{passive:true}));
+document.addEventListener('visibilitychange',()=>{ if(!AC) return; document.hidden?AC.suspend():(!muted&&AC.resume()); });
+
 let last=0, rest=0;
 function tick(t){
   const dt=Math.min(.05,(t-last)/1000||0); last=t;
@@ -156,6 +309,16 @@ function tick(t){
   const g=document.getElementById('go3d'), w=(place&&rest>.15)?place.world:null;
   if(w){ if(g.href!==w) g.href=w; g.classList.add('on'); } else g.classList.remove('on');
   chooser.classList.toggle('on', rest>.15 && atJunction());
+  // 원문 점: 장소에 멈춰 있을 때만
+  const placeKey = (place&&rest>.35) ? track.places[at] : null;
+  showHot(placeKey); hot.classList.toggle('on',!!placeKey); hot.style.transform=tr;
+  hot.style.width=W+'px'; hot.style.height=H+'px';
+  // 소리: 지금 있는 구간의 앞뒤 장소를 섞어서
+  let sg=0; while(sg<stops.length-2&&pos>stops[sg+1]) sg++;
+  const lt=(pos-stops[sg])/Math.max(1,stops[sg+1]-stops[sg]);
+  const amb=mix(AMB[track.places[sg]],AMB[track.places[sg+1]],Math.max(0,Math.min(1,lt)));
+  const mv=MOVE[track.segs[sg]]; const move=mv.length===1?mv[0]:(lt<mv[1]?mv[0]:mv[2]);
+  updateAudio(dt,amb,move,Math.abs(vel)/FPS);
   requestAnimationFrame(tick);
 }
 
