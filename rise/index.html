@@ -9,9 +9,10 @@
   html,body{margin:0;background:#02090c;color:#f5ecd9;font-family:"Noto Serif KR","Apple SD Gothic Neo",serif;-webkit-font-smoothing:antialiased}
   body{height:1100vh}
   #stage{position:fixed;inset:0;overflow:hidden;background:#02090c}
-  #vid,#ruin,#ruinEnd{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+  #cv{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+  #ruin,#ruinEnd{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
   #stage>*{will-change:opacity}
-  #vidWrap{position:absolute;inset:0;transition:filter 1.2s}
+  #vidWrap{position:absolute;inset:0}
   #ruinEnd{opacity:0}
   #ruin{transition:opacity .4s}
   #sea{position:fixed;left:0;right:0;bottom:0;height:0;pointer-events:none;background:linear-gradient(to bottom,rgba(20,60,72,0) 0,rgba(10,36,46,.88) 90px,#04141b 100%)}
@@ -46,7 +47,7 @@
 </head>
 <body>
 <div id="stage">
-  <div id="vidWrap"><video id="vid" muted playsinline preload="auto"></video><img id="ruin" src="ruin.jpg" alt=""></div>
+  <div id="vidWrap"><canvas id="cv"></canvas><img id="ruin" src="ruin.jpg" alt=""></div>
   <img id="ruinEnd" src="ruin.jpg" alt="">
 </div>
 <div id="sea"></div><div id="shadeT"></div><div id="shadeB"></div>
@@ -93,26 +94,41 @@ const BLOCKS=[ ['b0',-1,.03], ['b1',.20,.265], ['b2',.27,.33], ['b3',.42,.49], [
                ['s1',.80,.86], ['s2',.86,.91], ['s3',.91,.95], ['b6',.955,9] ];
 const FINAL='법에 따라 다스리며 이런 일을 꿰뚫어 볼 줄 아는 신들의 신 제우스는, 한때 훌륭했던 종족이 비참한 처지에 빠진 것을 보았다. 그는 세상의 한가운데에서 모든 것을 내려다보는 가장 거룩한 처소로 모든 신을 불러 모았다. 그리고 신들을 다 모으자, 그는 이렇게 말했다—';
 
-const vid=document.getElementById('vid'), ruin=document.getElementById('ruin'), ruinEnd=document.getElementById('ruinEnd');
+const ruin=document.getElementById('ruin'), ruinEnd=document.getElementById('ruinEnd');
 const $=id=>document.getElementById(id);
-function videoTime(s){ for(const [a,b,t0,t1] of MAP){ if(s<=b){ const k=b>a?Math.max(0,Math.min(1,(s-a)/(b-a))):1; const e=k<.5?2*k*k:1-Math.pow(-2*k+2,2)/2; return t0+(t1-t0)*e; } } return T_TEMPLE; }
+function videoTime(s){ for(const [a,b,t0,t1] of MAP){ if(s<=b){ const k=b>a?Math.max(0,Math.min(1,(s-a)/(b-a))):1; const e=k<.5?2*k*k:1-Math.pow(-2*k+2,2)/2; return t0+(t1-t0)*e; } } return T4; }
 
 // 경로 표시
 STOPS.forEach(([n,s])=>{ const sp=document.createElement('span'); sp.textContent=n; sp.style.top=(s*100)+'%'; $('bar').appendChild(sp); });
 
-// ───── 영상을 통째로 받아 두기 (스크롤할 때 끊기지 않게) ─────
-(async()=>{
-  try{
-    const r=await fetch('journey.mp4'); const len=+r.headers.get('content-length')||8300000; const rd=r.body.getReader(); const parts=[]; let got=0;
-    for(;;){ const {done,value}=await rd.read(); if(done) break; parts.push(value); got+=value.length; $('pct').textContent=Math.min(99,Math.round(got/len*100)); }
-    vid.src=URL.createObjectURL(new Blob(parts,{type:'video/mp4'}));
-  }catch(e){ vid.src='journey.mp4'; }
-  vid.addEventListener('loadeddata',()=>{ $('pct').textContent=100; $('ltxt').style.display='none'; $('go').style.display='block'; },{once:true});
-  vid.load();
-})();
-// 휴대폰(iOS)은 한 번 재생해야 프레임이 그려짐
-addEventListener('touchstart',()=>{ vid.play().then(()=>vid.pause()).catch(()=>{}); },{once:true,passive:true});
-
+// ───── 프레임 그림 (12장/초) ─────
+const NF=244, FPS2=12, frames=new Array(NF), bmp=new Map(), pend=new Set();
+const cv=document.getElementById('cv'), ctx=cv.getContext('2d',{alpha:false});
+let IW=1024, IH=572, drawn=-1;
+function fit(){ cv.width=IW; cv.height=IH; drawn=-1; }   // 원본 크기 그대로 그리고, 화면 확대는 GPU가 처리
+addEventListener('resize',fit); fit();
+function blit(src){ ctx.drawImage(src,0,0); }
+let dir=1, lastI=0;
+function warm(i){ if(!window.createImageBitmap) return;
+  const lo=Math.max(0,i-(dir<0?30:10)), hi=Math.min(NF-1,i+(dir>0?30:10));
+  const order=[]; for(let d=0;d<=30;d++){ for(const k of [i+d*dir,i-d*dir]) if(k>=lo&&k<=hi&&!order.includes(k)) order.push(k); }
+  for(const k of order){ if(pend.size>=6) break; const im=frames[k]; if(bmp.has(k)||pend.has(k)||!im) continue;
+    pend.add(k); createImageBitmap(im).then(b=>{ pend.delete(k); bmp.set(k,b); }).catch(()=>pend.delete(k)); }
+  if(bmp.size>70) for(const [k,b] of bmp){ if(k<lo-8||k>hi+8){ b.close&&b.close(); bmp.delete(k); } } }
+function drawFrame(i){
+  if(i!==lastI){ dir=i>lastI?1:-1; lastI=i; }
+  warm(i);
+  if(i===drawn) return;
+  // 준비된 그림만 그림 (준비 안 됐으면 가장 가까운 준비된 그림) → 화면이 멈칫하지 않음
+  let k=-1; for(let d=0;d<=8&&k<0;d++){ if(bmp.has(i-d*dir)) k=i-d*dir; else if(bmp.has(i+d*dir)) k=i+d*dir; }
+  if(k<0||k===drawn) return; ctx.drawImage(bmp.get(k),0,0); drawn=k; }
+let loadedN=0;
+// 그림 파일을 미리 받아 두고(압축 상태), 그릴 때 화면 밖 스레드에서 풀어 씀
+(async()=>{ const q=[...Array(NF).keys()]; const worker=async()=>{ while(q.length){ const k=q.shift();
+    try{ const r=await fetch('f/'+String(k+1).padStart(3,'0')+'.jpg'); frames[k]=await r.blob(); }catch(e){}
+    loadedN++; $('pct').textContent=Math.round(loadedN/NF*100); } };
+  await Promise.all([0,1,2,3,4,5].map(worker));
+  warm(0); const wait=()=>bmp.has(0)?($('ltxt').style.display='none',$('go').style.display='block',drawFrame(0)):setTimeout(wait,50); wait(); })();
 // ───── 소리: 배경음악(임시 합성) + 효과음 ─────
 let AC=null,A={},sound=true;
 const G=v=>{ const g=AC.createGain(); g.gain.value=v; return g; };
@@ -125,7 +141,7 @@ function initAudio(){
   A.W=nbuf(0); A.B=nbuf(1);
   A.out=G(sound?1:0); A.out.connect(AC.destination);
   // 잔향
-  const ir=AC.createBuffer(2,AC.sampleRate*3.5,AC.sampleRate); for(let c=0;c<2;c++){ const d=ir.getChannelData(c); for(let i=0;i<d.length;i++) d[i]=(Math.random()*2-1)*Math.pow(1-i/d.length,2.6); }
+  const ir=AC.createBuffer(2,AC.sampleRate*2.2,AC.sampleRate); for(let c=0;c<2;c++){ const d=ir.getChannelData(c); for(let i=0;i<d.length;i++) d[i]=(Math.random()*2-1)*Math.pow(1-i/d.length,2.6); }
   A.rev=AC.createConvolver(); A.rev.buffer=ir; A.revIn=G(.5); A.revIn.connect(A.rev); A.rev.connect(G(.6)).connect(A.out);
   // 바다·물속
   A.lp=Fl('lowpass',220); A.sea=G(0); loopSrc(A.B).connect(A.lp); A.lp.connect(A.sea); A.sea.connect(A.out);
@@ -204,10 +220,10 @@ function tick(t){
   const prev=s; s+=(ts-s)*Math.min(1,dt*12);
   // 영상 위치 (찾는 중이 아닐 때만 옮김 → 버벅임 방지)
   const vt=videoTime(s);
-  if(vid.readyState>=2 && !vid.seeking && Math.abs(vid.currentTime-vt)>.02) vid.currentTime=vt;
+  drawFrame(Math.max(0,Math.min(NF-1,Math.round(vt*FPS2))));
   ruin.style.opacity = (s<.031||s>.952) ? 1 : 0;
   // 글 상자
-  for(const [id,a,b] of BLOCKS){ const fade=.012; let o=0; if(s>a&&s<b) o=Math.min(1,(s-a)/fade,(b-s)/fade); if(a<0) o=Math.min(1,(b-s)/fade); $(id).style.opacity=Math.max(0,o); }
+  for(const [id,a,b] of BLOCKS){ const fade=.012; let o=0; if(s>a&&s<b) o=Math.min(1,(s-a)/fade,(b-s)/fade); if(a<0) o=Math.min(1,(b-s)/fade); const ov=Math.max(0,o).toFixed(2); const el=$(id); if(el._o!==ov){ el._o=ov; el.style.opacity=ov; } }
   $('hint').style.opacity = s<.03 ? 1 : 0;
   // 마지막 문장: 스크롤하는 만큼 쓰임
   const fk=Math.max(0,Math.min(1,(s-.635)/.085)), n=Math.round(FINAL.length*fk);
@@ -219,7 +235,7 @@ function tick(t){
   // 장소 이름, 진행 막대
   let nm=STOPS[0][0]; for(const [name,at] of STOPS) if(s>=at-.005) nm=name;
   if($('pname').textContent!==nm) $('pname').textContent=nm;
-  $('bar').firstElementChild.style.height=(s*100)+'%';
+  { const bh=(s*100).toFixed(1)+'%'; const bi=$('bar').firstElementChild; if(bi._h!==bh){ bi._h=bh; bi.style.height=bh; } }
   audioTick(dt,s,Math.abs(s-prev)/Math.max(dt,.001),sink,fl);
   requestAnimationFrame(tick);
 }
