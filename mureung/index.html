@@ -171,91 +171,78 @@ let loadedN=0;
   await Promise.all([0,1,2,3,4,5].map(worker));
   warm(0); const wait=()=>(bmp.has(0)&&bmp.has(1))?($('ltxt').style.display='none',$('go').style.display='block',drawFrame(0)):setTimeout(wait,50); wait(); })();
 
-// ───── 소리: 칠현금 같은 뜯는 소리 + 물·새·굴·마을·안개 ─────
+// ───── 소리 (작고 부드럽게: 모든 소리는 마지막에 리미터를 거쳐 절대 찢어지지 않음) ─────
 let AC=null,A={},sound=true;
 const G=v=>{ const g=AC.createGain(); g.gain.value=v; return g; };
 const Fl=(t,f,q)=>{ const x=AC.createBiquadFilter(); x.type=t; x.frequency.value=f; if(q) x.Q.value=q; return x; };
-function nbuf(br){ const n=AC.sampleRate*3,b=AC.createBuffer(1,n,AC.sampleRate),d=b.getChannelData(0); let l=0; for(let i=0;i<n;i++){ const w=Math.random()*2-1; if(br){ l=(l+.02*w)/1.02; d[i]=l*3.5; } else d[i]=w; } return b; }
+function brown(){ const n=AC.sampleRate*4,b=AC.createBuffer(1,n,AC.sampleRate),d=b.getChannelData(0); let l=0,m=0;
+  for(let i=0;i<n;i++){ l=(l+.02*(Math.random()*2-1))/1.02; d[i]=l; m=Math.max(m,Math.abs(l)); } for(let i=0;i<n;i++) d[i]/=m; // 최대 1로 맞춤
+  const f=2000; for(let i=0;i<f;i++){ const k=i/f; d[i]*=k; d[n-1-i]*=k; } return b; }   // 이음새 딸깍 방지
 function loopSrc(b){ const s=AC.createBufferSource(); s.buffer=b; s.loop=true; s.start(0,Math.random()*2); return s; }
 function initAudio(){
   if(AC){ AC.resume(); return; }
   try{ AC=new (window.AudioContext||window.webkitAudioContext)(); }catch(e){ return; }
-  A.W=nbuf(0); A.B=nbuf(1);
-  A.out=G(sound?1:0); A.out.connect(AC.destination);
-  const ir=AC.createBuffer(2,AC.sampleRate*3,AC.sampleRate); for(let c=0;c<2;c++){ const d=ir.getChannelData(c); for(let i=0;i<d.length;i++) d[i]=(Math.random()*2-1)*Math.pow(1-i/d.length,2.4); }
-  A.rev=AC.createConvolver(); A.rev.buffer=ir; A.revIn=G(.4); A.revIn.connect(A.rev); A.rev.connect(G(.55)).connect(A.out);
-  // 시냇물: 졸졸 (밝은 잡음) + 물살 (낮은 잡음)
-  A.sbp=Fl('bandpass',2200,.5); A.str=G(0); loopSrc(A.W).connect(A.sbp); A.sbp.connect(A.str); A.str.connect(A.out);
-  A.slp=Fl('lowpass',380); A.flow=G(0); loopSrc(A.B).connect(A.slp); A.slp.connect(A.flow); A.flow.connect(A.out);
-  A.lfo=AC.createOscillator(); A.lfo.frequency.value=.23; const lg=G(.05); A.lfo.connect(lg); lg.connect(A.str.gain); A.lfo.start();
+  A.B=brown();
+  const lim=AC.createDynamicsCompressor(); lim.threshold.value=-20; lim.knee.value=6; lim.ratio.value=20; lim.attack.value=.003; lim.release.value=.25;
+  A.master=G(.55); A.out=G(sound?1:0); A.out.connect(lim); lim.connect(A.master); A.master.connect(AC.destination);
+  const ir=AC.createBuffer(2,AC.sampleRate*2.5,AC.sampleRate); for(let c=0;c<2;c++){ const d=ir.getChannelData(c); for(let i=0;i<d.length;i++) d[i]=(Math.random()*2-1)*Math.pow(1-i/d.length,3)*.5; }
+  A.rev=AC.createConvolver(); A.rev.buffer=ir; A.revIn=G(.3); A.revIn.connect(A.rev); A.rev.connect(G(.25)).connect(A.out);
+  // 물소리 (낮고 부드러운 흐름)
+  A.flow=G(0); const fl=Fl('lowpass',450); loopSrc(A.B).connect(fl); fl.connect(A.flow); A.flow.connect(A.out);
   // 바람·안개
-  A.wbp=Fl('bandpass',420,.6); A.air=G(0); loopSrc(A.W).connect(A.wbp); A.wbp.connect(A.air); A.air.connect(A.out);
-  // 음악: 낮게 깔리는 소리 + 뜯는 선율
-  A.music=G(0); A.mlp=Fl('lowpass',900,.7); A.mlp.connect(A.music); A.music.connect(A.out); A.music.connect(A.revIn);
-  A.pad=[0,1,2].map(()=>{ const o=AC.createOscillator(); o.type='triangle'; const g=G(.05); o.connect(g); g.connect(A.mlp); o.start(); return o; });
-  A.pl=G(.9); A.pl.connect(A.music); A.pl.connect(A.revIn);
+  A.air=G(0); const ab=Fl('bandpass',300,.5); loopSrc(A.B).connect(ab); ab.connect(A.air); A.air.connect(A.out);
+  // 음악: 은은하게 깔리는 화음 + 줄 뜯는 선율
+  A.music=G(0); A.mlp=Fl('lowpass',900,.5); A.mlp.connect(A.music); A.music.connect(A.out); A.music.connect(A.revIn);
+  A.pad=[0,1,2].map(()=>{ const o=AC.createOscillator(); o.type='sine'; const g=G(.03); o.connect(g); g.connect(A.mlp); o.start(); return o; });
   A.chord=-1; A.note=-1; A.t0=AC.currentTime;
 }
 const hz=m=>440*Math.pow(2,(m-69)/12);
 // 오음(궁상각치우) — D E F# A B
 const PADS=[[50,57,62],[47,54,62],[45,52,57],[50,57,64]];
 const MEL=[62,null,64,57,null,59,57,null,54,null,57,52,null,50,null,null, 57,null,59,62,null,64,62,null,59,57,null,54,null,57,null,null];
-function pluck(f,amp){ // 줄을 뜯는 소리 (카플러스-스트롱)
-  if(!AC) return; const t=AC.currentTime, d=AC.createDelay(1); d.delayTime.value=1/f;
-  const lp=Fl('lowpass',2600), fb=G(.986), out=G(amp), n=AC.createBufferSource(), ng=G(1);
-  n.buffer=A.W; ng.gain.setValueAtTime(1,t); ng.gain.exponentialRampToValueAtTime(.001,t+.03);
-  n.connect(ng); ng.connect(d); d.connect(lp); lp.connect(fb); fb.connect(d); lp.connect(out); out.connect(A.pl);
-  out.gain.setValueAtTime(amp,t); out.gain.setTargetAtTime(0,t+2.2,.6);
-  n.start(t,Math.random()*2,.04); setTimeout(()=>{ try{ fb.disconnect(); out.disconnect(); }catch(e){} },5200); }
-function burst(dur,filters,peak,att,rev){ const s=AC.createBufferSource(); s.buffer=A.W; const g=AC.createGain(),t=AC.currentTime;
-  g.gain.setValueAtTime(0,t); g.gain.linearRampToValueAtTime(peak,t+att); g.gain.exponentialRampToValueAtTime(.0005,t+dur);
-  let n=s; filters.forEach(f=>{ n.connect(f); n=f; }); n.connect(g); g.connect(A.out); if(rev) g.connect(A.revIn); s.start(t,Math.random()*2,dur+.05); }
-function tone(f0,f1,dur,peak,type,rev,delay){ const o=AC.createOscillator(),g=AC.createGain(),t=AC.currentTime+(delay||0); o.type=type||'sine';
-  o.frequency.setValueAtTime(f0,t); o.frequency.exponentialRampToValueAtTime(f1,t+dur); g.gain.setValueAtTime(0,t); g.gain.linearRampToValueAtTime(peak,t+.01); g.gain.exponentialRampToValueAtTime(.0005,t+dur);
+function pluck(f,amp){ // 줄을 뜯는 소리 (부드러운 사인파 두 개, 천천히 사라짐)
+  if(!AC) return; const t=AC.currentTime, g=AC.createGain();
+  g.gain.setValueAtTime(0,t); g.gain.linearRampToValueAtTime(amp,t+.006); g.gain.exponentialRampToValueAtTime(.0003,t+2.6);
+  [[1,1],[2,.25],[3,.06]].forEach(([h,v])=>{ const o=AC.createOscillator(), og=G(v); o.frequency.value=f*h; o.connect(og); og.connect(g); o.start(t); o.stop(t+2.7); });
+  g.connect(A.music); }
+function tone(f0,f1,dur,peak,rev,delay){ const o=AC.createOscillator(),g=AC.createGain(),t=AC.currentTime+(delay||0);
+  o.frequency.setValueAtTime(f0,t); o.frequency.exponentialRampToValueAtTime(f1,t+dur); g.gain.setValueAtTime(0,t); g.gain.linearRampToValueAtTime(peak,t+.012); g.gain.exponentialRampToValueAtTime(.0003,t+dur);
   o.connect(g); g.connect(A.out); if(rev) g.connect(A.revIn); o.start(t); o.stop(t+dur+.05); }
+function soft(dur,freq,peak){ const s=AC.createBufferSource(); s.buffer=A.B; const f=Fl('bandpass',freq,.8), g=AC.createGain(), t=AC.currentTime;
+  g.gain.setValueAtTime(0,t); g.gain.linearRampToValueAtTime(peak,t+dur*.3); g.gain.linearRampToValueAtTime(0,t+dur);
+  s.connect(f); f.connect(g); g.connect(A.out); g.connect(A.revIn); s.start(t,Math.random()*2,dur+.05); }
 const SFX={
-  bird(){ const f=3200+Math.random()*1600, n=2+Math.floor(Math.random()*3); for(let i=0;i<n;i++) tone(f,f*(1.25+Math.random()*.3),.07,.018,'sine',true,i*.11); },
-  drip(){ const f=900+Math.random()*900; tone(f,f*2.2,.06,.05,'sine',true); },
-  step(){ burst(.12,[Fl('bandpass',700+Math.random()*300,1.3),Fl('lowpass',2000)],.3,.004,true); },
-  bloom(){ const lp=Fl('lowpass',300); burst(3,[Fl('bandpass',1200,.4),lp],.25,1.2,true); lp.frequency.exponentialRampToValueAtTime(5000,AC.currentTime+1.5);
-    [62,66,69,74].forEach((m,i)=>setTimeout(()=>pluck(hz(m-12),.5),i*140)); },
-  rooster(){ const t=[[520,700,.12],[700,780,.18],[780,640,.5]]; let d=0; t.forEach(([a,b,l])=>{ tone(a,b,l,.025,'sawtooth',true,d); d+=l*.9; }); },
-  dog(){ for(let i=0;i<2;i++){ tone(420,260,.13,.04,'square',true,i*.32); } },
-  oar(){ burst(.5,[Fl('bandpass',900,.8),Fl('lowpass',2400)],.18,.05,true); },
-  hush(){ burst(2.5,[Fl('lowpass',600)],.3,.6,true); },
+  bird(){ const f=2300+Math.random()*900, n=2+Math.floor(Math.random()*2); for(let i=0;i<n;i++) tone(f,f*1.2,.08,.006,true,i*.13); },
+  drip(){ const f=700+Math.random()*500; tone(f,f*1.6,.07,.012,true); },
+  step(){ soft(.14,500,.05); },
+  oar(){ soft(.7,420,.05); },
+  bloom(){ [62,66,69,74].forEach((m,i)=>setTimeout(()=>pluck(hz(m-12),.07),i*160)); },
 };
-let stepPh=0, birdT=2, dripT=1, farmT=8, oarT=0, prevS=0;
+let stepPh=0, birdT=2, dripT=1, oarT=0, prevS=0;
 function crossed(a,b,x){ return (a<x&&b>=x)||(a>x&&b<=x); }
 function audioTick(dt,s,v){
   if(!AC||AC.state!=='running') return;
   const ct=AC.currentTime;
-  const cave = s>.30&&s<.435, boat = s<.30 || (s>.81&&lost===false), village = s>.435&&s<.78, fog = s>.81 || lost;
-  // 물·바람
-  A.str.gain.setTargetAtTime(cave?.0:(boat?.11:(village?.03:.06)),ct,.5);
-  A.flow.gain.setTargetAtTime(cave?.04:(boat?.32:(village?.08:.25)),ct,.5);
-  A.air.gain.setTargetAtTime(fog?.22:(cave?.04:.05),ct,.8);
-  A.revIn.gain.setTargetAtTime(cave?1.4:(fog?.8:.35),ct,.4);
-  // 음악: 굴 안에선 낮고 어둡게 → 확 트이면 밝게 → “말할 것 못 됩니다”에서 뚝 → 안개 속엔 낮은 소리만
-  const cut=(s>.79&&s<.82), music = sound&&!cut&&!lost ? (fog?.35:.6) : (lost?.2:0);
-  A.music.gain.setTargetAtTime(music,ct,cut?.05:1);
-  A.mlp.frequency.setTargetAtTime(cave?400:(fog?500:(village?1800:1200)),ct,.8);
+  const cave = s>.30&&s<.435, village = s>.435&&s<.78, fog = s>.81 || lost, boat = !cave&&!village&&!fog;
+  A.flow.gain.setTargetAtTime(cave?.01:(boat?.09:(village?.025:.06)),ct,.6);
+  A.air.gain.setTargetAtTime(fog?.07:.015,ct,.8);
+  A.revIn.gain.setTargetAtTime(cave?.7:.3,ct,.4);
+  // 음악: 굴 안에선 낮게 → 확 트이면 밝게 → “말할 것 못 됩니다”에서 멈춤 → 안개 속엔 낮은 화음만
+  const cut=(s>.79&&s<.82), music = sound&&!cut ? (lost?.4:(fog?.6:1)) : 0;
+  A.music.gain.setTargetAtTime(music,ct,cut?.08:1.2);
+  A.mlp.frequency.setTargetAtTime(cave?450:(fog?550:(village?1500:1000)),ct,.8);
   const t=ct-A.t0, ci=Math.floor(t/8)%4;
-  if(ci!==A.chord){ A.chord=ci; const lo=fog?-12:0; PADS[ci].forEach((m,i)=>A.pad[i].frequency.setTargetAtTime(hz(m-12+lo),ct,1.2)); }
-  const ni=Math.floor(t/1.3)%MEL.length;
+  if(ci!==A.chord){ A.chord=ci; const lo=fog?-12:0; PADS[ci].forEach((m,i)=>A.pad[i].frequency.setTargetAtTime(hz(m-12+lo),ct,1.5)); }
+  const ni=Math.floor(t/1.6)%MEL.length;
   if(ni!==A.note){ A.note=ni; const m=MEL[ni];
     const play = m!==null && !cut && !lost && !(s>.885&&s<.97) && (!cave || ni%4===0);
-    if(play) pluck(hz(m-12-(cave?12:0)), cave?.35:(fog?.25:.45)); }
-  // 효과음
-  if((s>.06&&s<.30)||(village)){ birdT-=dt; if(birdT<0){ birdT=1.5+Math.random()*4; SFX.bird(); } }
-  if(cave){ dripT-=dt; if(dripT<0){ dripT=.8+Math.random()*2.2; SFX.drip(); } }
-  if(cave&&v>.004&&s>.32){ stepPh+=v*70*dt; if(stepPh>=1){ stepPh=0; SFX.step(); } }
+    if(play) pluck(hz(m-12), fog?.035:.06); }
+  if((s>.06&&s<.30)||village){ birdT-=dt; if(birdT<0){ birdT=2.5+Math.random()*5; SFX.bird(); } }
+  if(cave){ dripT-=dt; if(dripT<0){ dripT=1.2+Math.random()*2.5; SFX.drip(); } }
+  if(cave&&v>.004&&s>.32){ stepPh+=Math.min(v,.05)*60*dt; if(stepPh>=1){ stepPh=0; SFX.step(); } }
   if(crossed(prevS,s,.437)) SFX.bloom();
-  if(crossed(prevS,s,.536)) SFX.rooster();
-  if(crossed(prevS,s,.545)) SFX.dog();
-  if(village&&s>.56){ farmT-=dt; if(farmT<0){ farmT=7+Math.random()*9; Math.random()<.5?SFX.rooster():SFX.dog(); } }
-  if(s>.85&&s<.89&&!lost){ oarT-=dt; if(oarT<0){ oarT=1.3; SFX.oar(); } }
-  if(crossed(prevS,s,.79)) SFX.hush();
-  if(crossed(prevS,s,.976)) { pluck(hz(50-12),.6); }
+  if(s>.85&&s<.89&&!lost){ oarT-=dt; if(oarT<0){ oarT=1.6; SFX.oar(); } }
+  if(crossed(prevS,s,.976)) pluck(hz(50-12),.08);
   prevS=s;
 }
 $('go').addEventListener('click',()=>{ sound=true; initAudio(); $('load').style.opacity=0; setTimeout(()=>$('load').remove(),1000); });
