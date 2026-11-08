@@ -9,16 +9,16 @@
   html,body{margin:0;background:#02090c;color:#f5ecd9;font-family:"Noto Serif KR","Apple SD Gothic Neo",serif;-webkit-font-smoothing:antialiased}
   body{height:1100vh}
   #stage{position:fixed;inset:0;overflow:hidden;background:#02090c}
-  #cv{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+  #cv{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;will-change:transform}
   #ruin,#ruinEnd{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
   #stage>*{will-change:opacity}
   #vidWrap{position:absolute;inset:0}
   #ruinEnd{opacity:0}
   #ruin{transition:opacity .4s}
   #sea{position:fixed;left:0;right:0;bottom:0;height:0;pointer-events:none;background:linear-gradient(to bottom,rgba(20,60,72,0) 0,rgba(10,36,46,.88) 90px,#04141b 100%)}
-  #shadeB{position:fixed;left:0;right:0;bottom:0;height:62vh;pointer-events:none;background:linear-gradient(to top,rgba(0,0,0,.86) 0,rgba(0,0,0,.55) 45%,rgba(0,0,0,0) 100%)}
+  #shadeB{position:fixed;left:0;right:0;bottom:0;height:62vh;pointer-events:none;background:linear-gradient(to top,rgba(0,0,0,.9) 0,rgba(0,0,0,.62) 45%,rgba(0,0,0,0) 100%);transform:translateZ(0)}
   #shadeT{position:fixed;left:0;right:0;top:0;height:22vh;pointer-events:none;background:linear-gradient(to bottom,rgba(0,0,0,.45),rgba(0,0,0,0))}
-  .blk{position:fixed;left:50%;bottom:11vh;transform:translateX(-50%);width:min(900px,90vw);text-align:center;opacity:0;pointer-events:none;text-shadow:0 2px 16px rgba(0,0,0,.95)}
+  .blk{position:fixed;left:50%;bottom:11vh;transform:translateX(-50%) translateZ(0);width:min(900px,90vw);text-align:center;opacity:0;pointer-events:none;text-shadow:0 1px 3px rgba(0,0,0,.9);will-change:opacity;contain:layout paint}
   .lab{display:block;font-size:14px;letter-spacing:.4em;color:#f1cf8a;margin-bottom:18px}
   .big{margin:0;font-size:clamp(21px,2.5vw,31px);line-height:1.75;letter-spacing:.02em}
   .ref{display:block;margin-top:16px;font-size:14px;letter-spacing:.16em;opacity:.75}
@@ -26,13 +26,13 @@
   #hint{position:fixed;left:50%;bottom:4vh;transform:translateX(-50%);font-size:14px;letter-spacing:.3em;opacity:.9;pointer-events:none;text-shadow:0 2px 10px #000}
   #hint i{display:inline-block;margin-left:10px;animation:bob 1.6s ease-in-out infinite}
   @keyframes bob{50%{transform:translateY(5px)}}
-  #place{position:fixed;left:36px;top:30px;font-size:14px;letter-spacing:.3em;color:#f1cf8a;text-shadow:0 2px 10px #000;transition:opacity .5s}
+  #place{position:fixed;left:36px;top:30px;font-size:14px;letter-spacing:.3em;color:#f1cf8a;text-shadow:0 1px 3px #000}
   #place b{display:block;margin-top:8px;font-size:22px;font-weight:500;letter-spacing:.08em;color:#f5ecd9}
   #bar{position:fixed;right:30px;top:50%;transform:translateY(-50%);width:2px;height:46vh;background:rgba(245,236,217,.2)}
   #bar i{position:absolute;left:0;top:0;width:100%;background:#f1cf8a;height:0}
   #bar span{position:absolute;right:14px;transform:translateY(-50%);font-size:12px;letter-spacing:.14em;white-space:nowrap;opacity:.7;text-shadow:0 1px 6px #000}
   #bar span::after{content:"";position:absolute;right:-17px;top:50%;width:6px;height:6px;margin-top:-3px;border-radius:50%;background:rgba(245,236,217,.7)}
-  #flash{position:fixed;inset:0;background:#f5ecd9;opacity:0;pointer-events:none}
+  #flash{position:fixed;inset:0;background:#f5ecd9;opacity:0;pointer-events:none;will-change:opacity}
   #again{position:fixed;left:50%;bottom:5vh;transform:translateX(-50%);background:none;color:#f5ecd9;border:1px solid rgba(245,236,217,.6);border-radius:28px;padding:13px 30px;font-family:inherit;font-size:15px;letter-spacing:.2em;cursor:pointer;opacity:0;pointer-events:none;transition:opacity .8s}
   #again.on{opacity:1;pointer-events:auto}
   #snd{position:fixed;right:22px;bottom:22px;background:rgba(0,0,0,.55);color:#f5ecd9;border:1px solid rgba(245,236,217,.4);border-radius:18px;padding:8px 15px;font-family:inherit;font-size:13px;cursor:pointer}
@@ -86,17 +86,18 @@
 <script>
 // ───── 스크롤 → 장면 (각 구간: 스크롤 시작, 끝, 영상 시간 시작, 끝) ─────
 const F=24, T1=121/F, T2=243/F, T3=365/F, T4=487/F, CUT=T3+2/F;
-// [스크롤 시작, 끝, 영상 시작, 끝]
-const MAP=[ [0,.03,0,0], [.03,.20,0,T1], [.20,.33,T1,T1], [.33,.42,T1,T2], [.42,.49,T2,T2], [.49,.58,T2,T3],
-            [.58,.755,T3-.01,T3-.01], [.755,.785,CUT,CUT], [.785,.95,CUT,T4], [.95,1,T4,T4] ];
-const STOPS=[ ['해저',0], ['다리와 성벽',.20], ['신전 앞 광장',.42], ['신전 안',.58], ['가라앉는 중',.785], ['해저',.95] ];
-const BLOCKS=[ ['b0',-1,.03], ['b1',.20,.265], ['b2',.27,.33], ['b3',.42,.49], ['b4',.58,.62], ['b5',.625,.74],
-               ['s1',.80,.86], ['s2',.86,.91], ['s3',.91,.95], ['b6',.955,9] ];
+// [스크롤 시작, 끝, 영상 시작, 끝] — 멈춰 있는 구간 없이 계속 움직이게
+const MAP=[ [0,.015,0,0], [.015,.25,0,T1], [.25,.27,T1,T1], [.27,.42,T1,T2], [.42,.44,T2,T2], [.44,.58,T2,T3],
+            [.58,.735,T3-.01,T3-.01], [.735,.765,CUT,CUT], [.765,.95,CUT,T4], [.95,1,T4,T4] ];
+const STOPS=[ ['해저',0], ['다리와 성벽',.25], ['신전 앞 광장',.42], ['신전 안',.58], ['가라앉는 중',.765], ['해저',.95] ];
+// 글은 그림이 움직이는 동안 함께 나옴
+const BLOCKS=[ ['b0',-1,.06], ['b1',.19,.275], ['b2',.285,.37], ['b3',.385,.47], ['b4',.52,.595], ['b5',.60,.725],
+               ['s1',.78,.84], ['s2',.845,.895], ['s3',.90,.95], ['b6',.955,9] ];
 const FINAL='법에 따라 다스리며 이런 일을 꿰뚫어 볼 줄 아는 신들의 신 제우스는, 한때 훌륭했던 종족이 비참한 처지에 빠진 것을 보았다. 그는 세상의 한가운데에서 모든 것을 내려다보는 가장 거룩한 처소로 모든 신을 불러 모았다. 그리고 신들을 다 모으자, 그는 이렇게 말했다—';
 
 const ruin=document.getElementById('ruin'), ruinEnd=document.getElementById('ruinEnd');
 const $=id=>document.getElementById(id);
-function videoTime(s){ for(const [a,b,t0,t1] of MAP){ if(s<=b){ const k=b>a?Math.max(0,Math.min(1,(s-a)/(b-a))):1; const e=k<.5?2*k*k:1-Math.pow(-2*k+2,2)/2; return t0+(t1-t0)*e; } } return T4; }
+function videoTime(s){ for(const [a,b,t0,t1] of MAP){ if(s<=b){ const k=b>a?Math.max(0,Math.min(1,(s-a)/(b-a))):1; return t0+(t1-t0)*k; } } return T4; }
 
 // 경로 표시
 STOPS.forEach(([n,s])=>{ const sp=document.createElement('span'); sp.textContent=n; sp.style.top=(s*100)+'%'; $('bar').appendChild(sp); });
@@ -221,16 +222,18 @@ function tick(t){
   // 영상 위치 (찾는 중이 아닐 때만 옮김 → 버벅임 방지)
   const vt=videoTime(s);
   drawFrame(Math.max(0,Math.min(NF-1,Math.round(vt*FPS2))));
-  ruin.style.opacity = (s<.031||s>.952) ? 1 : 0;
+  const zin = s>.56&&s<.737 ? 1+.10*Math.min(1,(s-.56)/.177) : 1, zk=zin.toFixed(3);
+  if(cv._z!==zk){ cv._z=zk; cv.style.transform='scale('+zk+')'; }
+  { const ro=(s<.016||s>.952)?'1':'0'; if(ruin._o!==ro){ ruin._o=ro; ruin.style.opacity=ro; } }
   // 글 상자
   for(const [id,a,b] of BLOCKS){ const fade=.012; let o=0; if(s>a&&s<b) o=Math.min(1,(s-a)/fade,(b-s)/fade); if(a<0) o=Math.min(1,(b-s)/fade); const ov=Math.max(0,o).toFixed(2); const el=$(id); if(el._o!==ov){ el._o=ov; el.style.opacity=ov; } }
-  $('hint').style.opacity = s<.03 ? 1 : 0;
+  { const ho=s<.03?'1':'0'; const he=$('hint'); if(he._o!==ho){ he._o=ho; he.style.opacity=ho; } }
   // 마지막 문장: 스크롤하는 만큼 쓰임
-  const fk=Math.max(0,Math.min(1,(s-.635)/.085)), n=Math.round(FINAL.length*fk);
+  const fk=Math.max(0,Math.min(1,(s-.61)/.09)), n=Math.round(FINAL.length*fk);
   if(n!==typed){ typed=n; $('finalT').textContent=FINAL.slice(0,n); $('finalT').classList.toggle('cur',n>0&&n<FINAL.length); $('finalR').style.opacity=n>=FINAL.length?.75:0; }
   // 글이 끊기는 순간: 하얗게 번쩍 → 도시 전경으로
-  const fl=Math.max(0,1-Math.abs(s-.757)/.018); $('flash').style.opacity=fl;
-  const sink=Math.max(0,Math.min(1,(s-.785)/.165));
+  const fl=Math.max(0,1-Math.abs(s-.737)/.016); { const fo=fl.toFixed(2); const fe=$('flash'); if(fe._o!==fo){ fe._o=fo; fe.style.opacity=fo; } }
+  const sink=Math.max(0,Math.min(1,(s-.765)/.185));
   $('again').classList.toggle('on', s>.97);
   // 장소 이름, 진행 막대
   let nm=STOPS[0][0]; for(const [name,at] of STOPS) if(s>=at-.005) nm=name;
