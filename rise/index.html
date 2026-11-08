@@ -7,7 +7,7 @@
 <title>AS WRITTEN — 아틀란티스</title>
 <style>
   html,body{margin:0;background:#02090c;color:#f5ecd9;font-family:"Noto Serif KR","Apple SD Gothic Neo",serif;-webkit-font-smoothing:antialiased}
-  body{height:1500vh}
+  body{height:1100vh}
   #stage{position:fixed;inset:0;overflow:hidden;background:#02090c}
   #vid,#ruin,#ruinEnd{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
   #stage>*{will-change:opacity}
@@ -31,6 +31,7 @@
   #bar i{position:absolute;left:0;top:0;width:100%;background:#f1cf8a;height:0}
   #bar span{position:absolute;right:14px;transform:translateY(-50%);font-size:12px;letter-spacing:.14em;white-space:nowrap;opacity:.7;text-shadow:0 1px 6px #000}
   #bar span::after{content:"";position:absolute;right:-17px;top:50%;width:6px;height:6px;margin-top:-3px;border-radius:50%;background:rgba(245,236,217,.7)}
+  #flash{position:fixed;inset:0;background:#f5ecd9;opacity:0;pointer-events:none}
   #again{position:fixed;left:50%;bottom:5vh;transform:translateX(-50%);background:none;color:#f5ecd9;border:1px solid rgba(245,236,217,.6);border-radius:28px;padding:13px 30px;font-family:inherit;font-size:15px;letter-spacing:.2em;cursor:pointer;opacity:0;pointer-events:none;transition:opacity .8s}
   #again.on{opacity:1;pointer-events:auto}
   #snd{position:fixed;right:22px;bottom:22px;background:rgba(0,0,0,.55);color:#f5ecd9;border:1px solid rgba(245,236,217,.4);border-radius:18px;padding:8px 15px;font-family:inherit;font-size:13px;cursor:pointer}
@@ -67,8 +68,12 @@
 <div class="blk" id="b5"><span class="lab">『크리티아스』의 마지막 문장</span>
   <p class="big" id="finalT"></p>
   <span class="ref" id="finalR" style="opacity:0">『크리티아스』 121b–c · 원문은 여기서 끝난다</span></div>
+<div class="blk" id="s1"><p class="big">격렬한 지진과 홍수가 일어났다.</p></div>
+<div class="blk" id="s2"><p class="big">하루 낮과 하루 밤 사이에,</p></div>
+<div class="blk" id="s3"><p class="big">아틀란티스 섬은 바다 깊이 가라앉아 사라졌다.</p><span class="ref">『티마이오스』 25c–d</span></div>
+<div id="flash"></div>
 <div class="blk" id="b6"><span class="title" style="font-size:clamp(28px,4vw,46px);letter-spacing:.12em;padding:0">여기서부터는 쓰여 있지 않다.</span>
-  <p class="big" style="font-size:clamp(17px,1.8vw,22px)">플라톤의 『크리티아스』는 이 문장에서 끊긴 채 전해진다.<br>글이 끝나는 곳에서, 도시도 끝난다.</p></div>
+  <p class="big" style="font-size:clamp(17px,1.8vw,22px)">플라톤의 『크리티아스』는 제우스의 말이 시작되기 직전에 끊긴 채 전해진다.<br>글이 끝난 곳에서, 도시도 다시 바다로 돌아갔다.</p></div>
 
 <div id="hint">스크롤해서 끌어올리기<i>↓</i></div>
 <button id="again">↑ 다시 끌어올리기</button>
@@ -77,12 +82,13 @@
 
 <script>
 // ───── 스크롤 → 장면 (각 구간: 스크롤 시작, 끝, 영상 시간 시작, 끝) ─────
-const F=24, T_BRIDGE=121/F, T_PLAZA=243/F, T_TEMPLE=365/F;
-const MAP=[ [0,.05,0,0], [.05,.30,0,T_BRIDGE], [.30,.40,T_BRIDGE,T_BRIDGE], [.40,.53,T_BRIDGE,T_PLAZA],
-            [.53,.60,T_PLAZA,T_PLAZA], [.60,.72,T_PLAZA,T_TEMPLE], [.72,1,T_TEMPLE,T_TEMPLE] ];
-const STOPS=[ ['해저',0], ['다리와 성벽',.30], ['신전 앞 광장',.53], ['신전 안',.72], ['글의 끝',.88] ];
-// 글 상자: [id, 보이기 시작, 끝]
-const BLOCKS=[ ['b0',-1,.045], ['b1',.29,.385], ['b2',.415,.50], ['b3',.53,.595], ['b4',.715,.765], ['b5',.775,.875], ['b6',.95,9] ];
+const F=24, T1=121/F, T2=243/F, T3=365/F, T4=487/F, CUT=T3+2/F;
+// [스크롤 시작, 끝, 영상 시작, 끝]
+const MAP=[ [0,.03,0,0], [.03,.20,0,T1], [.20,.33,T1,T1], [.33,.42,T1,T2], [.42,.49,T2,T2], [.49,.58,T2,T3],
+            [.58,.755,T3-.01,T3-.01], [.755,.785,CUT,CUT], [.785,.95,CUT,T4], [.95,1,T4,T4] ];
+const STOPS=[ ['해저',0], ['다리와 성벽',.20], ['신전 앞 광장',.42], ['신전 안',.58], ['가라앉는 중',.785], ['해저',.95] ];
+const BLOCKS=[ ['b0',-1,.03], ['b1',.20,.265], ['b2',.27,.33], ['b3',.42,.49], ['b4',.58,.62], ['b5',.625,.74],
+               ['s1',.80,.86], ['s2',.86,.91], ['s3',.91,.95], ['b6',.955,9] ];
 const FINAL='법에 따라 다스리며 이런 일을 꿰뚫어 볼 줄 아는 신들의 신 제우스는, 한때 훌륭했던 종족이 비참한 처지에 빠진 것을 보았다. 그는 세상의 한가운데에서 모든 것을 내려다보는 가장 거룩한 처소로 모든 신을 불러 모았다. 그리고 신들을 다 모으자, 그는 이렇게 말했다—';
 
 const vid=document.getElementById('vid'), ruin=document.getElementById('ruin'), ruinEnd=document.getElementById('ruinEnd');
@@ -127,32 +133,30 @@ let s=0, last=0, typed=-1;
 function tick(t){
   const dt=Math.min(.05,(t-last)/1000||0); last=t;
   const max=document.documentElement.scrollHeight-innerHeight, ts=max>0?scrollY/max:0;
-  const prev=s; s+=(ts-s)*Math.min(1,dt*7);
+  const prev=s; s+=(ts-s)*Math.min(1,dt*12);
   // 영상 위치 (찾는 중이 아닐 때만 옮김 → 버벅임 방지)
   const vt=videoTime(s);
   if(vid.readyState>=2 && !vid.seeking && Math.abs(vid.currentTime-vt)>.02) vid.currentTime=vt;
-  ruin.style.opacity = s<.051 ? 1 : 0;
+  ruin.style.opacity = (s<.031||s>.952) ? 1 : 0;
   // 글 상자
   for(const [id,a,b] of BLOCKS){ const fade=.012; let o=0; if(s>a&&s<b) o=Math.min(1,(s-a)/fade,(b-s)/fade); if(a<0) o=Math.min(1,(b-s)/fade); $(id).style.opacity=Math.max(0,o); }
   $('hint').style.opacity = s<.03 ? 1 : 0;
   // 마지막 문장: 스크롤하는 만큼 쓰임
-  const fk=Math.max(0,Math.min(1,(s-.785)/.07)), n=Math.round(FINAL.length*fk);
+  const fk=Math.max(0,Math.min(1,(s-.635)/.085)), n=Math.round(FINAL.length*fk);
   if(n!==typed){ typed=n; $('finalT').textContent=FINAL.slice(0,n); $('finalT').classList.toggle('cur',n>0&&n<FINAL.length); $('finalR').style.opacity=n>=FINAL.length?.75:0; }
-  // 가라앉기
-  const sink=Math.max(0,Math.min(1,(s-.88)/.07));
-  $('sea').style.height=(sink*100)+'%';
-  $('vidWrap').style.filter = sink>0 ? `grayscale(${sink*.8}) brightness(${1+sink*.3}) blur(${sink*2}px)` : '';
-  ruinEnd.style.opacity = Math.max(0,Math.min(1,(s-.93)/.03));
+  // 글이 끊기는 순간: 하얗게 번쩍 → 도시 전경으로
+  const fl=Math.max(0,1-Math.abs(s-.757)/.018); $('flash').style.opacity=fl;
+  const sink=Math.max(0,Math.min(1,(s-.785)/.165));
   $('again').classList.toggle('on', s>.97);
   // 장소 이름, 진행 막대
-  let nm=STOPS[0][0]; for(const [name,at] of STOPS) if(s>=at-.005) nm=name; if(s>.95) nm='해저';
+  let nm=STOPS[0][0]; for(const [name,at] of STOPS) if(s>=at-.005) nm=name;
   if($('pname').textContent!==nm) $('pname').textContent=nm;
   $('bar').firstElementChild.style.height=(s*100)+'%';
   // 소리
-  if(AC&&sound){ const ct=AC.currentTime, v=Math.abs(s-prev)/Math.max(dt,.001), under=Math.max(1-s/.3, sink);
+  if(AC&&sound){ const ct=AC.currentTime, v=Math.abs(s-prev)/Math.max(dt,.001), under=Math.max(1-s/.2, sink);
     A.sea.gain.setTargetAtTime(.6*under+.18*(1-under),ct,.25); A.lp.frequency.setTargetAtTime(180+(1-under)*1500,ct,.25);
-    A.air.gain.setTargetAtTime(s>.12&&s<.72?.09:.02,ct,.4); A.hall.gain.setTargetAtTime(s>.7&&s<.9?.05:0,ct,.6);
-    A.rum.gain.setTargetAtTime(Math.min(1.3,v*6)+(sink>0&&sink<1?.9:0),ct,.15); }
+    A.air.gain.setTargetAtTime(s>.12&&s<.58?.09:.02,ct,.4); A.hall.gain.setTargetAtTime(s>.58&&s<.75?.05:0,ct,.6);
+    A.rum.gain.setTargetAtTime(Math.min(1.3,v*6)+(sink>0&&sink<1?.7:0)+fl*1.2,ct,.12); }
   requestAnimationFrame(tick);
 }
 requestAnimationFrame(tick);
