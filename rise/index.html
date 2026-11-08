@@ -116,20 +116,27 @@ function warm(i){ if(!window.createImageBitmap) return;
   for(const k of order){ if(pend.size>=6) break; const im=frames[k]; if(bmp.has(k)||pend.has(k)||!im) continue;
     pend.add(k); createImageBitmap(im).then(b=>{ pend.delete(k); bmp.set(k,b); }).catch(()=>pend.delete(k)); }
   if(bmp.size>70) for(const [k,b] of bmp){ if(k<lo-8||k>hi+8){ b.close&&b.close(); bmp.delete(k); } } }
-function drawFrame(i){
+// 사진 사이를 부드럽게 섞어서 그림 (초당 12장 → 끊김 없이 이어 보이게)
+let lastKey='';
+function drawFrame(x){
+  const i=Math.floor(x), f=x-i;
   if(i!==lastI){ dir=i>lastI?1:-1; lastI=i; }
   warm(i);
-  if(i===drawn) return;
-  // 준비된 그림만 그림 (준비 안 됐으면 가장 가까운 준비된 그림) → 화면이 멈칫하지 않음
-  let k=-1; for(let d=0;d<=8&&k<0;d++){ if(bmp.has(i-d*dir)) k=i-d*dir; else if(bmp.has(i+d*dir)) k=i+d*dir; }
-  if(k<0||k===drawn) return; ctx.drawImage(bmp.get(k),0,0); drawn=k; }
+  const a=bmp.get(i), b=bmp.get(Math.min(NF-1,i+1));
+  if(!a){ // 아직 준비 안 됐으면 가장 가까운 준비된 사진
+    for(let d=1;d<=8;d++){ const k=bmp.has(i-d*dir)?i-d*dir:(bmp.has(i+d*dir)?i+d*dir:-1); if(k>=0){ if(lastKey!=='n'+k){ ctx.globalAlpha=1; ctx.drawImage(bmp.get(k),0,0); lastKey='n'+k; } return; } }
+    return; }
+  const q=b?Math.round(f*8)/8:0, key=i+'_'+q; if(key===lastKey) return; lastKey=key;
+  ctx.globalAlpha=1; ctx.drawImage(a,0,0);
+  if(q>0){ ctx.globalAlpha=q; ctx.drawImage(b,0,0); ctx.globalAlpha=1; }
+}
 let loadedN=0;
 // 그림 파일을 미리 받아 두고(압축 상태), 그릴 때 화면 밖 스레드에서 풀어 씀
 (async()=>{ const q=[...Array(NF).keys()]; const worker=async()=>{ while(q.length){ const k=q.shift();
     try{ const r=await fetch('f/'+String(k+1).padStart(3,'0')+'.jpg'); frames[k]=await r.blob(); }catch(e){}
     loadedN++; $('pct').textContent=Math.round(loadedN/NF*100); } };
   await Promise.all([0,1,2,3,4,5].map(worker));
-  warm(0); const wait=()=>bmp.has(0)?($('ltxt').style.display='none',$('go').style.display='block',drawFrame(0)):setTimeout(wait,50); wait(); })();
+  warm(0); const wait=()=>(bmp.has(0)&&bmp.has(1))?($('ltxt').style.display='none',$('go').style.display='block',drawFrame(0)):setTimeout(wait,50); wait(); })();
 // ───── 소리: 배경음악(임시 합성) + 효과음 ─────
 let AC=null,A={},sound=true;
 const G=v=>{ const g=AC.createGain(); g.gain.value=v; return g; };
@@ -221,7 +228,7 @@ function tick(t){
   const prev=s; s+=(ts-s)*Math.min(1,dt*12);
   // 영상 위치 (찾는 중이 아닐 때만 옮김 → 버벅임 방지)
   const vt=videoTime(s);
-  drawFrame(Math.max(0,Math.min(NF-1,Math.round(vt*FPS2))));
+  drawFrame(Math.max(0,Math.min(NF-1,vt*FPS2)));
   const zin = s>.56&&s<.737 ? 1+.10*Math.min(1,(s-.56)/.177) : 1, zk=zin.toFixed(3);
   if(cv._z!==zk){ cv._z=zk; cv.style.transform='scale('+zk+')'; }
   { const ro=(s<.016||s>.952)?'1':'0'; if(ruin._o!==ro){ ruin._o=ro; ruin.style.opacity=ro; } }
