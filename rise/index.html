@@ -36,6 +36,8 @@
   #again.on{opacity:1;pointer-events:auto}
   #snd{position:fixed;right:22px;bottom:22px;background:rgba(0,0,0,.55);color:#f5ecd9;border:1px solid rgba(245,236,217,.4);border-radius:18px;padding:8px 15px;font-family:inherit;font-size:13px;cursor:pointer}
   #load{position:fixed;inset:0;z-index:9;display:flex;flex-direction:column;gap:14px;align-items:center;justify-content:center;background:#02090c;font-size:15px;letter-spacing:.3em;transition:opacity .9s}
+  #go{background:none;color:#f5ecd9;border:1px solid rgba(241,207,138,.8);border-radius:30px;padding:15px 34px;font-family:inherit;font-size:16px;letter-spacing:.22em;cursor:pointer;animation:breathe 2.4s ease-in-out infinite}
+  @keyframes breathe{50%{color:#f1cf8a;box-shadow:0 0 24px rgba(241,207,138,.35)}}
   #load small{font-size:12px;opacity:.55;letter-spacing:.2em}
   .cur::after{content:"";display:inline-block;width:2px;height:1em;margin-left:4px;vertical-align:-3px;background:#f5ecd9;animation:blink 1s steps(1) infinite}
   @keyframes blink{50%{opacity:0}}
@@ -77,8 +79,8 @@
 
 <div id="hint">스크롤해서 끌어올리기<i>↓</i></div>
 <button id="again">↑ 다시 끌어올리기</button>
-<button id="snd">소리 켜기</button>
-<div id="load"><span>바다 밑으로 내려가는 중 <b id="pct">0</b>%</span><small>처음 한 번만 불러와요</small></div>
+<button id="snd">소리 끄기</button>
+<div id="load"><span id="ltxt">바다 밑으로 내려가는 중 <b id="pct">0</b>%</span><button id="go" style="display:none">▶ 소리 켜고 내려가기</button><small id="lsub">🎧 이어폰이나 스피커를 켜 주세요</small></div>
 
 <script>
 // ───── 스크롤 → 장면 (각 구간: 스크롤 시작, 끝, 영상 시간 시작, 끝) ─────
@@ -105,27 +107,93 @@ STOPS.forEach(([n,s])=>{ const sp=document.createElement('span'); sp.textContent
     for(;;){ const {done,value}=await rd.read(); if(done) break; parts.push(value); got+=value.length; $('pct').textContent=Math.min(99,Math.round(got/len*100)); }
     vid.src=URL.createObjectURL(new Blob(parts,{type:'video/mp4'}));
   }catch(e){ vid.src='journey.mp4'; }
-  vid.addEventListener('loadeddata',()=>{ $('pct').textContent=100; $('load').style.opacity=0; setTimeout(()=>$('load').remove(),1000); },{once:true});
+  vid.addEventListener('loadeddata',()=>{ $('pct').textContent=100; $('ltxt').style.display='none'; $('go').style.display='block'; },{once:true});
   vid.load();
 })();
 // 휴대폰(iOS)은 한 번 재생해야 프레임이 그려짐
 addEventListener('touchstart',()=>{ vid.play().then(()=>vid.pause()).catch(()=>{}); },{once:true,passive:true});
 
-// ───── 소리 ─────
-let AC=null,A={},sound=false;
-function initAudio(){ if(AC){ AC.resume(); return; }
+// ───── 소리: 배경음악(임시 합성) + 효과음 ─────
+let AC=null,A={},sound=true;
+const G=v=>{ const g=AC.createGain(); g.gain.value=v; return g; };
+const Fl=(t,f,q)=>{ const x=AC.createBiquadFilter(); x.type=t; x.frequency.value=f; if(q) x.Q.value=q; return x; };
+function nbuf(br){ const n=AC.sampleRate*3,b=AC.createBuffer(1,n,AC.sampleRate),d=b.getChannelData(0); let l=0; for(let i=0;i<n;i++){ const w=Math.random()*2-1; if(br){ l=(l+.02*w)/1.02; d[i]=l*3.5; } else d[i]=w; } return b; }
+function loopSrc(b){ const s=AC.createBufferSource(); s.buffer=b; s.loop=true; s.start(0,Math.random()*2); return s; }
+function initAudio(){
+  if(AC){ AC.resume(); return; }
   try{ AC=new (window.AudioContext||window.webkitAudioContext)(); }catch(e){ return; }
-  const n=AC.sampleRate*3, mk=br=>{ const b=AC.createBuffer(1,n,AC.sampleRate), d=b.getChannelData(0); let l=0; for(let i=0;i<n;i++){ const w=Math.random()*2-1; if(br){ l=(l+.02*w)/1.02; d[i]=l*3.5; } else d[i]=w; } return b; };
-  const loop=b=>{ const s=AC.createBufferSource(); s.buffer=b; s.loop=true; s.start(); return s; };
-  const G=v=>{ const g=AC.createGain(); g.gain.value=v; return g; }, Fl=(t,f,q)=>{ const x=AC.createBiquadFilter(); x.type=t; x.frequency.value=f; if(q) x.Q.value=q; return x; };
-  A.out=G(.9); A.out.connect(AC.destination);
-  A.lp=Fl('lowpass',180); A.sea=G(0); loop(mk(1)).connect(A.lp); A.lp.connect(A.sea); A.sea.connect(A.out);
-  A.bp=Fl('bandpass',600,.7); A.air=G(0); loop(mk(0)).connect(A.bp); A.bp.connect(A.air); A.air.connect(A.out);
-  A.rl=Fl('lowpass',70); A.rum=G(0); loop(mk(1)).connect(A.rl); A.rl.connect(A.rum); A.rum.connect(A.out);
-  A.hall=G(0); [55,82.5].forEach((f,i)=>{ const o=AC.createOscillator(); o.frequency.value=f; const g=G(i?.3:.5); o.connect(g); g.connect(A.hall); o.start(); }); A.hall.connect(A.out);
+  A.W=nbuf(0); A.B=nbuf(1);
+  A.out=G(sound?1:0); A.out.connect(AC.destination);
+  // 잔향
+  const ir=AC.createBuffer(2,AC.sampleRate*3.5,AC.sampleRate); for(let c=0;c<2;c++){ const d=ir.getChannelData(c); for(let i=0;i<d.length;i++) d[i]=(Math.random()*2-1)*Math.pow(1-i/d.length,2.6); }
+  A.rev=AC.createConvolver(); A.rev.buffer=ir; A.revIn=G(.5); A.revIn.connect(A.rev); A.rev.connect(G(.6)).connect(A.out);
+  // 바다·물속
+  A.lp=Fl('lowpass',220); A.sea=G(0); loopSrc(A.B).connect(A.lp); A.lp.connect(A.sea); A.sea.connect(A.out);
+  // 바람
+  A.bp=Fl('bandpass',600,.7); A.air=G(0); loopSrc(A.W).connect(A.bp); A.bp.connect(A.air); A.air.connect(A.out);
+  // 땅울림
+  A.rl=Fl('lowpass',65); A.rum=G(0); loopSrc(A.B).connect(A.rl); A.rl.connect(A.rum); A.rum.connect(A.out);
+  // 배경음악: 천천히 바뀌는 화음 (D단조)
+  A.mlp=Fl('lowpass',500,.8); A.music=G(0); A.mlp.connect(A.music); A.music.connect(A.out); A.music.connect(A.revIn);
+  A.voices=[0,1,2,3].map(()=>{ const o1=AC.createOscillator(), o2=AC.createOscillator(); o1.type=o2.type='sawtooth'; o2.detune.value=9; const g=G(.07); o1.connect(g); o2.connect(g); g.connect(A.mlp); o1.start(); o2.start(); return [o1,o2]; });
+  A.bass=AC.createOscillator(); A.bass.type='sine'; const bg=G(.18); A.bass.connect(bg); bg.connect(A.music); A.bass.start();
+  // 선율 (두둑 느낌의 낮은 피리)
+  A.mel=AC.createOscillator(); A.mel.type='triangle'; A.melG=G(0); const vib=AC.createOscillator(); vib.frequency.value=5; const vg=G(4); vib.connect(vg); vg.connect(A.mel.frequency); vib.start();
+  A.mel.connect(Fl('lowpass',1600)).connect(A.melG); A.melG.connect(A.music); A.melG.connect(A.revIn); A.mel.start();
+  A.chord=-1; A.note=0; A.t0=AC.currentTime;
 }
-$('snd').addEventListener('click',()=>{ sound=!sound; $('snd').textContent=sound?'소리 끄기':'소리 켜기'; if(sound) initAudio(); if(A.out) A.out.gain.setTargetAtTime(sound?.9:0,AC.currentTime,.1); });
-
+const CH=[[50,57,62,65],[46,53,58,62],[48,55,60,64],[45,52,57,61]];  // Dm Bb C A
+const MEL=[62,65,64,62,60,62,57,null,62,65,67,65,64,62,64,null];
+const hz=m=>440*Math.pow(2,(m-69)/12);
+function burst(dur,filters,peak,att,rev){ const s=AC.createBufferSource(); s.buffer=A.W; const g=AC.createGain(),t=AC.currentTime;
+  g.gain.setValueAtTime(0,t); g.gain.linearRampToValueAtTime(peak,t+att); g.gain.exponentialRampToValueAtTime(.0005,t+dur);
+  let n=s; filters.forEach(f=>{ n.connect(f); n=f; }); n.connect(g); g.connect(A.out); if(rev) g.connect(A.revIn); s.start(t,Math.random()*2,dur+.05); }
+function tone(f0,f1,dur,peak,type){ const o=AC.createOscillator(),g=AC.createGain(),t=AC.currentTime; o.type=type||'sine';
+  o.frequency.setValueAtTime(f0,t); o.frequency.exponentialRampToValueAtTime(f1,t+dur); g.gain.setValueAtTime(0,t); g.gain.linearRampToValueAtTime(peak,t+.01); g.gain.exponentialRampToValueAtTime(.0005,t+dur);
+  o.connect(g); g.connect(A.out); o.start(t); o.stop(t+dur+.05); }
+const SFX={
+  bubble(){ tone(300+Math.random()*500,900+Math.random()*900,.12,.05); },
+  splash(){ const lp=Fl('lowpass',5000); burst(1.6,[Fl('highpass',500),lp],.6,.02,true); lp.frequency.exponentialRampToValueAtTime(700,AC.currentTime+1.4); },
+  gull(){ const f=1500+Math.random()*500; tone(f,f*.62,.28,.035,'triangle'); setTimeout(()=>AC&&tone(f*1.05,f*.6,.34,.03,'triangle'),330); },
+  step(h){ burst(.12,[Fl('bandpass',800+Math.random()*400,1.3),Fl('lowpass',2400)],.35,.004,h); },
+  door(){ tone(70,42,2.4,.5); burst(1.8,[Fl('lowpass',260)],.5,.05,true); },
+  thunder(){ burst(.25,[Fl('highpass',900)],.9,.003,true); tone(55,30,4,.7); burst(4.5,[Fl('lowpass',180)],1.0,.05,true); },
+  boom(){ tone(48,26,5,.7); burst(5,[Fl('lowpass',120)],.9,.2,true); },
+};
+let stepPh=0, bubT=0, gullT=3, prevS=0;
+function crossed(a,b,x){ return (a<x&&b>=x)||(a>x&&b<=x); }
+function audioTick(dt,s,v,sink,fl){
+  if(!AC||AC.state!=='running') return;
+  const ct=AC.currentTime, under = s<.12 ? 1-s/.12 : (s>.8 ? Math.min(1,(s-.8)/.12) : 0), inside = s>.58&&s<.75;
+  // 바다·바람·땅울림
+  A.sea.gain.setTargetAtTime(.55*under+.16*(1-under)*(inside?.2:1),ct,.25); A.lp.frequency.setTargetAtTime(220+(1-under)*1500,ct,.25);
+  A.air.gain.setTargetAtTime(inside?.01:(.08*(1-under)),ct,.4);
+  A.rum.gain.setTargetAtTime(Math.min(1.2,v*5)*(s<.2?1:.3)+(s>.785&&s<.95?.55:0)+fl,ct,.12);
+  A.revIn.gain.setTargetAtTime(inside?1.2:(under>.5?.9:.35),ct,.4);
+  // 배경음악: 물속에선 먹먹하게, 떠오르면 밝게, 글이 끊기면 뚝, 가라앉으면 낮게 다시
+  const cut = s>.745&&s<.80;
+  A.music.gain.setTargetAtTime(sound&&!cut?.55:0, ct, cut?.03:.8);
+  A.mlp.frequency.setTargetAtTime(under>.5?380:(inside?1100:2000),ct,.6);
+  const t=ct-A.t0, ci=Math.floor(t/7)%4;
+  if(ci!==A.chord){ A.chord=ci; const lo=s>.785?-12:0; CH[ci].forEach((m,i)=>A.voices[i].forEach(o=>o.frequency.setTargetAtTime(hz(m+lo),ct,.9))); A.bass.frequency.setTargetAtTime(hz(CH[ci][0]-12+lo),ct,.9); }
+  const ni=Math.floor(t/1.75)%16;
+  if(ni!==A.note){ A.note=ni; const m=MEL[ni]; const on=m!==null&&s>.15&&s<.745;
+    if(m!==null) A.mel.frequency.setTargetAtTime(hz(m),ct,.08); A.melG.gain.setTargetAtTime(on?.09:0,ct,on?.15:.4); }
+  // 효과음
+  if(under>.4){ bubT-=dt*(1+v*20); if(bubT<0){ bubT=.15+Math.random()*.7; SFX.bubble(); } }
+  if(crossed(prevS,s,.115)) SFX.splash();
+  if(crossed(prevS,s,.86)) SFX.splash();
+  if(s>.18&&s<.56&&!inside){ gullT-=dt; if(gullT<0){ gullT=4+Math.random()*6; SFX.gull(); } }
+  const walking=(s>.33&&s<.42)||(s>.49&&s<.58);
+  if(walking&&v>.004){ stepPh+=v*90*dt; if(stepPh>=1){ stepPh=0; SFX.step(inside?1:0); } }
+  if(crossed(prevS,s,.565)) SFX.door();
+  if(crossed(prevS,s,.75)) SFX.thunder();
+  if(crossed(prevS,s,.945)) SFX.boom();
+  prevS=s;
+}
+$('go').addEventListener('click',()=>{ sound=true; initAudio(); $('load').style.opacity=0; setTimeout(()=>$('load').remove(),1000); });
+$('snd').addEventListener('click',()=>{ sound=!sound; $('snd').textContent=sound?'소리 끄기':'소리 켜기'; initAudio(); A.out.gain.setTargetAtTime(sound?1:0,AC.currentTime,.1); });
+['pointerdown','keydown','touchstart'].forEach(e=>addEventListener(e,()=>{ if(sound) initAudio(); },{passive:true}));
 $('again').addEventListener('click',()=>scrollTo({top:0,behavior:'smooth'}));
 
 // ───── 매 프레임 ─────
@@ -152,11 +220,7 @@ function tick(t){
   let nm=STOPS[0][0]; for(const [name,at] of STOPS) if(s>=at-.005) nm=name;
   if($('pname').textContent!==nm) $('pname').textContent=nm;
   $('bar').firstElementChild.style.height=(s*100)+'%';
-  // 소리
-  if(AC&&sound){ const ct=AC.currentTime, v=Math.abs(s-prev)/Math.max(dt,.001), under=Math.max(1-s/.2, sink);
-    A.sea.gain.setTargetAtTime(.6*under+.18*(1-under),ct,.25); A.lp.frequency.setTargetAtTime(180+(1-under)*1500,ct,.25);
-    A.air.gain.setTargetAtTime(s>.12&&s<.58?.09:.02,ct,.4); A.hall.gain.setTargetAtTime(s>.58&&s<.75?.05:0,ct,.6);
-    A.rum.gain.setTargetAtTime(Math.min(1.3,v*6)+(sink>0&&sink<1?.7:0)+fl*1.2,ct,.12); }
+  audioTick(dt,s,Math.abs(s-prev)/Math.max(dt,.001),sink,fl);
   requestAnimationFrame(tick);
 }
 requestAnimationFrame(tick);
