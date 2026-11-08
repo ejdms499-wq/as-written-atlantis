@@ -7,9 +7,9 @@ ms=np.convolve(np.pad(m,24,mode='edge'),k,'same')[24:-24]
 F=0.9                                           # 거의 멈춘 장면도 이 정도 속도로는 지나가게
 mot=np.maximum(ms,F)
 # 글 블록: (id, 맞춰야 할 영상 시각)
-A=[('c1',1.4),('c2',5.3),('c3',8.3),('c4',11.7),('c5a',13.2),('c5b',14.6),('c6',15.9),('c7',17.9),('c8',19.9),('c9',22.0),
-   ('c10',23.6),('c11',25.0),('c12',26.5),('c13',27.5),('c14',28.5),('c15',29.5),('c16',30.5),('c17',31.3),('c18',32.2),
-   ('c19',33.4),('c20',35.2),('c21',37.3),('c22',38.6),('c23',40.3),('c24',42.4)]
+A=[('c1',1.4),('c2',5.3),('c3',8.3),('c4',11.7),('c5a',13.0),('c5b',14.3),('c6',15.1),('c7',16.9),('c8',19.6),('c9',22.0),
+   ('c10',23.6),('c11',28.3),('c12',29.3),('c13',31.9),('c14',32.6),('c15',33.3),('c16',34.0),('c17',34.6),('c18',35.1),
+   ('c19',36.6),('c20',38.7),('c21',40.4),('c22',41.7),('c23',44.2),('c24',46.4)]
 html=open(html_path,encoding='utf-8').read()
 def chars(i):
     b=re.search(r'id="%s"[^>]*>(.*?)</div>'%i,html,re.S).group(1)
@@ -36,10 +36,10 @@ for j,(i,a) in enumerate(A):
     hi=9 if i=='c24' else min(S_of_t(a+1.0),(cen[j]+cen[j+1])/2-.003)
     if j==0: lo=max(lo,s_intro*0.9)
     B.append([i,round(lo,4),round(hi,4) if hi<9 else 9])
-K=dict(reveal=S_of_t(21.5),caveA=S_of_t(15.3),villA=S_of_t(21.4),villB=S_of_t(31.6),fogA=S_of_t(32.0),
+K=dict(reveal=S_of_t(21.5),caveA=S_of_t(15.2),villA=S_of_t(21.4),villB=S_of_t(35.2),fogA=S_of_t(35.6),
        cutA=B[[b[0] for b in B].index('c18')][1]-.004,cutB=B[[b[0] for b in B].index('c18')][2]+.006,
-       quietA=B[[b[0] for b in B].index('c21')][1],endA=B[[b[0] for b in B].index('c24')][1],dS=S_of_t(39.4),dT=DUR-1/FPS,lostT0=37.4)
-STOPS=[['시내',0],['복숭아숲',S_of_t(3.6)],['산의 입구',S_of_t(10.4)],['좁은 굴',S_of_t(16.6)],['마을',S_of_t(21.3)],['떠남',S_of_t(31.0)],['길을 잃음',S_of_t(37.0)]]
+       quietA=B[[b[0] for b in B].index('c21')][1],endA=B[[b[0] for b in B].index('c24')][1],dS=S_of_t(43.4),dT=DUR-1/FPS,lostT0=41.2)
+STOPS=[['시내',0],['복숭아숲',S_of_t(3.6)],['산의 입구',S_of_t(10.4)],['좁은 굴',S_of_t(16.4)],['마을',S_of_t(21.3)],['떠남',S_of_t(34.3)],['길을 잃음',S_of_t(40.0)]]
 out=dict(MAP=MAP,BLOCKS=B,STOPS=[[a,round(b,4)] for a,b in STOPS],K={k:round(v,4) for k,v in K.items()},screens=round(Ctot,1),NF=None)
 json.dump(out,open('/tmp/gen.json','w'),ensure_ascii=False)
 print('screens',round(Ctot,1),'intro',round(s_intro,3)); print(K)
