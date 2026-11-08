@@ -7,7 +7,7 @@
 <title>AS WRITTEN — 무릉도원</title>
 <style>
   html,body{margin:0;background:#070908;color:#f6efe4;font-family:"Noto Serif KR","Noto Serif TC","Apple SD Gothic Neo",serif;-webkit-font-smoothing:antialiased}
-  body{height:2400vh}
+  body{height:2500vh}
   #stage{position:fixed;inset:0;overflow:hidden;background:#070908}
   #cv{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;will-change:transform}
   #fog{position:fixed;inset:0;pointer-events:none;opacity:0;background:radial-gradient(ellipse at 50% 60%,rgba(222,230,232,.55),rgba(190,202,206,.85));will-change:opacity}
@@ -131,16 +131,12 @@
 // ④굴→확트임 17.75–22.83 · ⑤골짜기 내려가기 22.83–26.83 → (겹침) 산에 둘러싸인 마을 26.03–32.03 → (겹침) 안개 출발 31.23–34.23 · ⑥되찾기→길잃음 34.23–39.32 · 끝 39.32–43.3
 const END=43.3;
 // [스크롤 시작, 끝, 영상 시작, 끝] — 글이 말하는 순간에 그림도 그렇게 보이도록 맞춤
-const MAP=[ [0,.01,0,0], [.01,.06,0,2.5], [.06,.10,2.5,4.1], [.10,.16,4.1,7.583], [.16,.20,7.583,10.0], [.20,.25,10.0,12.667],
-  [.25,.30,12.667,14.6], [.30,.36,14.6,17.75], [.36,.43,17.75,21.0], [.43,.48,21.0,22.833], [.48,.56,22.833,25.0], [.56,.60,25.0,27.0],
-  [.60,.78,27.0,31.233], [.78,.81,31.233,32.2], [.81,.85,32.2,34.233], [.85,.885,34.233,36.3], [.885,.93,36.3,39.317], [.93,1,39.317,END] ];
-const STOPS=[ ['시내',0], ['복숭아숲',.10], ['산의 입구',.20], ['좁은 굴',.36], ['마을',.43], ['떠남',.74], ['길을 잃음',.885] ];
-const BLOCKS=[ ['b0',-1,.03], ['c1',.035,.10], ['c2',.105,.16], ['c3',.165,.20], ['c4',.21,.25], ['c5a',.255,.287], ['c5b',.29,.315], ['c6',.32,.355],
-  ['c7',.365,.398], ['c8',.403,.43], ['c9',.436,.478], ['c10',.485,.528], ['c11',.533,.562], ['c12',.567,.60], ['c13',.605,.637], ['c14',.642,.674],
-  ['c15',.679,.71], ['c16',.715,.742], ['c17',.747,.777], ['c18',.782,.815], ['c19',.82,.85], ['c20',.854,.884], ['c21',.89,.91], ['c22',.913,.94],
-  ['c23',.945,.97], ['c24',.975,9] ];
+const MAP=[[0, 0.0456, 0, 0.0], [0.0456, 0.04817, 0.0, 0.25], [0.04817, 0.05127, 0.25, 0.5], [0.05127, 0.05501, 0.5, 0.75], [0.05501, 0.05936, 0.75, 1.0], [0.05936, 0.06419, 1.0, 1.25], [0.06419, 0.06924, 1.25, 1.5], [0.06924, 0.07419, 1.5, 1.75], [0.07419, 0.07874, 1.75, 2.0], [0.07874, 0.08271, 2.0, 2.25], [0.08271, 0.08604, 2.25, 2.5], [0.08604, 0.08881, 2.5, 2.75], [0.08881, 0.09115, 2.75, 3.0], [0.09115, 0.09326, 3.0, 3.25], [0.09326, 0.0954, 3.25, 3.5], [0.0954, 0.09822, 3.5, 3.75], [0.09822, 0.10223, 3.75, 4.0], [0.10223, 0.10781, 4.0, 4.25], [0.10781, 0.115, 4.25, 4.5], [0.115, 0.12342, 4.5, 4.75], [0.12342, 0.13237, 4.75, 5.0], [0.13237, 0.14109, 5.0, 5.25], [0.14109, 0.14895, 5.25, 5.5], [0.14895, 0.1556, 5.5, 5.75], [0.1556, 0.16091, 5.75, 6.0], [0.16091, 0.16515, 6.0, 6.25], [0.16515, 0.16869, 6.25, 6.5], [0.16869, 0.17172, 6.5, 6.75], [0.17172, 0.17449, 6.75, 7.0], [0.17449, 0.17728, 7.0, 7.25], [0.17728, 0.1803, 7.25, 7.5], [0.1803, 0.1837, 7.5, 7.75], [0.1837, 0.18756, 7.75, 8.0], [0.18756, 0.19215, 8.0, 8.25], [0.19215, 0.19741, 8.25, 8.5], [0.19741, 0.20333, 8.5, 8.75], [0.20333, 0.21004, 8.75, 9.0], [0.21004, 0.21776, 9.0, 9.25], [0.21776, 0.22677, 9.25, 9.5], [0.22677, 0.23719, 9.5, 9.75], [0.23719, 0.24875, 9.75, 10.0], [0.24875, 0.26082, 10.0, 10.25], [0.26082, 0.27249, 10.25, 10.5], [0.27249, 0.28294, 10.5, 10.75], [0.28294, 0.29166, 10.75, 11.0], [0.29166, 0.29854, 11.0, 11.25], [0.29854, 0.3037, 11.25, 11.5], [0.3037, 0.30754, 11.5, 11.75], [0.30754, 0.31105, 11.75, 12.0], [0.31105, 0.31453, 12.0, 12.25], [0.31453, 0.31791, 12.25, 12.5], [0.31791, 0.32117, 12.5, 12.75], [0.32117, 0.32431, 12.75, 13.0], [0.32431, 0.32738, 13.0, 13.25], [0.32738, 0.33068, 13.25, 13.5], [0.33068, 0.33551, 13.5, 13.75], [0.33551, 0.34248, 13.75, 14.0], [0.34248, 0.3515, 14.0, 14.25], [0.3515, 0.36174, 14.25, 14.5], [0.36174, 0.37225, 14.5, 14.75], [0.37225, 0.38241, 14.75, 15.0], [0.38241, 0.39185, 15.0, 15.25], [0.39185, 0.40007, 15.25, 15.5], [0.40007, 0.40658, 15.5, 15.75], [0.40658, 0.41134, 15.75, 16.0], [0.41134, 0.41479, 16.0, 16.25], [0.41479, 0.41758, 16.25, 16.5], [0.41758, 0.4203, 16.5, 16.75], [0.4203, 0.42305, 16.75, 17.0], [0.42305, 0.42588, 17.0, 17.25], [0.42588, 0.42885, 17.25, 17.5], [0.42885, 0.43193, 17.5, 17.75], [0.43193, 0.43507, 17.75, 18.0], [0.43507, 0.43819, 18.0, 18.25], [0.43819, 0.44162, 18.25, 18.5], [0.44162, 0.44556, 18.5, 18.75], [0.44556, 0.44992, 18.75, 19.0], [0.44992, 0.45454, 19.0, 19.25], [0.45454, 0.45932, 19.25, 19.5], [0.45932, 0.46432, 19.5, 19.75], [0.46432, 0.4697, 19.75, 20.0], [0.4697, 0.47557, 20.0, 20.25], [0.47557, 0.48209, 20.25, 20.5], [0.48209, 0.48951, 20.5, 20.75], [0.48951, 0.49788, 20.75, 21.0], [0.49788, 0.50685, 21.0, 21.25], [0.50685, 0.5159, 21.25, 21.5], [0.5159, 0.52453, 21.5, 21.75], [0.52453, 0.53221, 21.75, 22.0], [0.53221, 0.53849, 22.0, 22.25], [0.53849, 0.5433, 22.25, 22.5], [0.5433, 0.54713, 22.5, 22.75], [0.54713, 0.5511, 22.75, 23.0], [0.5511, 0.55545, 23.0, 23.25], [0.55545, 0.56014, 23.25, 23.5], [0.56014, 0.56505, 23.5, 23.75], [0.56505, 0.57006, 23.75, 24.0], [0.57006, 0.57505, 24.0, 24.25], [0.57505, 0.57995, 24.25, 24.5], [0.57995, 0.58475, 24.5, 24.75], [0.58475, 0.58945, 24.75, 25.0], [0.58945, 0.59408, 25.0, 25.25], [0.59408, 0.59868, 25.25, 25.5], [0.59868, 0.60332, 25.5, 25.75], [0.60332, 0.6081, 25.75, 26.0], [0.6081, 0.61309, 26.0, 26.25], [0.61309, 0.61834, 26.25, 26.5], [0.61834, 0.62389, 26.5, 26.75], [0.62389, 0.62972, 26.75, 27.0], [0.62972, 0.63583, 27.0, 27.25], [0.63583, 0.64225, 27.25, 27.5], [0.64225, 0.64903, 27.5, 27.75], [0.64903, 0.65622, 27.75, 28.0], [0.65622, 0.66389, 28.0, 28.25], [0.66389, 0.67205, 28.25, 28.5], [0.67205, 0.68068, 28.5, 28.75], [0.68068, 0.68973, 28.75, 29.0], [0.68973, 0.6991, 29.0, 29.25], [0.6991, 0.7087, 29.25, 29.5], [0.7087, 0.71843, 29.5, 29.75], [0.71843, 0.72824, 29.75, 30.0], [0.72824, 0.73808, 30.0, 30.25], [0.73808, 0.74795, 30.25, 30.5], [0.74795, 0.7578, 30.5, 30.75], [0.7578, 0.76755, 30.75, 31.0], [0.76755, 0.77704, 31.0, 31.25], [0.77704, 0.78608, 31.25, 31.5], [0.78608, 0.7945, 31.5, 31.75], [0.7945, 0.80219, 31.75, 32.0], [0.80219, 0.80909, 32.0, 32.25], [0.80909, 0.81527, 32.25, 32.5], [0.81527, 0.82083, 32.5, 32.75], [0.82083, 0.8259, 32.75, 33.0], [0.8259, 0.83058, 33.0, 33.25], [0.83058, 0.83495, 33.25, 33.5], [0.83495, 0.83908, 33.5, 33.75], [0.83908, 0.84304, 33.75, 34.0], [0.84304, 0.84693, 34.0, 34.25], [0.84693, 0.85085, 34.25, 34.5], [0.85085, 0.85489, 34.5, 34.75], [0.85489, 0.85906, 34.75, 35.0], [0.85906, 0.86328, 35.0, 35.25], [0.86328, 0.8674, 35.25, 35.5], [0.8674, 0.87128, 35.5, 35.75], [0.87128, 0.87483, 35.75, 36.0], [0.87483, 0.87806, 36.0, 36.25], [0.87806, 0.88129, 36.25, 36.5], [0.88129, 0.88471, 36.5, 36.75], [0.88471, 0.88829, 36.75, 37.0], [0.88829, 0.89195, 37.0, 37.25], [0.89195, 0.89559, 37.25, 37.5], [0.89559, 0.89909, 37.5, 37.75], [0.89909, 0.90239, 37.75, 38.0], [0.90239, 0.90552, 38.0, 38.25], [0.90552, 0.90871, 38.25, 38.5], [0.90871, 0.91197, 38.5, 38.75], [0.91197, 0.91539, 38.75, 39.0], [0.91539, 0.91903, 39.0, 39.25], [0.91903, 0.92301, 39.25, 39.5], [0.92301, 0.9274, 39.5, 39.75], [0.9274, 0.93218, 39.75, 40.0], [0.93218, 0.93721, 40.0, 40.25], [0.93721, 0.94226, 40.25, 40.5], [0.94226, 0.9471, 40.5, 40.75], [0.9471, 0.95153, 40.75, 41.0], [0.95153, 0.95547, 41.0, 41.25], [0.95547, 0.95899, 41.25, 41.5], [0.95899, 0.9622, 41.5, 41.75], [0.9622, 0.96524, 41.75, 42.0], [0.96524, 0.96819, 42.0, 42.25], [0.96819, 0.97108, 42.25, 42.5], [0.97108, 0.97386, 42.5, 42.75], [0.97386, 0.97648, 42.75, 43.0], [0.97648, 0.97889, 43.0, 43.25], [0.97889, 0.97927, 43.25, 43.292], [0.97927, 1, 43.292, 43.292]];
+const STOPS=[["시내", 0], ["복숭아숲", 0.0964], ["산의 입구", 0.2679], ["좁은 굴", 0.4187], ["마을", 0.5087], ["떠남", 0.7675], ["길을 잃음", 0.8883]];
+const BLOCKS=[["b0", -1, 0.0388], ["c1", 0.0542, 0.0848], ["c2", 0.1091, 0.1649], ["c3", 0.1779, 0.2195], ["c4", 0.281, 0.3138], ["c5a", 0.3198, 0.3434], ["c5b", 0.3494, 0.3848], ["c6", 0.3908, 0.4187], ["c7", 0.4247, 0.4477], ["c8", 0.4537, 0.4944], ["c9", 0.5029, 0.5441], ["c10", 0.5501, 0.5728], ["c11", 0.5788, 0.6009], ["c12", 0.6069, 0.6273], ["c13", 0.6333, 0.6542], ["c14", 0.6602, 0.6874], ["c15", 0.6934, 0.7253], ["c16", 0.7313, 0.7604], ["c17", 0.7664, 0.7903], ["c18", 0.7963, 0.8175], ["c19", 0.8235, 0.8448], ["c20", 0.8508, 0.8746], ["c21", 0.8806, 0.8983], ["c22", 0.9043, 0.9211], ["c23", 0.9271, 0.9511], ["c24", 0.9576, 9]];
+const K={"reveal": 0.5159, "caveA": 0.3936, "villA": 0.5123, "villB": 0.7895, "fogA": 0.8022, "cutA": 0.7923, "cutB": 0.8235, "quietA": 0.8806, "endA": 0.9576, "dS": 0.9214, "dT": 43.2917, "lostT0": 37.4};
 const $=id=>document.getElementById(id);
-function videoTime(s){ for(const [a,b,t0,t1] of MAP){ if(s<=b){ const k=b>a?Math.max(0,Math.min(1,(s-a)/(b-a))):1; return t0+(t1-t0)*k; } } return END; }
+function videoTime(s){ let lo=0,hi=MAP.length-1; while(lo<hi){ const md=(lo+hi)>>1; if(MAP[md][1]<s) lo=md+1; else hi=md; } const [a,b,t0,t1]=MAP[lo]; const k=b>a?Math.max(0,Math.min(1,(s-a)/(b-a))):1; return t0+(t1-t0)*k; }
 STOPS.forEach(([n,s])=>{ const sp=document.createElement('span'); sp.textContent=n; sp.style.top=(s*100)+'%'; $('bar').appendChild(sp); });
 
 // ───── 프레임 그림 (12장/초) ─────
@@ -190,52 +186,36 @@ function initAudio(){
   // (쉬익·웅 하는 잡음 계열 소리는 모두 뺌)
   // 음악: 은은하게 깔리는 화음 + 줄 뜯는 선율
   A.music=G(0); A.mlp=Fl('lowpass',900,.5); A.mlp.connect(A.music); A.music.connect(A.out); A.music.connect(A.revIn);
-  A.pad=[0,1,2].map(()=>{ const o=AC.createOscillator(); o.type='sine'; const g=G(.02); o.connect(g); g.connect(A.mlp); o.start(); return o; });
+  A.pad=[0,1,2].map(()=>{ const o=AC.createOscillator(); o.type='sine'; const g=G(.025); o.connect(g); g.connect(A.mlp); o.start(); return o; });
   A.chord=-1; A.note=-1; A.t0=AC.currentTime;
 }
 const hz=m=>440*Math.pow(2,(m-69)/12);
-// 오음(궁상각치우) — D E F# A B
-const PADS=[[50,57,62],[47,54,62],[45,52,57],[50,57,64]];
-const MEL=[62,null,64,57,null,59,57,null,54,null,57,52,null,50,null,null, 57,null,59,62,null,64,62,null,59,57,null,54,null,57,null,null];
-function pluck(f,amp){ // 줄을 뜯는 소리 (부드러운 사인파 두 개, 천천히 사라짐)
-  if(!AC) return; const t=AC.currentTime, g=AC.createGain();
-  g.gain.setValueAtTime(0,t); g.gain.linearRampToValueAtTime(amp,t+.006); g.gain.exponentialRampToValueAtTime(.0003,t+2.6);
-  [[1,1],[2,.25],[3,.06]].forEach(([h,v])=>{ const o=AC.createOscillator(), og=G(v); o.frequency.value=f*h; o.connect(og); og.connect(g); o.start(t); o.stop(t+2.7); });
-  g.connect(A.music); }
-function tone(f0,f1,dur,peak,rev,delay){ const o=AC.createOscillator(),g=AC.createGain(),t=AC.currentTime+(delay||0);
-  o.frequency.setValueAtTime(f0,t); o.frequency.exponentialRampToValueAtTime(f1,t+dur); g.gain.setValueAtTime(0,t); g.gain.linearRampToValueAtTime(peak,t+.012); g.gain.exponentialRampToValueAtTime(.0003,t+dur);
-  o.connect(g); g.connect(A.out); if(rev) g.connect(A.revIn); o.start(t); o.stop(t+dur+.05); }
-function soft(dur,freq,peak){ const s=AC.createBufferSource(); s.buffer=A.B; const f=Fl('bandpass',freq,.8), g=AC.createGain(), t=AC.currentTime;
-  g.gain.setValueAtTime(0,t); g.gain.linearRampToValueAtTime(peak,t+dur*.3); g.gain.linearRampToValueAtTime(0,t+dur);
-  s.connect(f); f.connect(g); g.connect(A.out); g.connect(A.revIn); s.start(t,Math.random()*2,dur+.05); }
-const SFX={
-  bird(){ const f=2300+Math.random()*900, n=2+Math.floor(Math.random()*2); for(let i=0;i<n;i++) tone(f,f*1.2,.08,.006,true,i*.13); },
-  drip(){ const f=700+Math.random()*500; tone(f,f*1.6,.07,.012,true); },
-  step(){ soft(.14,500,.05); },
-  oar(){ soft(.7,420,.05); },
-  bloom(){ [62,66,69,74].forEach((m,i)=>setTimeout(()=>pluck(hz(m-12),.07),i*160)); },
-};
-let stepPh=0, birdT=2, dripT=1, oarT=0, prevS=0;
+// 차분한 오음(우조: D F G A C) — 낮은 음역, 느리고 띄엄띄엄
+const PADS=[[38,45,50],[36,43,48],[41,48,53],[38,45,53]];
+const MEL=[50,null,null,57,null,null,55,null,53,null,null,null, 50,null,null,null,48,null,50,null,null,null,null,null];
+function pluck(f,amp){ // 칠현금처럼 낮고 둥글게 뜯는 소리
+  if(!AC) return; const t=AC.currentTime, g=AC.createGain(), lp=Fl('lowpass',900,.3);
+  g.gain.setValueAtTime(0,t); g.gain.linearRampToValueAtTime(amp,t+.02); g.gain.exponentialRampToValueAtTime(.0003,t+4.5);
+  [[1,1],[2,.18]].forEach(([h,v])=>{ const o=AC.createOscillator(), og=G(v); o.type='triangle'; o.frequency.setValueAtTime(f*h*1.004,t); o.frequency.exponentialRampToValueAtTime(f*h,t+.25); o.connect(og); og.connect(lp); o.start(t); o.stop(t+4.6); });
+  lp.connect(g); g.connect(A.music); }
+let prevS=0;
 function crossed(a,b,x){ return (a<x&&b>=x)||(a>x&&b<=x); }
 function audioTick(dt,s,v){
   if(!AC||AC.state!=='running') return;
   const ct=AC.currentTime;
-  const cave = s>.30&&s<.435, village = s>.435&&s<.78, fog = s>.81 || lost, boat = !cave&&!village&&!fog;
-  A.revIn.gain.setTargetAtTime(cave?.7:.3,ct,.4);
-  // 음악: 굴 안에선 낮게 → 확 트이면 밝게 → “말할 것 못 됩니다”에서 멈춤 → 안개 속엔 낮은 화음만
-  const cut=(s>.79&&s<.82), music = sound&&!cut ? (lost?.4:(fog?.6:1)) : 0;
-  A.music.gain.setTargetAtTime(music,ct,cut?.08:1.2);
-  A.mlp.frequency.setTargetAtTime(cave?450:(fog?550:(village?1500:1000)),ct,.8);
-  const t=ct-A.t0, ci=Math.floor(t/8)%4;
-  if(ci!==A.chord){ A.chord=ci; const lo=fog?-12:0; PADS[ci].forEach((m,i)=>A.pad[i].frequency.setTargetAtTime(hz(m-12+lo),ct,1.5)); }
-  const ni=Math.floor(t/1.6)%MEL.length;
+  const cave = s>K.caveA&&s<K.villA, village = s>K.villA&&s<K.villB, fog = s>K.fogA || lost;
+  A.revIn.gain.setTargetAtTime(cave?.6:.35,ct,.6);
+  // 음악: 굴 안에선 더 낮고 어둡게 → 확 트이면 화음이 천천히 열림 → “말할 것 못 됩니다”에서 멈춤 → 안개 속엔 낮은 화음만
+  const cut=(s>K.cutA&&s<K.cutB), music = sound&&!cut ? (lost?.35:(fog?.55:.9)) : 0;
+  A.music.gain.setTargetAtTime(music,ct,cut?.15:1.5);
+  A.mlp.frequency.setTargetAtTime(cave?320:(fog?380:(village?900:600)),ct,1.5);
+  const t=ct-A.t0, ci=Math.floor(t/10)%4;
+  if(ci!==A.chord){ A.chord=ci; const lo=fog?-12:0; PADS[ci].forEach((m,i)=>A.pad[i].frequency.setTargetAtTime(hz(m+lo),ct,2.5)); }
+  const ni=Math.floor(t/1.7)%MEL.length;
   if(ni!==A.note){ A.note=ni; const m=MEL[ni];
-    const play = m!==null && !cut && !lost && !(s>.885&&s<.97) && (!cave || ni%4===0);
-    if(play) pluck(hz(m-12), fog?.035:.06); }
-  if((s>.06&&s<.30)||village){ birdT-=dt; if(birdT<0){ birdT=2.5+Math.random()*5; SFX.bird(); } }
-  if(cave){ dripT-=dt; if(dripT<0){ dripT=1.2+Math.random()*2.5; SFX.drip(); } }
-  if(crossed(prevS,s,.437)) SFX.bloom();
-  if(crossed(prevS,s,.976)) pluck(hz(50-12),.08);
+    const play = m!==null && !cut && !lost && !(s>K.quietA&&s<K.endA) && (!cave || ni===0);
+    if(play) pluck(hz(m-(cave?12:0)), fog?.05:.08); }
+  if(crossed(prevS,s,K.endA)) pluck(hz(38),.1);
   prevS=s;
 }
 $('go').addEventListener('click',()=>{ sound=true; initAudio(); $('load').style.opacity=0; setTimeout(()=>$('load').remove(),1000); });
@@ -253,18 +233,18 @@ function tick(t){
   const prev=s; s+=(ts-s)*Math.min(1,dt*12);
   if(s>.985) lost=true;
   if(lost&&s<.012) lost=false;
-  const lostView = lost && s<.93;
+  const lostView = lost && s<K.dS;
   // 그림
-  const vt = lostView ? 37.6+(s/.93)*5.6 : videoTime(s);
+  const vt = lostView ? K.lostT0+(s/K.dS)*(K.dT-K.lostT0) : videoTime(s);
   drawFrame(Math.max(0,Math.min(NF-1,vt*FPS2)));
-  setO($('fog'), lostView ? .55 : (s>.93 ? Math.min(.25,(s-.93)/.07*.25) : 0));
+  setO($('fog'), lostView ? .55 : (s>K.dS ? Math.min(.25,(s-K.dS)/(1-K.dS)*.25) : 0));
   // 확 트이는 순간 하얗게
-  setO($('flash'), lostView?0:Math.max(0,.75-Math.abs(s-.436)/.012*.75));
+  setO($('flash'), lostView?0:Math.max(0,.6-Math.abs(s-K.reveal)/.015*.6));
   // 글 상자
   for(const [id,a,b] of BLOCKS){ const fade=.01; let o=0; if(!lostView){ if(s>a&&s<b) o=Math.min(1,(s-a)/fade,(b-s)/fade); if(a<0) o=Math.min(1,(b-s)/fade); } setO($(id),o); }
-  setO($('lost'), lostView ? Math.min(1,(.93-s)/.02, s/.02) : 0);
+  setO($('lost'), lostView ? Math.min(1,(K.dS-s)/.02, s/.02) : 0);
   setO($('hint'), s<.03&&!lost ? 1 : 0);
-  $('again').classList.toggle('on', s>.975 || (lostView && s>.05));
+  $('again').classList.toggle('on', s>K.endA+.01 || (lostView && s>.05));
   // 장소 이름, 진행 막대
   let nm=STOPS[0][0]; for(const [name,at] of STOPS) if(s>=at-.005) nm=name;
   if(lostView) nm='길을 잃음';
