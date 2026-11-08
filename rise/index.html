@@ -3,98 +3,159 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<title>AS WRITTEN — 아틀란티스를 끌어올리다</title>
+<link rel="icon" href="data:,">
+<title>AS WRITTEN — 아틀란티스</title>
 <style>
-  html,body{margin:0;background:#020a0d;color:#f3e9d6;font-family:"Noto Serif KR","Apple SD Gothic Neo",serif}
-  body{height:620vh}
-  #stage{position:fixed;inset:0;overflow:hidden}
-  #cv,#ruin,#city{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%)}
-  #ruin,#city{pointer-events:none;transition:opacity .5s}
-  #city{opacity:0}
-  .vig{position:fixed;inset:0;pointer-events:none;background:radial-gradient(ellipse at center,rgba(0,0,0,0) 50%,rgba(0,0,0,.6) 100%)}
-  #deep{position:fixed;inset:0;pointer-events:none;background:linear-gradient(to bottom,rgba(0,20,28,.15),rgba(0,10,16,.55))}
-  .txt{position:fixed;left:50%;transform:translateX(-50%);width:min(760px,86vw);text-align:center;pointer-events:none;text-shadow:0 2px 14px rgba(0,0,0,.9);transition:opacity .6s}
-  #t1{top:16vh}
-  #t1 small{display:block;font-size:11px;letter-spacing:.42em;opacity:.7;margin-bottom:16px}
-  #t1 p{margin:0;font-size:clamp(16px,2vw,21px);line-height:1.9;letter-spacing:.03em}
-  #t1 em{display:block;margin-top:12px;font-style:normal;font-size:12px;letter-spacing:.18em;opacity:.6}
-  #hint{position:fixed;left:50%;bottom:34px;transform:translateX(-50%);text-align:center;font-size:12px;letter-spacing:.32em;opacity:.85;transition:opacity .6s;pointer-events:none}
-  #hint i{display:block;margin:12px auto 0;width:1px;height:42px;background:linear-gradient(#f3e9d6,transparent);animation:drip 1.8s ease-in-out infinite}
-  @keyframes drip{0%{transform:scaleY(0);transform-origin:top}50%{transform:scaleY(1);transform-origin:top}51%{transform-origin:bottom}100%{transform:scaleY(0);transform-origin:bottom}}
-  #t2{top:13vh}
-  #t2 small{display:block;font-size:11px;letter-spacing:.42em;opacity:.75;margin-bottom:12px}
-  #t2 b{display:block;font-size:clamp(38px,6vw,64px);font-weight:400;letter-spacing:.32em;color:#f1cf8a}
-  #t2 p{margin:14px 0 0;font-size:14px;letter-spacing:.08em;opacity:.85}
-  #enter{position:fixed;left:50%;bottom:38px;transform:translateX(-50%);background:rgba(10,8,6,.55);color:#f3e9d6;border:1px solid rgba(241,207,138,.75);border-radius:26px;padding:12px 30px;font-family:inherit;font-size:14px;letter-spacing:.24em;cursor:pointer;opacity:0;pointer-events:none;transition:opacity .8s}
-  #enter.on{opacity:1;pointer-events:auto}
-  #bar{position:fixed;right:22px;top:50%;transform:translateY(-50%);width:2px;height:34vh;background:rgba(243,233,214,.18)}
-  #bar i{position:absolute;left:0;bottom:0;width:100%;background:#f1cf8a;height:0}
-  #bar span{position:absolute;right:10px;font-size:10px;letter-spacing:.2em;white-space:nowrap;opacity:.6}
-  #load{position:fixed;inset:0;display:flex;align-items:center;justify-content:center;background:#020a0d;font-size:12px;letter-spacing:.32em;z-index:9;transition:opacity .8s}
+  html,body{margin:0;background:#02090c;color:#f5ecd9;font-family:"Noto Serif KR","Apple SD Gothic Neo",serif;-webkit-font-smoothing:antialiased}
+  body{height:1500vh}
+  #stage{position:fixed;inset:0;overflow:hidden;background:#02090c}
+  #vid,#ruin,#ruinEnd{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+  #stage>*{will-change:opacity}
+  #vidWrap{position:absolute;inset:0;transition:filter 1.2s}
+  #ruinEnd{opacity:0}
+  #ruin{transition:opacity .4s}
+  #sea{position:fixed;left:0;right:0;bottom:0;height:0;pointer-events:none;background:linear-gradient(to bottom,rgba(20,60,72,0) 0,rgba(10,36,46,.88) 90px,#04141b 100%)}
+  #shadeB{position:fixed;left:0;right:0;bottom:0;height:62vh;pointer-events:none;background:linear-gradient(to top,rgba(0,0,0,.86) 0,rgba(0,0,0,.55) 45%,rgba(0,0,0,0) 100%)}
+  #shadeT{position:fixed;left:0;right:0;top:0;height:22vh;pointer-events:none;background:linear-gradient(to bottom,rgba(0,0,0,.45),rgba(0,0,0,0))}
+  .blk{position:fixed;left:50%;bottom:11vh;transform:translateX(-50%);width:min(900px,90vw);text-align:center;opacity:0;pointer-events:none;text-shadow:0 2px 16px rgba(0,0,0,.95)}
+  .lab{display:block;font-size:14px;letter-spacing:.4em;color:#f1cf8a;margin-bottom:18px}
+  .big{margin:0;font-size:clamp(21px,2.5vw,31px);line-height:1.75;letter-spacing:.02em}
+  .ref{display:block;margin-top:16px;font-size:14px;letter-spacing:.16em;opacity:.75}
+  .title{display:block;font-size:clamp(46px,7vw,84px);letter-spacing:.3em;color:#f1cf8a;font-weight:400;margin:0 0 18px;padding-left:.3em}
+  #hint{position:fixed;left:50%;bottom:4vh;transform:translateX(-50%);font-size:14px;letter-spacing:.3em;opacity:.9;pointer-events:none;text-shadow:0 2px 10px #000}
+  #hint i{display:inline-block;margin-left:10px;animation:bob 1.6s ease-in-out infinite}
+  @keyframes bob{50%{transform:translateY(5px)}}
+  #place{position:fixed;left:36px;top:30px;font-size:14px;letter-spacing:.3em;color:#f1cf8a;text-shadow:0 2px 10px #000;transition:opacity .5s}
+  #place b{display:block;margin-top:8px;font-size:22px;font-weight:500;letter-spacing:.08em;color:#f5ecd9}
+  #bar{position:fixed;right:30px;top:50%;transform:translateY(-50%);width:2px;height:46vh;background:rgba(245,236,217,.2)}
+  #bar i{position:absolute;left:0;top:0;width:100%;background:#f1cf8a;height:0}
+  #bar span{position:absolute;right:14px;transform:translateY(-50%);font-size:12px;letter-spacing:.14em;white-space:nowrap;opacity:.7;text-shadow:0 1px 6px #000}
+  #bar span::after{content:"";position:absolute;right:-17px;top:50%;width:6px;height:6px;margin-top:-3px;border-radius:50%;background:rgba(245,236,217,.7)}
+  #again{position:fixed;left:50%;bottom:5vh;transform:translateX(-50%);background:none;color:#f5ecd9;border:1px solid rgba(245,236,217,.6);border-radius:28px;padding:13px 30px;font-family:inherit;font-size:15px;letter-spacing:.2em;cursor:pointer;opacity:0;pointer-events:none;transition:opacity .8s}
+  #again.on{opacity:1;pointer-events:auto}
+  #snd{position:fixed;right:22px;bottom:22px;background:rgba(0,0,0,.55);color:#f5ecd9;border:1px solid rgba(245,236,217,.4);border-radius:18px;padding:8px 15px;font-family:inherit;font-size:13px;cursor:pointer}
+  #load{position:fixed;inset:0;z-index:9;display:flex;flex-direction:column;gap:14px;align-items:center;justify-content:center;background:#02090c;font-size:15px;letter-spacing:.3em;transition:opacity .9s}
+  #load small{font-size:12px;opacity:.55;letter-spacing:.2em}
+  .cur::after{content:"";display:inline-block;width:2px;height:1em;margin-left:4px;vertical-align:-3px;background:#f5ecd9;animation:blink 1s steps(1) infinite}
+  @keyframes blink{50%{opacity:0}}
+  @media (max-width:700px){#place{left:20px;top:20px}#place b{font-size:18px}#bar{right:16px;height:38vh}#bar span{display:none}.blk{bottom:13vh}#snd{bottom:auto;top:18px;right:16px}}
 </style>
 </head>
 <body>
-<div id="stage"><canvas id="cv"></canvas><img id="ruin" src="ruin.jpg" alt=""><img id="city" src="city.jpg" alt=""></div>
-<div id="deep"></div><div id="topfade" style="position:fixed;inset:0;pointer-events:none;opacity:0;background:linear-gradient(to bottom,rgba(0,0,0,.62) 0,rgba(0,0,0,.25) 34%,rgba(0,0,0,0) 52%)"></div><div class="vig"></div>
-<div class="txt" id="t1"><small>AS WRITTEN · ATLANTIS</small>
-  <p>격렬한 지진과 홍수가 일어났고,<br>하루 낮과 하루 밤 사이에<br>아틀란티스 섬은 바다 깊이 가라앉아 사라졌다.</p>
-  <em>플라톤, 『티마이오스』 25c–d</em></div>
-<div id="hint">스크롤해서 끌어올리기<i></i></div>
-<div class="txt" id="t2" style="opacity:0"><small>쓰인 만큼만 되살린 도시</small><b>ATLANTIS</b><p>플라톤 『크리티아스』 113c–121c</p></div>
-<button id="enter">도시로 들어가기</button>
-<div id="bar"><i></i><span style="top:-18px">수면</span><span style="bottom:-18px">해저</span></div>
-<div id="load">바다 밑으로 내려가는 중 <span id="pct">0</span>%</div>
+<div id="stage">
+  <div id="vidWrap"><video id="vid" muted playsinline preload="auto"></video><img id="ruin" src="ruin.jpg" alt=""></div>
+  <img id="ruinEnd" src="ruin.jpg" alt="">
+</div>
+<div id="sea"></div><div id="shadeT"></div><div id="shadeB"></div>
+<div id="place"><span>AS WRITTEN · ATLANTIS</span><b id="pname">해저</b></div>
+<div id="bar"><i></i></div>
+
+<div class="blk" id="b0"><span class="lab">AS WRITTEN · ATLANTIS</span>
+  <p class="big">격렬한 지진과 홍수가 일어났고,<br>하루 낮과 하루 밤 사이에<br>아틀란티스 섬은 바다 깊이 가라앉아 사라졌다.</p>
+  <span class="ref">플라톤, 『티마이오스』 25c–d</span></div>
+<div class="blk" id="b1"><span class="title">ATLANTIS</span>
+  <p class="big">아틀란티스에 관한 기록은 플라톤의 두 대화편뿐이다.<br>이 도시는 그 글에 쓰인 만큼만 되살렸다.</p></div>
+<div class="blk" id="b2"><span class="lab">세 겹의 성벽</span>
+  <p class="big">가장 바깥 성벽은 청동으로,<br>두 번째 성벽은 주석으로 덮었다.<br>성채를 두른 세 번째 성벽은 오리칼쿰의 붉은 빛으로 번쩍였다.</p>
+  <span class="ref">『크리티아스』 116b–c</span></div>
+<div class="blk" id="b3"><span class="lab">포세이돈의 신전</span>
+  <p class="big">길이 1스타디온, 너비 반 스타디온.<br>생김새는 낯설고 이국적이었다.<br>바깥은 온통 은으로, 꼭대기 장식은 금으로 덮었다.</p>
+  <span class="ref">『크리티아스』 116d</span></div>
+<div class="blk" id="b4"><span class="lab">신전 안</span>
+  <p class="big">신은 날개 달린 말 여섯 마리가 끄는 전차 위에 서 있었고,<br>머리가 천장에 닿을 만큼 거대했다.</p>
+  <span class="ref">『크리티아스』 116d</span></div>
+<div class="blk" id="b5"><span class="lab">『크리티아스』의 마지막 문장</span>
+  <p class="big" id="finalT"></p>
+  <span class="ref" id="finalR" style="opacity:0">『크리티아스』 121b–c · 원문은 여기서 끝난다</span></div>
+<div class="blk" id="b6"><span class="title" style="font-size:clamp(28px,4vw,46px);letter-spacing:.12em;padding:0">여기서부터는 쓰여 있지 않다.</span>
+  <p class="big" style="font-size:clamp(17px,1.8vw,22px)">플라톤의 『크리티아스』는 이 문장에서 끊긴 채 전해진다.<br>글이 끝나는 곳에서, 도시도 끝난다.</p></div>
+
+<div id="hint">스크롤해서 끌어올리기<i>↓</i></div>
+<button id="again">↑ 다시 끌어올리기</button>
+<button id="snd">소리 켜기</button>
+<div id="load"><span>바다 밑으로 내려가는 중 <b id="pct">0</b>%</span><small>처음 한 번만 불러와요</small></div>
+
 <script>
-const N=122, FW=832, FH=464, AR=1456/816;
-const cv=document.getElementById('cv'), ctx=cv.getContext('2d'), ruin=document.getElementById('ruin'), city=document.getElementById('city');
-const sheets=[]; let loaded=0; const NS=Math.ceil(N/4);
-for(let k=1;k<=NS;k++){ const im=new Image(); im.onload=im.onerror=()=>{ loaded++; document.getElementById('pct').textContent=Math.round(loaded/NS*100);
-  if(loaded===NS){ const l=document.getElementById('load'); l.style.opacity=0; setTimeout(()=>l.remove(),900); } }; im.src='t/'+String(k).padStart(2,'0')+'.jpg'; sheets.push(im); }
-let W=0,H=0,drawn=-1;
-function layout(){ const vw=innerWidth,vh=innerHeight; if(vw/vh>AR){W=vw*1.04;H=W/AR;}else{H=vh*1.04;W=H*AR;}
-  const cw=Math.min(Math.round(W*Math.min(devicePixelRatio||1,2)),1280); cv.width=cw; cv.height=Math.round(cw*H/W);
-  for(const el of [cv,ruin,city]){ el.style.width=W+'px'; el.style.height=H+'px'; } drawn=-1; }
-addEventListener('resize',layout); layout();
-function draw(i){ if(i===drawn) return; const sh=sheets[Math.floor(i/4)], q=i%4; if(!(sh.complete&&sh.naturalWidth)) return;
-  ctx.drawImage(sh,(q%2)*FW,Math.floor(q/2)*FH,FW,FH,0,0,cv.width,cv.height); drawn=i; }
+// ───── 스크롤 → 장면 (각 구간: 스크롤 시작, 끝, 영상 시간 시작, 끝) ─────
+const F=24, T_BRIDGE=121/F, T_PLAZA=243/F, T_TEMPLE=365/F;
+const MAP=[ [0,.05,0,0], [.05,.30,0,T_BRIDGE], [.30,.40,T_BRIDGE,T_BRIDGE], [.40,.53,T_BRIDGE,T_PLAZA],
+            [.53,.60,T_PLAZA,T_PLAZA], [.60,.72,T_PLAZA,T_TEMPLE], [.72,1,T_TEMPLE,T_TEMPLE] ];
+const STOPS=[ ['해저',0], ['다리와 성벽',.30], ['신전 앞 광장',.53], ['신전 안',.72], ['글의 끝',.88] ];
+// 글 상자: [id, 보이기 시작, 끝]
+const BLOCKS=[ ['b0',-1,.045], ['b1',.29,.385], ['b2',.415,.50], ['b3',.53,.595], ['b4',.715,.765], ['b5',.775,.875], ['b6',.95,9] ];
+const FINAL='법에 따라 다스리며 이런 일을 꿰뚫어 볼 줄 아는 신들의 신 제우스는, 한때 훌륭했던 종족이 비참한 처지에 빠진 것을 보았다. 그는 세상의 한가운데에서 모든 것을 내려다보는 가장 거룩한 처소로 모든 신을 불러 모았다. 그리고 신들을 다 모으자, 그는 이렇게 말했다—';
 
-// ===== 소리: 물속의 먹먹함 → 수면 위 바람과 물결 =====
-let AC=null,A={};
-function initAudio(){ if(AC){ if(AC.state==='suspended') AC.resume(); return; }
+const vid=document.getElementById('vid'), ruin=document.getElementById('ruin'), ruinEnd=document.getElementById('ruinEnd');
+const $=id=>document.getElementById(id);
+function videoTime(s){ for(const [a,b,t0,t1] of MAP){ if(s<=b){ const k=b>a?Math.max(0,Math.min(1,(s-a)/(b-a))):1; const e=k<.5?2*k*k:1-Math.pow(-2*k+2,2)/2; return t0+(t1-t0)*e; } } return T_TEMPLE; }
+
+// 경로 표시
+STOPS.forEach(([n,s])=>{ const sp=document.createElement('span'); sp.textContent=n; sp.style.top=(s*100)+'%'; $('bar').appendChild(sp); });
+
+// ───── 영상을 통째로 받아 두기 (스크롤할 때 끊기지 않게) ─────
+(async()=>{
+  try{
+    const r=await fetch('journey.mp4'); const len=+r.headers.get('content-length')||8300000; const rd=r.body.getReader(); const parts=[]; let got=0;
+    for(;;){ const {done,value}=await rd.read(); if(done) break; parts.push(value); got+=value.length; $('pct').textContent=Math.min(99,Math.round(got/len*100)); }
+    vid.src=URL.createObjectURL(new Blob(parts,{type:'video/mp4'}));
+  }catch(e){ vid.src='journey.mp4'; }
+  vid.addEventListener('loadeddata',()=>{ $('pct').textContent=100; $('load').style.opacity=0; setTimeout(()=>$('load').remove(),1000); },{once:true});
+  vid.load();
+})();
+// 휴대폰(iOS)은 한 번 재생해야 프레임이 그려짐
+addEventListener('touchstart',()=>{ vid.play().then(()=>vid.pause()).catch(()=>{}); },{once:true,passive:true});
+
+// ───── 소리 ─────
+let AC=null,A={},sound=false;
+function initAudio(){ if(AC){ AC.resume(); return; }
   try{ AC=new (window.AudioContext||window.webkitAudioContext)(); }catch(e){ return; }
-  const n=AC.sampleRate*3, mk=kind=>{ const b=AC.createBuffer(1,n,AC.sampleRate), d=b.getChannelData(0); let l=0; for(let i=0;i<n;i++){ const w=Math.random()*2-1; if(kind){ l=(l+.02*w)/1.02; d[i]=l*3.5; } else d[i]=w; } return b; };
+  const n=AC.sampleRate*3, mk=br=>{ const b=AC.createBuffer(1,n,AC.sampleRate), d=b.getChannelData(0); let l=0; for(let i=0;i<n;i++){ const w=Math.random()*2-1; if(br){ l=(l+.02*w)/1.02; d[i]=l*3.5; } else d[i]=w; } return b; };
   const loop=b=>{ const s=AC.createBufferSource(); s.buffer=b; s.loop=true; s.start(); return s; };
-  A.out=AC.createGain(); A.out.gain.value=.9; A.out.connect(AC.destination);
-  A.lp=AC.createBiquadFilter(); A.lp.type='lowpass'; A.lp.frequency.value=180; A.sea=AC.createGain(); A.sea.gain.value=0;
-  loop(mk(1)).connect(A.lp); A.lp.connect(A.sea); A.sea.connect(A.out);
-  A.bp=AC.createBiquadFilter(); A.bp.type='bandpass'; A.bp.frequency.value=600; A.bp.Q.value=.7; A.air=AC.createGain(); A.air.gain.value=0;
-  loop(mk(0)).connect(A.bp); A.bp.connect(A.air); A.air.connect(A.out);
-  A.rum=AC.createGain(); A.rum.gain.value=0; const rl=AC.createBiquadFilter(); rl.type='lowpass'; rl.frequency.value=70; loop(mk(1)).connect(rl); rl.connect(A.rum); A.rum.connect(A.out);
+  const G=v=>{ const g=AC.createGain(); g.gain.value=v; return g; }, Fl=(t,f,q)=>{ const x=AC.createBiquadFilter(); x.type=t; x.frequency.value=f; if(q) x.Q.value=q; return x; };
+  A.out=G(.9); A.out.connect(AC.destination);
+  A.lp=Fl('lowpass',180); A.sea=G(0); loop(mk(1)).connect(A.lp); A.lp.connect(A.sea); A.sea.connect(A.out);
+  A.bp=Fl('bandpass',600,.7); A.air=G(0); loop(mk(0)).connect(A.bp); A.bp.connect(A.air); A.air.connect(A.out);
+  A.rl=Fl('lowpass',70); A.rum=G(0); loop(mk(1)).connect(A.rl); A.rl.connect(A.rum); A.rum.connect(A.out);
+  A.hall=G(0); [55,82.5].forEach((f,i)=>{ const o=AC.createOscillator(); o.frequency.value=f; const g=G(i?.3:.5); o.connect(g); g.connect(A.hall); o.start(); }); A.hall.connect(A.out);
 }
-['pointerdown','keydown','touchstart','wheel'].forEach(e=>addEventListener(e,initAudio,{passive:true}));
+$('snd').addEventListener('click',()=>{ sound=!sound; $('snd').textContent=sound?'소리 끄기':'소리 켜기'; if(sound) initAudio(); if(A.out) A.out.gain.setTargetAtTime(sound?.9:0,AC.currentTime,.1); });
 
-let p=0, tp=0, last=0;
+$('again').addEventListener('click',()=>scrollTo({top:0,behavior:'smooth'}));
+
+// ───── 매 프레임 ─────
+let s=0, last=0, typed=-1;
 function tick(t){
   const dt=Math.min(.05,(t-last)/1000||0); last=t;
-  const max=document.documentElement.scrollHeight-innerHeight; tp=max>0?scrollY/max:0;
-  const prev=p; p+=(tp-p)*Math.min(1,dt*5);
-  const i=Math.max(0,Math.min(N-1,Math.round(p*(N-1)))); draw(i);
-  ruin.style.opacity = p<.012 ? 1 : 0;
-  city.style.opacity = p>.985 ? 1 : 0;
-  document.getElementById('deep').style.opacity = Math.max(0,1-p*1.6);
-  document.getElementById('t1').style.opacity = Math.max(0,1-p*4.5);
-  document.getElementById('hint').style.opacity = p<.04?1:0;
-  const t2o=Math.max(0,Math.min(1,(p-.9)*10)); document.getElementById('t2').style.opacity=t2o; document.getElementById('topfade').style.opacity=t2o;
-  document.getElementById('enter').classList.toggle('on',p>.97);
-  document.querySelector('#bar i').style.height=(p*100)+'%';
-  if(AC&&AC.state==='running'){ const v=Math.abs(p-prev)/Math.max(dt,.001), ct=AC.currentTime;
-    A.sea.gain.setTargetAtTime(.55*(1-p)+.25*p,ct,.2); A.lp.frequency.setTargetAtTime(180+p*1400,ct,.2);
-    A.air.gain.setTargetAtTime(.10*Math.max(0,p-.45)*1.8,ct,.3);
-    A.rum.gain.setTargetAtTime(Math.min(1.2,v*1.6),ct,.15); }
+  const max=document.documentElement.scrollHeight-innerHeight, ts=max>0?scrollY/max:0;
+  const prev=s; s+=(ts-s)*Math.min(1,dt*7);
+  // 영상 위치 (찾는 중이 아닐 때만 옮김 → 버벅임 방지)
+  const vt=videoTime(s);
+  if(vid.readyState>=2 && !vid.seeking && Math.abs(vid.currentTime-vt)>.02) vid.currentTime=vt;
+  ruin.style.opacity = s<.051 ? 1 : 0;
+  // 글 상자
+  for(const [id,a,b] of BLOCKS){ const fade=.012; let o=0; if(s>a&&s<b) o=Math.min(1,(s-a)/fade,(b-s)/fade); if(a<0) o=Math.min(1,(b-s)/fade); $(id).style.opacity=Math.max(0,o); }
+  $('hint').style.opacity = s<.03 ? 1 : 0;
+  // 마지막 문장: 스크롤하는 만큼 쓰임
+  const fk=Math.max(0,Math.min(1,(s-.785)/.07)), n=Math.round(FINAL.length*fk);
+  if(n!==typed){ typed=n; $('finalT').textContent=FINAL.slice(0,n); $('finalT').classList.toggle('cur',n>0&&n<FINAL.length); $('finalR').style.opacity=n>=FINAL.length?.75:0; }
+  // 가라앉기
+  const sink=Math.max(0,Math.min(1,(s-.88)/.07));
+  $('sea').style.height=(sink*100)+'%';
+  $('vidWrap').style.filter = sink>0 ? `grayscale(${sink*.8}) brightness(${1+sink*.3}) blur(${sink*2}px)` : '';
+  ruinEnd.style.opacity = Math.max(0,Math.min(1,(s-.93)/.03));
+  $('again').classList.toggle('on', s>.97);
+  // 장소 이름, 진행 막대
+  let nm=STOPS[0][0]; for(const [name,at] of STOPS) if(s>=at-.005) nm=name; if(s>.95) nm='해저';
+  if($('pname').textContent!==nm) $('pname').textContent=nm;
+  $('bar').firstElementChild.style.height=(s*100)+'%';
+  // 소리
+  if(AC&&sound){ const ct=AC.currentTime, v=Math.abs(s-prev)/Math.max(dt,.001), under=Math.max(1-s/.3, sink);
+    A.sea.gain.setTargetAtTime(.6*under+.18*(1-under),ct,.25); A.lp.frequency.setTargetAtTime(180+(1-under)*1500,ct,.25);
+    A.air.gain.setTargetAtTime(s>.12&&s<.72?.09:.02,ct,.4); A.hall.gain.setTargetAtTime(s>.7&&s<.9?.05:0,ct,.6);
+    A.rum.gain.setTargetAtTime(Math.min(1.3,v*6)+(sink>0&&sink<1?.9:0),ct,.15); }
   requestAnimationFrame(tick);
 }
 requestAnimationFrame(tick);
-document.getElementById('enter').addEventListener('click',()=>{ location.href='https://ejdms499-wq.github.io/as-written-atlantis/'; });
 </script>
 </body>
 </html>
