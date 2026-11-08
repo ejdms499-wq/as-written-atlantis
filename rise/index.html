@@ -103,14 +103,15 @@
 <script>
 // ───── 스크롤 → 장면 (각 구간: 스크롤 시작, 끝, 영상 시간 시작, 끝) ─────
 // 영상 시간(초)
-const T={ riseEnd:4.483, hill:5.083, hillEnd:8.967, kings:9.567, kingsEnd:11.117, city:11.717, p2i:16.2, p2iEnd:20.683, bull:21.283, bullEnd:24.083, dec:24.683, decEnd:29.12, sink:29.167, end:34.2 };
-// [스크롤 시작, 끝, 영상 시작, 끝]
-const MAP=[ [0,.01,0,0], [.01,.12,0,T.riseEnd], [.12,.14,T.riseEnd,T.hill], [.14,.26,T.hill,T.hillEnd], [.26,.275,T.hillEnd,T.kings],
-  [.275,.33,T.kings,T.kingsEnd], [.33,.345,T.kingsEnd,T.city], [.345,.43,T.city,T.p2i], [.43,.52,T.p2i,T.p2iEnd], [.52,.535,T.p2iEnd,T.bull],
-  [.535,.62,T.bull,T.bullEnd], [.62,.635,T.bullEnd,T.dec], [.635,.72,T.dec,T.decEnd], [.72,.80,T.decEnd,T.decEnd], [.80,.95,T.sink,T.end], [.95,1,T.end,T.end] ];
+const T={ riseEnd:4.483, hill0:5.083, ringsStart:6.983, ringsDone:9.98, hillEnd:11.467, kings:12.067, kingsEnd:13.617, city:14.217, p2i:18.7, p2iEnd:23.183, bull:23.783, bullEnd:26.583, dec:27.183, decEnd:31.62, sink:31.667, end:36.7 };
+// [스크롤 시작, 끝, 영상 시작, 끝] — 글이 말하는 순간에 그림도 그렇게 변하도록 맞춤
+const MAP=[ [0,.01,0,0], [.01,.12,0,T.riseEnd], [.12,.135,T.riseEnd,T.hill0], [.135,.18,T.hill0,T.ringsStart], [.18,.25,T.ringsStart,T.ringsDone],
+  [.25,.265,T.ringsDone,T.hillEnd], [.265,.28,T.hillEnd,T.kings], [.28,.33,T.kings,T.kingsEnd], [.33,.345,T.kingsEnd,T.city], [.345,.43,T.city,T.p2i],
+  [.43,.49,T.p2i,T.p2i+3.9], [.49,.52,T.p2i+3.9,T.p2iEnd], [.52,.535,T.p2iEnd,T.bull], [.535,.62,T.bull,T.bullEnd], [.62,.635,T.bullEnd,T.dec], [.635,.72,T.dec,T.decEnd],
+  [.72,.80,T.decEnd,T.decEnd], [.80,.95,T.sink,T.end], [.95,1,T.end,T.end] ];
 const STOPS=[ ['프롤로그 · 해저',0], ['1장 · 사랑',.12], ['2장 · 왕들',.26], ['3장 · 도시',.33], ['4장 · 황소의 밤',.52], ['5장 · 타락',.62], ['6장 · 심판',.72], ['가라앉음',.80], ['해저',.95] ];
-const BLOCKS=[ ['b0',-1,.035], ['b1',.075,.12], ['c1a',.14,.19], ['c1b',.195,.26], ['c2',.27,.33], ['b2',.345,.395], ['b3',.40,.45], ['b4',.47,.52],
-  ['c4a',.535,.575], ['c4b',.58,.62], ['c5',.64,.715], ['b5',.722,.80], ['s1',.815,.86], ['s2',.865,.905], ['s3',.91,.95], ['b6',.955,9] ];
+const BLOCKS=[ ['b0',-1,.035], ['b1',.075,.12], ['c1a',.13,.18], ['c1b',.182,.262], ['c2',.28,.33], ['b2',.345,.392], ['b3',.40,.445], ['b4',.492,.522],
+  ['c4a',.535,.575], ['c4b',.58,.62], ['c5',.64,.715], ['b5',.722,.80], ['s1',.80,.85], ['s2',.855,.90], ['s3',.905,.95], ['b6',.955,9] ];
 const FINAL='법에 따라 다스리며 이런 일을 꿰뚫어 볼 줄 아는 신들의 신 제우스는, 한때 훌륭했던 종족이 비참한 처지에 빠진 것을 보았다. 그는 세상의 한가운데에서 모든 것을 내려다보는 가장 거룩한 처소로 모든 신을 불러 모았다. 그리고 신들을 다 모으자, 그는 이렇게 말했다—';
 
 const ruin=document.getElementById('ruin'), ruinEnd=document.getElementById('ruinEnd');
@@ -121,7 +122,7 @@ function videoTime(s){ for(const [a,b,t0,t1] of MAP){ if(s<=b){ const k=b>a?Math
 STOPS.forEach(([n,s])=>{ const sp=document.createElement('span'); sp.textContent=n; sp.style.top=(s*100)+'%'; $('bar').appendChild(sp); });
 
 // ───── 프레임 그림 (12장/초) ─────
-const NF=411, FPS2=12, frames=new Array(NF), bmp=new Map(), pend=new Set();
+const NF=441, FPS2=12, frames=new Array(NF), bmp=new Map(), pend=new Set();
 const cv=document.getElementById('cv'), ctx=cv.getContext('2d',{alpha:false});
 let IW=1024, IH=572, drawn=-1;
 function fit(){ cv.width=IW; cv.height=IH; drawn=-1; }   // 원본 크기 그대로 그리고, 화면 확대는 GPU가 처리
@@ -211,7 +212,7 @@ function audioTick(dt,s,v,sink,fl){
   // 바다·바람·땅울림
   A.sea.gain.setTargetAtTime(.55*under+.16*(1-under)*(inside?.2:1),ct,.25); A.lp.frequency.setTargetAtTime(220+(1-under)*1500,ct,.25);
   A.air.gain.setTargetAtTime(inside?.015:((dark&&s<.80?.16:.08)*(1-under)),ct,.4);
-  A.rum.gain.setTargetAtTime(Math.min(1.2,v*5)*(s<.12?1:.3)+(s>.80&&s<.92?.75:0)+(s>.64&&s<.80?.12:0)+fl,ct,.12);
+  A.rum.gain.setTargetAtTime((s>.18&&s<.25?.35:0)+Math.min(1.2,v*5)*(s<.12?1:.3)+(s>.80&&s<.92?.75:0)+(s>.64&&s<.80?.12:0)+fl,ct,.12);
   A.revIn.gain.setTargetAtTime(inside?1.2:(under>.5?.9:.35),ct,.4);
   // 배경음악: 물속에선 먹먹하게, 떠오르면 밝게, 글이 끊기면 뚝, 가라앉으면 낮게 다시
   const cut = s>.79&&s<.83;
