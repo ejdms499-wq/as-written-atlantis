@@ -128,12 +128,12 @@
 <script>
 // ───── 스크롤 → 장면 ─────
 // 영상 시간(초): 시내 정지 0–2.5 · ①시내→복숭아숲 2.5–7.58 · ②숲→산 7.58–12.67 · ③입구→굴 12.67–17.75
-// ④굴→확트임 17.75–22.83 · ⑤골짜기→마을 22.83–27.92 · 마을 27.92–33.12 · (겹침) · 안개 출발 33.92–36.12 · ⑥되찾기→길잃음 36.12–41.2 · 끝 41.2–45.2
-const END=45.2;
+// ④굴→확트임 17.75–22.83 · ⑤골짜기 내려가기 22.83–26.83 → (겹침) 산에 둘러싸인 마을 26.03–32.03 → (겹침) 안개 출발 31.23–34.23 · ⑥되찾기→길잃음 34.23–39.32 · 끝 39.32–43.3
+const END=43.3;
 // [스크롤 시작, 끝, 영상 시작, 끝] — 글이 말하는 순간에 그림도 그렇게 보이도록 맞춤
 const MAP=[ [0,.01,0,0], [.01,.06,0,2.5], [.06,.10,2.5,4.1], [.10,.16,4.1,7.583], [.16,.20,7.583,10.0], [.20,.25,10.0,12.667],
-  [.25,.30,12.667,14.6], [.30,.36,14.6,17.75], [.36,.43,17.75,21.0], [.43,.48,21.0,22.833], [.48,.56,22.833,25.5], [.56,.60,25.5,27.917],
-  [.60,.78,27.917,33.117], [.78,.81,33.117,34.0], [.81,.85,34.0,36.117], [.85,.885,36.117,38.2], [.885,.93,38.2,41.2], [.93,1,41.2,END] ];
+  [.25,.30,12.667,14.6], [.30,.36,14.6,17.75], [.36,.43,17.75,21.0], [.43,.48,21.0,22.833], [.48,.56,22.833,25.0], [.56,.60,25.0,27.0],
+  [.60,.78,27.0,31.233], [.78,.81,31.233,32.2], [.81,.85,32.2,34.233], [.85,.885,34.233,36.3], [.885,.93,36.3,39.317], [.93,1,39.317,END] ];
 const STOPS=[ ['시내',0], ['복숭아숲',.10], ['산의 입구',.20], ['좁은 굴',.36], ['마을',.43], ['떠남',.74], ['길을 잃음',.885] ];
 const BLOCKS=[ ['b0',-1,.03], ['c1',.035,.10], ['c2',.105,.16], ['c3',.165,.20], ['c4',.21,.25], ['c5a',.255,.287], ['c5b',.29,.315], ['c6',.32,.355],
   ['c7',.365,.398], ['c8',.403,.43], ['c9',.436,.478], ['c10',.485,.528], ['c11',.533,.562], ['c12',.567,.60], ['c13',.605,.637], ['c14',.642,.674],
@@ -144,7 +144,7 @@ function videoTime(s){ for(const [a,b,t0,t1] of MAP){ if(s<=b){ const k=b>a?Math
 STOPS.forEach(([n,s])=>{ const sp=document.createElement('span'); sp.textContent=n; sp.style.top=(s*100)+'%'; $('bar').appendChild(sp); });
 
 // ───── 프레임 그림 (12장/초) ─────
-const NF=543, FPS2=12, frames=new Array(NF), bmp=new Map(), pend=new Set();
+const NF=520, FPS2=12, frames=new Array(NF), bmp=new Map(), pend=new Set();
 const cv=$('cv'), ctx=cv.getContext('2d',{alpha:false});
 const IW=1024, IH=572; cv.width=IW; cv.height=IH;
 let dir=1, lastI=0, lastKey='';
@@ -184,16 +184,13 @@ function initAudio(){
   try{ AC=new (window.AudioContext||window.webkitAudioContext)(); }catch(e){ return; }
   A.B=brown();
   const lim=AC.createDynamicsCompressor(); lim.threshold.value=-20; lim.knee.value=6; lim.ratio.value=20; lim.attack.value=.003; lim.release.value=.25;
-  A.master=G(.55); A.out=G(sound?1:0); A.out.connect(lim); lim.connect(A.master); A.master.connect(AC.destination);
+  A.master=G(.4); A.out=G(sound?1:0); A.out.connect(lim); lim.connect(A.master); A.master.connect(AC.destination);
   const ir=AC.createBuffer(2,AC.sampleRate*2.5,AC.sampleRate); for(let c=0;c<2;c++){ const d=ir.getChannelData(c); for(let i=0;i<d.length;i++) d[i]=(Math.random()*2-1)*Math.pow(1-i/d.length,3)*.5; }
   A.rev=AC.createConvolver(); A.rev.buffer=ir; A.revIn=G(.3); A.revIn.connect(A.rev); A.rev.connect(G(.25)).connect(A.out);
-  // 물소리 (낮고 부드러운 흐름)
-  A.flow=G(0); const fl=Fl('lowpass',450); loopSrc(A.B).connect(fl); fl.connect(A.flow); A.flow.connect(A.out);
-  // 바람·안개
-  A.air=G(0); const ab=Fl('bandpass',300,.5); loopSrc(A.B).connect(ab); ab.connect(A.air); A.air.connect(A.out);
+  // (쉬익·웅 하는 잡음 계열 소리는 모두 뺌)
   // 음악: 은은하게 깔리는 화음 + 줄 뜯는 선율
   A.music=G(0); A.mlp=Fl('lowpass',900,.5); A.mlp.connect(A.music); A.music.connect(A.out); A.music.connect(A.revIn);
-  A.pad=[0,1,2].map(()=>{ const o=AC.createOscillator(); o.type='sine'; const g=G(.03); o.connect(g); g.connect(A.mlp); o.start(); return o; });
+  A.pad=[0,1,2].map(()=>{ const o=AC.createOscillator(); o.type='sine'; const g=G(.02); o.connect(g); g.connect(A.mlp); o.start(); return o; });
   A.chord=-1; A.note=-1; A.t0=AC.currentTime;
 }
 const hz=m=>440*Math.pow(2,(m-69)/12);
@@ -224,8 +221,6 @@ function audioTick(dt,s,v){
   if(!AC||AC.state!=='running') return;
   const ct=AC.currentTime;
   const cave = s>.30&&s<.435, village = s>.435&&s<.78, fog = s>.81 || lost, boat = !cave&&!village&&!fog;
-  A.flow.gain.setTargetAtTime(cave?.01:(boat?.09:(village?.025:.06)),ct,.6);
-  A.air.gain.setTargetAtTime(fog?.07:.015,ct,.8);
   A.revIn.gain.setTargetAtTime(cave?.7:.3,ct,.4);
   // 음악: 굴 안에선 낮게 → 확 트이면 밝게 → “말할 것 못 됩니다”에서 멈춤 → 안개 속엔 낮은 화음만
   const cut=(s>.79&&s<.82), music = sound&&!cut ? (lost?.4:(fog?.6:1)) : 0;
@@ -239,9 +234,7 @@ function audioTick(dt,s,v){
     if(play) pluck(hz(m-12), fog?.035:.06); }
   if((s>.06&&s<.30)||village){ birdT-=dt; if(birdT<0){ birdT=2.5+Math.random()*5; SFX.bird(); } }
   if(cave){ dripT-=dt; if(dripT<0){ dripT=1.2+Math.random()*2.5; SFX.drip(); } }
-  if(cave&&v>.004&&s>.32){ stepPh+=Math.min(v,.05)*60*dt; if(stepPh>=1){ stepPh=0; SFX.step(); } }
   if(crossed(prevS,s,.437)) SFX.bloom();
-  if(s>.85&&s<.89&&!lost){ oarT-=dt; if(oarT<0){ oarT=1.6; SFX.oar(); } }
   if(crossed(prevS,s,.976)) pluck(hz(50-12),.08);
   prevS=s;
 }
@@ -262,7 +255,7 @@ function tick(t){
   if(lost&&s<.012) lost=false;
   const lostView = lost && s<.93;
   // 그림
-  const vt = lostView ? 39.5+ (s/.93)*5.5 : videoTime(s);
+  const vt = lostView ? 37.6+(s/.93)*5.6 : videoTime(s);
   drawFrame(Math.max(0,Math.min(NF-1,vt*FPS2)));
   setO($('fog'), lostView ? .55 : (s>.93 ? Math.min(.25,(s-.93)/.07*.25) : 0));
   // 확 트이는 순간 하얗게
