@@ -164,7 +164,7 @@ function drawFrame(x){
 }
 let loadedN=0;
 (async()=>{ const q=[...Array(NF).keys()]; const worker=async()=>{ while(q.length){ const k=q.shift();
-    try{ const r=await fetch('f/'+String(k+1).padStart(3,'0')+'.jpg'); frames[k]=await r.blob(); }catch(e){}
+    try{ const r=await fetch('f5/'+String(k+1).padStart(3,'0')+'.jpg'); frames[k]=await r.blob(); }catch(e){}
     loadedN++; $('pct').textContent=Math.round(loadedN/NF*100); } };
   await Promise.all([0,1,2,3,4,5].map(worker));
   warm(0); const wait=()=>(bmp.has(0)&&bmp.has(1))?($('ltxt').style.display='none',$('go').style.display='block',drawFrame(0)):setTimeout(wait,50); wait(); })();
