@@ -5,6 +5,7 @@
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <title>AS WRITTEN — 아틀란티스</title>
 <style>
+  body{word-break:keep-all;overflow-wrap:break-word}
   html,body{margin:0;height:100%;background:#000;overflow:hidden;font-family:"Noto Serif KR","Apple SD Gothic Neo",serif;color:#f3e9d6;user-select:none;-webkit-user-select:none}
   #stage{position:fixed;inset:0;overflow:hidden}
   canvas,#still,#live{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);will-change:transform}
@@ -99,7 +100,7 @@
 <div class="vig"></div>
 <div id="place"><small>AS WRITTEN · ATLANTIS</small><b id="pname">항구 · 운하 입구</b></div>
 <button id="snd" title="소리">소리 켜짐</button>
-<div id="help"><kbd>W</kbd> / <kbd>↑</kbd> 누르고 있기 — 앞으로<br>다리 위 갈림길: <kbd>A</kbd> 선착장 · <kbd>D</kbd> 경마장<br><kbd>S</kbd> / <kbd>↓</kbd> — 뒤로<br>마우스 휠로도 이동 · 마우스로 둘러보기<br>빛나는 점 — 원문 보기</div>
+<div id="help"><kbd>W</kbd> / <kbd>↑</kbd> 누르고 있기 — 앞으로<br>다리 위 갈림길: <kbd>A</kbd> 선착장 · <kbd>D</kbd> 경마장<br><kbd>S</kbd> / <kbd>↓</kbd> — 뒤로<br>마우스 휠을 아래로 굴려도 앞으로 이동 · 마우스로 둘러보기<br>빛나는 점 — 원문 보기</div>
 <div id="route"></div>
 <a id="go3d" target="_blank" rel="noopener">이 자리에서 3D로 둘러보기 ↗</a>
 <div id="choose"></div>
@@ -236,7 +237,7 @@ let pos=0, vel=0, pause=0; const keys={};
 addEventListener('keydown',e=>{const k=e.key.toLowerCase(); keys[k]=true; if(k==='arrowup'||k==='arrowdown') e.preventDefault();
   if(atJunction()){ if(k==='a'||k==='arrowleft') choose('docks'); if(k==='d'||k==='arrowright') choose('race'); } });
 addEventListener('keyup',e=>{keys[e.key.toLowerCase()]=false;});
-let wheelPush=0; addEventListener('wheel',e=>{wheelPush+=-e.deltaY*0.012;},{passive:true});
+let wheelPush=0; addEventListener('wheel',e=>{ if(!entered){ if(e.deltaY>0&&typeof enter==='function') enter(); return; } if(finale) return; wheelPush+=e.deltaY*0.012; wheelPush=Math.max(-6,Math.min(6,wheelPush)); },{passive:true});
 let btnDir=0;
 function hold(btn,dir){ btn.addEventListener('pointerdown',e=>{e.preventDefault();btnDir=dir;}); for(const ev of ['pointerup','pointerleave','pointercancel']) btn.addEventListener(ev,()=>{btnDir=0;}); }
 hold(document.getElementById('bFwd'),1); hold(document.getElementById('bBack'),-1);
@@ -448,7 +449,7 @@ function tick(t){
   if(pause>0){ pause-=dt; target=0; vel=0; }
   vel+=(target-vel)*Math.min(1,dt*(input?3.2:4.5));
   const prev=pos; pos=Math.max(0,Math.min(N-1,pos+vel*dt));
-  for(const st of stops){ if(st>0&&st<N-1&&((prev<st&&pos>=st)||(prev>st&&pos<=st))){ pos=st; vel=0; pause=.9; wheelPush=0; break; } }
+  for(const st of stops){ if(st>0&&st<N-1&&((prev<st&&pos>=st)||(prev>st&&pos<=st))){ pos=st; vel=0; pause=.45; wheelPush*=.3; break; } }
   if((pos===0&&vel<0)||(pos===N-1&&vel>0)) vel=0;
   draw(Math.round(pos));
 

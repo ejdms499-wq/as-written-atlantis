@@ -134,7 +134,7 @@ function groundY(x, z) { return H(x, z) + (W.village && inHostHouse(x, z) ? .3 :
 function makeAgents() {
   const R = rng(17);
   const add = (kind, x, z, mode, extra = {}) => {
-    const p = makePerson(kind === 'farmer' ? 'farmer' : kind, R); p.position.set(x, groundY(x, z), z); scene.add(p);
+    const p = makePerson(kind === 'farmer' ? 'farmer' : kind, R); p.position.set(x, groundY(x, z), z); p.visible = false;
     const a = { p, kind, mode, home: new V3(x, 0, z), route: [], speed: kind === 'child' ? 2.6 : 1.25, face: R() * 6.28, t0: R() * 10, ...extra };
     p.rotation.y = a.face; agents.push(a); return a;
   };
@@ -178,6 +178,7 @@ function moveAgent(a, dt, t) {
 function lerpAng(a, b, k) { let d = ((b - a + Math.PI) % (Math.PI * 2) + Math.PI * 2) % (Math.PI * 2) - Math.PI; return a + d * k; }
 function updateAgents(dt, t) {
   for (const a of agents) {
+    if (!a.p.visible) continue;
     if (a.p.position.distanceTo(camera.position) > 260) continue;
     if (moveAgent(a, dt, t)) continue;
     const p = a.p.position;
@@ -373,27 +374,18 @@ function storyTick(dt, t) {
     else place('물이 시작되는 곳 · 水源');
     if (p.z < -80) say('t9');
     if (p.z < -122) say('t10');
-    for (const a of agents) {
-      const d = a.p.position.distanceTo(p);
-      if (a.kind === 'farmer' && d < 16) say('t11');
-      if ((a.kind === 'elder' || a.kind === 'child') && d < 14) say('t12');
+    // 사람은 보이지 않고 장소만: 글은 그 자리에 이르면 나옴
+    if (p.z < -150) say('t11');
+    if (p.z < -235) say('t12');
+    if (state.phase === 'go' && p.z < -252) {
+      state.phase = 'met';
+      say('t13', true, () => say('t14', true, () => { state.phase = 'follow'; hint('대문이 열린 집으로 들어가기'); }));
     }
-    // 마을 사람과 마주침
-    if (state.phase === 'go' && W.host.p.position.distanceTo(p) < 7.5) {
-      state.phase = 'met'; W.host.mode = 'startle'; W.host.face = Math.atan2(p.x - W.host.p.position.x, p.z - W.host.p.position.z); W.host.p.rotation.y = W.host.face;
-      setTimeout(() => { W.host.mode = 'watch'; say('t13', true, () => say('t14', true, () => {
-        state.phase = 'follow'; W.host.route = routeToHost(W.host); W.host.speed = 1.5;
-        W.host.onArrive = a => { a.mode = 'sit'; a.p.position.set(hostHouse().x - 1.9, 0, hostHouse().z - 6.4); a.p.position.y = groundY(a.p.position.x, a.p.position.z); a.face = Math.PI * .5; };
-        hint('주인을 따라 집으로 가기');
-      })); }, 1300);
-    }
-    if (state.phase === 'follow' && inHostHouse(p.x, p.z) && !W.host.route.length) {
+    if (state.phase === 'follow' && inHostHouse(p.x, p.z)) {
       state.phase = 'feast'; hint('');
-      gather();
-      say('t15', false);
-      setTimeout(() => say('t16', true, () => say('t17', true, () => say('t18', true, () => say('t19', true, () => fade(() => {
+      say('t15', true, () => say('t16', true, () => say('t17', true, () => say('t18', true, () => say('t19', true, () => fade(() => {
         disperse(); say('t20', true, () => { state.phase = 'leave'; hint('왔던 굴로 돌아가기'); });
-      }, '며칠 뒤  停數日')))), 9000));
+      }, '며칠 뒤  停數日'))))));
     }
     if (state.phase === 'leave' && p.z > 4.8 && !state.inTun) {
       state.phase = 'out'; hint('');
