@@ -1,0 +1,331 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<link rel="icon" href="data:,">
+<title>AS WRITTEN — 무릉도원 · 쓰인 만큼만 그려지는 두루마리</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+KR:wght@400;600&family=Noto+Serif+TC:wght@400;600&display=swap" rel="stylesheet">
+<style>
+  :root{--silk:#e2d4b4;--ink:#2a1c0e;--seal:#b3261e}
+  html,body{margin:0;background:#1b1611;color:var(--ink);font-family:"Noto Serif KR","Noto Serif TC",serif;-webkit-font-smoothing:antialiased}
+  body{height:2700vh}
+  #cv{position:fixed;inset:0;width:100%;height:100%;display:block;cursor:default}
+  #cv.stamp{cursor:crosshair}
+  .blk{position:fixed;left:50%;top:6vh;transform:translateX(-50%) translateZ(0);width:min(940px,92vw);text-align:center;opacity:0;pointer-events:none;
+       padding:22px 26px 26px;box-sizing:border-box;will-change:opacity;
+       background:radial-gradient(ellipse 62% 70% at 50% 50%,rgba(236,225,198,.94) 0%,rgba(236,225,198,.8) 55%,rgba(236,225,198,0) 100%)}
+  .blk.dark{background:none;color:#f3e9d2;text-shadow:0 1px 4px #000}
+  .lab{display:block;font-size:13px;letter-spacing:.42em;color:#8d2f22;margin-bottom:14px}
+  .dark .lab{color:#f0b9a4}
+  .big{margin:0;font-size:clamp(20px,2.3vw,29px);line-height:1.72;letter-spacing:.02em}
+  .huge{margin:0;font-size:clamp(26px,3.3vw,42px);line-height:1.6;letter-spacing:.05em}
+  .ref{display:block;margin-top:12px;font-family:"Noto Serif TC","Noto Serif KR",serif;font-size:16px;letter-spacing:.2em;color:#5b4128}
+  .dark .ref{color:#e9d9b8}
+  .ref small{display:block;margin-top:6px;font-size:12px;letter-spacing:.18em;font-family:"Noto Serif KR",serif}
+  .title{display:block;font-size:clamp(44px,6.4vw,78px);letter-spacing:.32em;font-weight:600;color:var(--ink);margin:0 0 12px;padding-left:.32em}
+  #place{position:fixed;left:24px;top:20px;font-size:12px;letter-spacing:.3em;color:#f3e9d2;pointer-events:none;background:rgba(27,22,17,.62);padding:10px 16px 11px;border-radius:12px}
+  #place b{display:block;margin-top:6px;font-size:18px;font-weight:600;letter-spacing:.08em}
+  #bar{position:fixed;right:26px;top:50%;transform:translateY(-50%);width:2px;height:44vh;background:rgba(243,233,210,.25);pointer-events:none}
+  #bar i{position:absolute;left:0;top:0;width:100%;background:var(--seal);height:0}
+  #hint{position:fixed;left:50%;bottom:9vh;transform:translateX(-50%);font-size:14px;letter-spacing:.2em;color:#f3e9d2;background:rgba(27,22,17,.7);padding:10px 20px;border-radius:22px;pointer-events:none;opacity:0;transition:opacity .5s;white-space:nowrap}
+  #hint i{display:inline-block;margin-left:8px;animation:bob 1.6s ease-in-out infinite;font-style:normal}
+  @keyframes bob{50%{transform:translateY(5px)}}
+  #stampHint{position:fixed;left:50%;bottom:6vh;transform:translateX(-50%);padding:12px 22px;border-radius:24px;background:rgba(27,22,17,.78);color:#f3e9d2;font-size:15px;letter-spacing:.14em;pointer-events:none;opacity:0;transition:opacity .4s;white-space:nowrap}
+  #stampHint b{color:#f0a08f}
+  #again{position:fixed;left:50%;bottom:6vh;transform:translateX(-50%);background:rgba(27,22,17,.55);color:#f3e9d2;border:1px solid rgba(243,233,210,.6);border-radius:26px;padding:12px 28px;font-family:inherit;font-size:15px;letter-spacing:.18em;cursor:pointer;opacity:0;pointer-events:none;transition:opacity .8s}
+  #again.on{opacity:1;pointer-events:auto}
+  #snd{position:fixed;right:20px;bottom:20px;background:rgba(27,22,17,.6);color:#f3e9d2;border:1px solid rgba(243,233,210,.4);border-radius:18px;padding:7px 14px;font-family:inherit;font-size:13px;cursor:pointer}
+  #load{position:fixed;inset:0;z-index:9;display:flex;flex-direction:column;gap:16px;align-items:center;justify-content:center;background:#1b1611;color:#f3e9d2;transition:opacity .9s;text-align:center;padding:0 20px}
+  #load h1{margin:0;font-size:clamp(34px,5vw,56px);letter-spacing:.3em;font-weight:600;padding-left:.3em}
+  #load p{margin:0;font-size:15px;line-height:1.8;opacity:.85}
+  #go{background:none;color:#f3e9d2;border:1px solid rgba(240,160,143,.85);border-radius:30px;padding:14px 32px;font-family:inherit;font-size:16px;letter-spacing:.2em;cursor:pointer;animation:breathe 2.4s ease-in-out infinite}
+  @keyframes breathe{50%{color:#f0a08f;box-shadow:0 0 24px rgba(240,160,143,.3)}}
+  #load small{font-size:12px;opacity:.55;letter-spacing:.12em;line-height:1.7}
+  #credit{position:fixed;left:24px;bottom:20px;font-size:11px;letter-spacing:.06em;color:rgba(243,233,210,.85);pointer-events:none;background:rgba(27,22,17,.55);padding:6px 12px;border-radius:10px}
+  @media (max-width:700px){#place{left:12px;top:12px;padding:7px 11px}#place b{font-size:15px}#place span{font-size:10px}#bar{right:10px}.blk{top:84px;padding:14px 10px 18px}.big{font-size:17px;line-height:1.7}.huge{font-size:23px}.big br{display:none}.ref{font-size:12px;letter-spacing:.08em}.title{font-size:40px}#snd{bottom:auto;top:12px;right:12px}#credit{left:12px;right:12px;bottom:10px;font-size:9px}}
+</style>
+</head>
+<body>
+<canvas id="cv"></canvas>
+<div id="place"><span>AS WRITTEN · 武陵桃源</span><b id="pname">두루마리</b></div>
+<div id="bar"><i></i></div>
+
+<div class="blk" id="b0"><span class="title">무릉도원</span>
+  <p class="big">도연명의 『도화원기』 320자. <br>이 두루마리에는 <b>글에 쓰인 것만</b> 그려진다.</p></div>
+<div class="blk" id="c1"><span class="lab">시내</span>
+  <p class="big">진(晉)나라 태원 연간, 무릉에 고기잡이를 업으로 삼는 사람이 있었다. <br>시내를 따라가다가, 길이 얼마나 먼지 잊었다.</p>
+  <span class="ref">晉太元中，武陵人捕魚為業。緣溪行，忘路之遠近。</span></div>
+<div class="blk" id="c2"><span class="lab">복숭아숲</span>
+  <p class="big">문득 복숭아꽃 숲을 만났다. <br>양쪽 기슭으로 수백 걸음, 다른 나무는 하나도 없었다. <br>향긋한 풀은 싱그럽고, 떨어지는 꽃잎이 어지러이 흩날렸다.</p>
+  <span class="ref">忽逢桃花林，夾岸數百步，中無雜樹，芳草鮮美，落英繽紛。</span></div>
+<div class="blk" id="c3"><span class="lab">복숭아숲</span>
+  <p class="big">어부는 이를 몹시 이상히 여겼다. <br>다시 앞으로 나아가, 그 숲이 끝나는 곳까지 가 보려 했다.</p>
+  <span class="ref">漁人甚異之。復前行，欲窮其林。</span></div>
+<div class="blk" id="c4"><span class="lab">산</span>
+  <p class="big">숲은 물이 시작되는 곳에서 끝났고, <br>거기에 산이 하나 있었다.</p>
+  <span class="ref">林盡水源，便得一山，</span></div>
+<div class="blk" id="c5a"><span class="lab">산의 입구</span>
+  <p class="big">산에는 작은 입구가 있었는데,</p>
+  <span class="ref">山有小口，</span></div>
+<div class="blk" id="c5b"><p class="huge">빛이 있는 듯, 없는 듯했다.</p>
+  <span class="ref">彷彿若有光。</span></div>
+<div class="blk" id="c6"><span class="lab">산의 입구</span>
+  <p class="big">이에 배를 두고, 입구로 들어갔다.</p>
+  <span class="ref">便舍船，從口入。</span></div>
+<div class="blk dark" id="c7"><span class="lab">좁은 굴</span>
+  <p class="big">처음에는 몹시 좁아, <br>겨우 사람 하나 지나갈 만했다.</p>
+  <span class="ref">初極狹，才通人。</span></div>
+<div class="blk dark" id="c8"><p class="huge">다시 수십 걸음을 가자,</p>
+  <span class="ref">復行數十步，</span></div>
+<div class="blk" id="c9"><p class="huge">확 트이며 환하게 밝아졌다.</p>
+  <span class="ref">豁然開朗。</span></div>
+<div class="blk" id="c10"><span class="lab">마을</span>
+  <p class="big">땅은 평평하고 넓었으며, 집들은 가지런했다. <br>좋은 밭과 아름다운 못, 뽕나무와 대나무가 있었다.</p>
+  <span class="ref">土地平曠，屋舍儼然，有良田美池桑竹之屬。</span></div>
+<div class="blk" id="c11"><span class="lab">마을</span>
+  <p class="big">밭두렁 길이 이리저리 통하고, <br>닭 우는 소리와 개 짖는 소리가 서로 들렸다.</p>
+  <span class="ref">阡陌交通，雞犬相聞。</span></div>
+<div class="blk" id="c12"><span class="lab">마을</span>
+  <p class="big">그 안에서 오가며 농사짓는 사람들, <br>남자와 여자의 옷차림은 모두 바깥 사람들 같았다.</p>
+  <span class="ref">其中往來種作，男女衣著，悉如外人。</span></div>
+<div class="blk" id="c13"><span class="lab">마을</span>
+  <p class="big">누렇게 센 머리의 노인과 머리를 늘어뜨린 아이가 <br>모두 즐겁고 편안해 보였다.</p>
+  <span class="ref">黃髮垂髫，並怡然自樂。</span></div>
+<div class="blk" id="c14"><span class="lab">마을</span>
+  <p class="big">그들은 어부를 보고 크게 놀라, 어디서 왔는지 물었다. <br>어부가 낱낱이 대답하자, 그를 집으로 청해 <br>술을 내고 닭을 잡아 밥을 지었다.</p>
+  <span class="ref">見漁人，乃大驚，問所從來。具答之。便要還家，設酒殺雞作食。</span></div>
+<div class="blk" id="c15"><span class="lab">마을</span>
+  <p class="big">마을 사람들이 소식을 듣고 모두 와서 물었다. <br>선조가 진(秦)나라 때의 난리를 피해 처자와 고을 사람을 이끌고 <br>이 외딴 곳에 들어온 뒤, 다시는 나가지 않았다고 했다.</p>
+  <span class="ref">村中聞有此人，咸來問訊。自云先世避秦時亂，率妻子邑人來此絕境，不復出焉，遂與外人間隔。</span></div>
+<div class="blk" id="c16"><span class="lab">마을</span>
+  <p class="big">지금이 어느 시대냐고 물었다. <br>한(漢)나라가 있었던 것도 몰랐으니, <br>위(魏)나라와 진(晉)나라는 말할 것도 없었다.</p>
+  <span class="ref">問今是何世，乃不知有漢，無論魏晉。</span></div>
+<div class="blk" id="c17"><span class="lab">마을</span>
+  <p class="big">어부가 들은 것을 하나하나 말해 주자, 모두 탄식했다. <br>다른 이들도 저마다 그를 집으로 불러 술과 음식을 냈다. <br>며칠을 머문 뒤, 그는 떠나겠다고 했다.</p>
+  <span class="ref">此人一一為具言所聞，皆歎惋。餘人各復延至其家，皆出酒食。停數日，辭去。</span></div>
+<div class="blk" id="c18"><span class="lab">떠남</span>
+  <p class="huge">그곳 사람이 말했다. <br>“바깥 사람들에게 말할 만한 것은 못 됩니다.”</p>
+  <span class="ref">此中人語云：「不足為外人道也。」</span></div>
+<div class="blk" id="c19"><span class="lab">되돌아감</span>
+  <p class="big">나와서 배를 찾아, 왔던 길을 따라가며 <br>곳곳에 표시를 해 두었다.</p>
+  <span class="ref">既出，得其船，便扶向路，處處誌之。</span></div>
+<div class="blk" id="c20"><span class="lab">되돌아감</span>
+  <p class="big">고을에 이르러 태수를 찾아가 이 일을 말하자, <br>태수는 곧 사람을 보내 그를 따라가게 했다.</p>
+  <span class="ref">及郡下，詣太守，說如此。太守即遣人隨其往，</span></div>
+<div class="blk" id="c21"><p class="huge">표시해 둔 곳을 찾아갔으나,</p>
+  <span class="ref">尋向所誌，</span></div>
+<div class="blk" id="c22"><p class="huge">끝내 길을 잃어, 다시는 찾지 못했다.</p>
+  <span class="ref">遂迷，不復得路。</span></div>
+<div class="blk" id="c23"><span class="lab">길을 잃음</span>
+  <p class="big">남양의 유자기는 뜻이 높은 선비였다. <br>이 이야기를 듣고 기뻐하며 찾아가려 했으나, <br>이루지 못하고 얼마 뒤 병들어 죽었다.</p>
+  <span class="ref">南陽劉子驥，高尚士也，聞之，欣然規往。未果，尋病終。</span></div>
+<div class="blk" id="c24"><span class="title" style="font-size:clamp(26px,3.6vw,42px);letter-spacing:.12em;padding:0">그 뒤로는 나루를 묻는 이가 없었다.</span>
+  <span class="ref">後遂無問津者。<small>『도화원기』는 여기서 끝난다.</small></span></div>
+<div class="blk" id="lost"><span class="lab">遂迷，不復得路</span>
+  <p class="big">되짚어 보지만, 그림도 표시도 다시 나타나지 않는다. <br>들어가려면 처음부터, 다시 시내를 따라가야 한다.</p></div>
+
+<div id="hint">스크롤하면 두루마리가 펼쳐져요<i>↓</i></div>
+<div id="stampHint">그림을 눌러 <b>표시</b>를 남기세요 · <span id="sc">0</span>/3</div>
+<button id="again">↑ 다시 찾아가 보기</button>
+<button id="snd">소리 끄기</button>
+<div id="credit">그림: 「桃花源圖」 17세기 작자 미상(구영 서명은 후대 위작) · 시카고 미술관 소장 · CC0</div>
+<div id="load">
+  <h1>무릉도원</h1>
+  <p>쓰인 만큼만 그려지는 두루마리</p>
+  <span id="ltxt">두루마리를 펴는 중 <b id="pct">0</b>%</span>
+  <button id="go" style="display:none">▶ 소리 켜고 펼치기</button>
+  <small>그림: 「桃花源圖」(The Peach Blossom Spring), 비단에 채색, 17세기 작자 미상 · 시카고 미술관(Art Institute of Chicago) 소장, CC0 <br>🎧 이어폰이나 스피커를 켜 주세요</small>
+</div>
+
+<script>
+// ───── 두루마리 (가로 11250 × 세로 904 픽셀, 6조각) ─────
+const PW=11250, PH=904, TW=1875, NT=6, MS=8;   // MS: 색이 번지는 마스크 축소 비율
+// ───── 스크롤 → 카메라 [스크롤, 가운데 x, 가운데 y, 확대] ─────
+const KF=[[0,10820,452,1],[.05,10450,452,1.05],[.105,9750,560,1.35],[.16,9250,520,1.2],[.21,8850,380,1.1],[.25,8600,620,1.6],[.28,8480,660,1.85],[.305,8430,700,2.0],
+  [.34,8150,470,1.5],[.375,7850,470,1.5],[.41,7150,452,1.0],[.45,6850,452,1.05],[.49,6450,420,1.35],[.525,6000,560,1.3],[.56,5480,630,1.7],[.595,5380,620,2.0],
+  [.635,4318,430,1.4],[.675,3720,610,1.8],[.725,1600,430,1.7],[.765,1850,640,1.5],
+  [.80,3850,780,1.9],[.84,5200,452,1.1],[.87,6300,452,.8],[.895,6100,452,.38],[.93,6600,452,.38],[.96,10000,452,.9],[1,10820,452,1]];
+// 글 상자 [id, 나타남, 사라짐]
+const BLOCKS=[['b0',-1,.035],['c1',.04,.085],['c2',.095,.145],['c3',.15,.19],['c4',.2,.235],['c5a',.242,.262],['c5b',.267,.29],['c6',.295,.318],['c7',.325,.355],['c8',.36,.386],
+  ['c9',.394,.425],['c10',.43,.465],['c11',.47,.5],['c12',.505,.535],['c13',.54,.565],['c14',.57,.605],['c15',.61,.645],['c16',.65,.682],['c17',.705,.736],['c18',.743,.776],
+  ['c19',.785,.835],['c20',.845,.875],['c21',.88,.905],['c22',.91,.935],['c23',.94,.965],['c24',.972,9]];
+const STOPS=[['두루마리',0],['시내',.04],['복숭아숲',.095],['산의 입구',.2],['좁은 굴',.322],['마을',.392],['떠남',.735],['되돌아감',.78],['길을 잃음',.905]];
+// 글이 나오면 색이 번지는 곳 [id, x, y, 가로반경, 세로반경] — 쓰이지 않은 곳은 끝까지 밑그림으로 남음
+const REG={c1:[[10750,450,480,560],[10350,800,600,220]],c2:[[9700,600,900,430],[10250,640,520,360]],c3:[[9250,600,620,420]],c4:[[8850,330,720,400]],
+  c5a:[[8560,700,360,260]],c6:[[8543,745,320,190]],c7:[[8150,460,560,520]],c8:[[7800,460,520,520]],c9:[[7150,452,1300,720]],c10:[[6700,452,950,620]],
+  c11:[[6350,400,720,520]],c12:[[5900,600,720,420]],c13:[[5470,640,520,360]],c14:[[5200,600,620,460],[3740,620,420,300]],c15:[[4318,420,720,520]],c16:[[3740,620,520,360]],
+  c17:[[1560,420,720,520]],c18:[[1850,650,620,360]],c19:[[3850,800,420,210]]};
+const GLOW=[8385,690];   // 「빛이 있는 듯」
+const F={colorOut:[.9,.93], silkOut:[.915,.945], stampA:.80, stampB:.872};
+
+const $=id=>document.getElementById(id);
+// 카메라: 키프레임을 부드럽게 잇는 곡선(멈췄다 가는 느낌 없이)
+function cam(s){
+  let i=0; while(i<KF.length-2&&s>KF[i+1][0]) i++;
+  const p0=KF[Math.max(0,i-1)],p1=KF[i],p2=KF[i+1],p3=KF[Math.min(KF.length-1,i+2)];
+  const t=Math.max(0,Math.min(1,(s-p1[0])/(p2[0]-p1[0]||1)));
+  const cr=(a,b,c,d)=>{ const t2=t*t,t3=t2*t; return .5*((2*b)+(-a+c)*t+(2*a-5*b+4*c-d)*t2+(-a+3*b-3*c+d)*t3); };
+  return [cr(p0[1],p1[1],p2[1],p3[1]), cr(p0[2],p1[2],p2[2],p3[2]), Math.exp(cr(Math.log(p0[3]),Math.log(p1[3]),Math.log(p2[3]),Math.log(p3[3])))];
+}
+STOPS.forEach(([n,s])=>{ const sp=document.createElement('span'); });
+
+// ───── 그림 불러오기 ─────
+const col=[],fnt=[]; let loaded=0;
+function loadImg(src){ return new Promise(r=>{ const im=new Image(); im.onload=()=>{ loaded++; $('pct').textContent=Math.round(loaded/(NT*2)*100); r(im); }; im.onerror=()=>{ loaded++; r(null); }; im.src=src; }); }
+Promise.all([...Array(NT).keys()].map(i=>Promise.all([loadImg('t/f'+i+'.jpg'),loadImg('t/c'+i+'.jpg')]).then(([f,c])=>{ fnt[i]=f; col[i]=c; }))).then(()=>{ $('ltxt').style.display='none'; $('go').style.display='block'; });
+
+// ───── 화면 ─────
+const cv=$('cv'), ctx=cv.getContext('2d',{alpha:false});
+const mask=document.createElement('canvas'); mask.width=Math.ceil(PW/MS); mask.height=Math.ceil(PH/MS); const mctx=mask.getContext('2d');
+let CW=0,CH=0,DPR=1;
+function fit(){ DPR=1; /* 원본 그림 해상도가 화면과 비슷해서 1배면 충분 */ CW=Math.round(innerWidth*DPR); CH=Math.round(innerHeight*DPR); cv.width=CW; cv.height=CH; }
+addEventListener('resize',fit); fit();
+// 번짐 상태
+const rev={}; let maskDirty=true;
+function drawMask(){
+  mctx.clearRect(0,0,mask.width,mask.height);
+  for(const id in rev){ const p=Math.round(rev[id]*10)/10; if(p<=0) continue; const e=1-Math.pow(1-p,3);
+    for(const [x,y,rx,ry] of REG[id]){ mctx.save(); mctx.translate(x/MS,y/MS); mctx.scale(rx/MS*e,ry/MS*e);
+      const g=mctx.createRadialGradient(0,0,0,0,0,1); g.addColorStop(0,'rgba(0,0,0,1)'); g.addColorStop(.62,'rgba(0,0,0,.92)'); g.addColorStop(1,'rgba(0,0,0,0)');
+      mctx.fillStyle=g; mctx.beginPath(); mctx.arc(0,0,1,0,Math.PI*2); mctx.fill(); mctx.restore(); } }
+  maskDirty=false; }
+// 조각별 색 레이어(번진 부분만 색, 나머지는 투명)
+const comp=[], dirty=new Set([0,1,2,3,4,5]);
+function markDirty(id){ for(const [x,y,rx] of REG[id]){ const a=Math.floor((x-rx)/TW), b=Math.floor((x+rx)/TW); for(let i=Math.max(0,a);i<=Math.min(NT-1,b);i++) dirty.add(i); } }
+function updateComp(i0,i1){
+  if(maskDirty) drawMask();
+  let budget=1;
+  for(let i=i0;i<=i1&&budget>0;i++){ if(!dirty.has(i)||!col[i]) continue;
+    let c=comp[i]; if(!c){ c=comp[i]=document.createElement('canvas'); c.width=col[i].width; c.height=col[i].height; }
+    const x=c.getContext('2d'); x.globalCompositeOperation='source-over'; x.clearRect(0,0,c.width,c.height); x.drawImage(col[i],0,0);
+    x.globalCompositeOperation='destination-in'; x.imageSmoothingEnabled=true;
+    x.drawImage(mask,(i*TW)/MS,0,TW/MS,mask.height,0,0,TW,mask.height*MS);
+    c._ok=true; dirty.delete(i); budget--; }
+}
+// 표시(도장)
+const seals=[]; let stampFade=0;
+function drawSeal(c,x,y,sz,a,rot){ c.save(); c.globalAlpha=a; c.translate(x,y); c.rotate(rot); c.fillStyle='#b3261e'; const r=sz*.12;
+  c.beginPath(); c.moveTo(-sz/2+r,-sz/2); c.arcTo(sz/2,-sz/2,sz/2,sz/2,r); c.arcTo(sz/2,sz/2,-sz/2,sz/2,r); c.arcTo(-sz/2,sz/2,-sz/2,-sz/2,r); c.arcTo(-sz/2,-sz/2,sz/2,-sz/2,r); c.fill();
+  c.strokeStyle='rgba(243,233,210,.9)'; c.lineWidth=sz*.05; c.strokeRect(-sz*.36,-sz*.36,sz*.72,sz*.72);
+  c.fillStyle='rgba(243,233,210,.95)'; c.font='600 '+(sz*.56)+'px "Noto Serif TC",serif'; c.textAlign='center'; c.textBaseline='middle'; c.fillText('誌',0,sz*.03); c.restore(); }
+
+let view={x0:0,y0:0,w:PW,h:PH,k:1};
+function render(s,t){
+  const [cx,cy,z]=cam(s);
+  const vh=PH/z, vw=vh*CW/CH; let x0=vw>=PW?(PW-vw)/2:Math.max(0,Math.min(PW-vw,cx-vw/2)); let y0=vh>PH?(PH-vh)/2:Math.max(0,Math.min(PH-vh,cy-vh/2)); const k=CH/vh;
+  view={x0,y0,w:vw,h:vh,k};
+  ctx.globalAlpha=1; ctx.fillStyle='#1b1611'; ctx.fillRect(0,0,CW,CH);
+  // 두루마리 밖은 어둡게, 안은 밑그림
+  const silkOut=lostView?1:ramp(s,F.silkOut[0],F.silkOut[1]), colorOut=lostView?1:ramp(s,F.colorOut[0],F.colorOut[1]);
+  const i0=Math.max(0,Math.floor(x0/TW)), i1=Math.min(NT-1,Math.floor((x0+vw)/TW));
+  for(let i=i0;i<=i1;i++){ const im=fnt[i]; if(!im) continue; ctx.drawImage(im,(i*TW-x0)*k,(0-y0)*k,im.width*k,im.height*k); }
+  // 글에 쓰인 곳만 색이 번짐 (조각별로 미리 합쳐 둔 그림을 그대로 붙임 → 매 프레임 가벼움)
+  if(colorOut<1){
+    updateComp(i0,i1);
+    ctx.globalAlpha=1-colorOut;
+    for(let i=i0;i<=i1;i++){ const c=comp[i]; if(c&&c._ok) ctx.drawImage(c,(i*TW-x0)*k,(0-y0)*k,c.width*k,c.height*k); }
+    ctx.globalAlpha=1;
+  }
+  // 빛이 있는 듯
+  const gl=Math.max(0,Math.min(1,(s-.262)/.01))*Math.max(0,Math.min(1,(.322-s)/.01));
+  if(gl>0){ const gx=(GLOW[0]-x0)*k, gy=(GLOW[1]-y0)*k, R=(60+10*Math.sin(t/600))*k; const g=ctx.createRadialGradient(gx,gy,0,gx,gy,R);
+    g.addColorStop(0,'rgba(255,248,220,'+(.85*gl)+')'); g.addColorStop(.35,'rgba(255,240,200,'+(.45*gl)+')'); g.addColorStop(1,'rgba(255,240,200,0)'); ctx.fillStyle=g; ctx.fillRect(gx-R,gy-R,R*2,R*2); }
+  // 표시(도장)
+  const sa=(1-silkOut*1.2)*(1-stampFade);
+  if(sa>0) for(const sl of seals){ const a=Math.min(1,(t-sl.t)/180); drawSeal(ctx,(sl.x-x0)*k,(sl.y-y0)*k,Math.max(46*k,40*DPR)*(1+.08*Math.sin(t/400)*ramp(s,.88,.9)),Math.max(0,sa)*a,sl.r); }
+  // 빈 비단으로 (길을 잃음)
+  if(silkOut>0){ ctx.globalAlpha=silkOut*.92; ctx.fillStyle='#e2d4b4'; const xa=Math.max(0,(560-x0)*k), xb=Math.min(CW,(10930-x0)*k); const ya=Math.max(0,(0-y0)*k), yb=Math.min(CH,(PH-y0)*k); ctx.fillRect(xa,ya,xb-xa,yb-ya); ctx.globalAlpha=1; }
+  // 좁은 굴: 어둠 속 좁은 틈 → 확 트임
+  const inCave=s>.318&&s<.41;
+  if(inCave){ const op=s<.392?1:Math.max(0,1-(s-.392)/.012); const slitW=CW*(s<.36?.16-.08*((s-.318)/.042):.08+.04*Math.max(0,(s-.375)/.017)); const sx=CW/2;
+    ctx.save(); ctx.globalAlpha=Math.min(1,(s-.318)/.008)*op; ctx.fillStyle='#0d0a07';
+    const g=ctx.createLinearGradient(sx-slitW,0,sx+slitW,0); g.addColorStop(0,'rgba(13,10,7,1)'); g.addColorStop(.38,'rgba(13,10,7,.0)'); g.addColorStop(.62,'rgba(13,10,7,.0)'); g.addColorStop(1,'rgba(13,10,7,1)');
+    ctx.fillRect(0,0,sx-slitW,CH); ctx.fillRect(sx+slitW,0,CW-sx-slitW,CH); ctx.fillStyle=g; ctx.fillRect(sx-slitW,0,slitW*2,CH); ctx.restore(); }
+  const fl=Math.max(0,.75-Math.abs(s-.395)/.01*.75); if(fl>0){ ctx.globalAlpha=fl; ctx.fillStyle='#fffaf0'; ctx.fillRect(0,0,CW,CH); ctx.globalAlpha=1; }
+}
+function ramp(s,a,b){ return Math.max(0,Math.min(1,(s-a)/(b-a))); }
+
+// ───── 도장 찍기 ─────
+let stampMode=false;
+function addSeal(px,py){ if(seals.length>=3) return; seals.push({x:px,y:py,t:performance.now(),r:(Math.random()-.5)*.25}); $('sc').textContent=seals.length; if(AC) stampSound(); }
+cv.addEventListener('pointerdown',e=>{ if(!stampMode) return; const px=view.x0+e.clientX*DPR/view.k, py=view.y0+e.clientY*DPR/view.k; addSeal(px,py); });
+
+// ───── 소리 (낮고 차분하게, 잡음 없이, 마지막에 리미터) ─────
+let AC=null,A={},sound=true;
+const Gn=v=>{ const g=AC.createGain(); g.gain.value=v; return g; };
+const Fl=(t,f,q)=>{ const x=AC.createBiquadFilter(); x.type=t; x.frequency.value=f; if(q) x.Q.value=q; return x; };
+function initAudio(){
+  if(AC){ AC.resume(); return; }
+  try{ AC=new (window.AudioContext||window.webkitAudioContext)(); }catch(e){ return; }
+  const lim=AC.createDynamicsCompressor(); lim.threshold.value=-20; lim.knee.value=6; lim.ratio.value=20; lim.attack.value=.003; lim.release.value=.25;
+  A.master=Gn(.4); A.out=Gn(sound?1:0); A.out.connect(lim); lim.connect(A.master); A.master.connect(AC.destination);
+  const ir=AC.createBuffer(2,AC.sampleRate*2.5,AC.sampleRate); for(let c=0;c<2;c++){ const d=ir.getChannelData(c); for(let i=0;i<d.length;i++) d[i]=(Math.random()*2-1)*Math.pow(1-i/d.length,3)*.5; }
+  A.rev=AC.createConvolver(); A.rev.buffer=ir; A.revIn=Gn(.35); A.revIn.connect(A.rev); A.rev.connect(Gn(.25)).connect(A.out);
+  A.music=Gn(0); A.mlp=Fl('lowpass',700,.5); A.mlp.connect(A.music); A.music.connect(A.out); A.music.connect(A.revIn);
+  A.pad=[0,1,2].map(()=>{ const o=AC.createOscillator(); o.type='sine'; const g=Gn(.025); o.connect(g); g.connect(A.mlp); o.start(); return o; });
+  A.chord=-1; A.note=-1; A.t0=AC.currentTime;
+}
+const hz=m=>440*Math.pow(2,(m-69)/12);
+const PADS=[[38,45,50],[36,43,48],[41,48,53],[38,45,53]];
+const MEL=[50,null,null,57,null,null,55,null,53,null,null,null, 50,null,null,null,48,null,50,null,null,null,null,null];
+function pluck(f,amp){ if(!AC) return; const t=AC.currentTime, g=AC.createGain(), lp=Fl('lowpass',900,.3);
+  g.gain.setValueAtTime(0,t); g.gain.linearRampToValueAtTime(amp,t+.02); g.gain.exponentialRampToValueAtTime(.0003,t+4.5);
+  [[1,1],[2,.18]].forEach(([h,v])=>{ const o=AC.createOscillator(), og=Gn(v); o.type='triangle'; o.frequency.setValueAtTime(f*h*1.004,t); o.frequency.exponentialRampToValueAtTime(f*h,t+.25); o.connect(og); og.connect(lp); o.start(t); o.stop(t+4.6); });
+  lp.connect(g); g.connect(A.music); }
+function stampSound(){ const t=AC.currentTime, o=AC.createOscillator(), g=AC.createGain(); o.frequency.setValueAtTime(130,t); o.frequency.exponentialRampToValueAtTime(70,t+.18);
+  g.gain.setValueAtTime(0,t); g.gain.linearRampToValueAtTime(.35,t+.006); g.gain.exponentialRampToValueAtTime(.0005,t+.3); o.connect(g); g.connect(A.out); o.start(t); o.stop(t+.35); }
+let prevS=0;
+function crossed(a,b,x){ return (a<x&&b>=x)||(a>x&&b<=x); }
+function audioTick(s){
+  if(!AC||AC.state!=='running') return;
+  const ct=AC.currentTime, cave=s>.318&&s<.394, fog=s>.86||lost, cut=s>.733&&s<.776;
+  A.revIn.gain.setTargetAtTime(cave?.6:.35,ct,.6);
+  A.music.gain.setTargetAtTime(sound&&!cut?(lost?.35:(fog?.55:.9)):0,ct,cut?.15:1.5);
+  A.mlp.frequency.setTargetAtTime(cave?320:(fog?380:(s>.394&&s<.735?900:650)),ct,1.5);
+  const t=ct-A.t0, ci=Math.floor(t/10)%4;
+  if(ci!==A.chord){ A.chord=ci; const lo=fog?-12:0; PADS[ci].forEach((m,i)=>A.pad[i].frequency.setTargetAtTime(hz(m+lo),ct,2.5)); }
+  const ni=Math.floor(t/1.7)%MEL.length;
+  if(ni!==A.note){ A.note=ni; const m=MEL[ni]; if(m!==null&&!cut&&!lost&&!(s>.88&&s<.972)&&(!cave||ni===0)) pluck(hz(m-(cave?12:0)),fog?.05:.08); }
+  if(crossed(prevS,s,.394)) [62,66,69].forEach((m,i)=>setTimeout(()=>pluck(hz(m-12),.06),i*220));
+  if(crossed(prevS,s,.972)) pluck(hz(38),.1);
+  prevS=s;
+}
+$('go').addEventListener('click',()=>{ sound=true; initAudio(); $('load').style.opacity=0; setTimeout(()=>$('load').remove(),1000); });
+$('snd').addEventListener('click',()=>{ sound=!sound; $('snd').textContent=sound?'소리 끄기':'소리 켜기'; initAudio(); A.out.gain.setTargetAtTime(sound?1:0,AC.currentTime,.1); });
+$('again').addEventListener('click',()=>scrollTo({top:0,behavior:'smooth'}));
+
+// ───── 매 프레임 ─────
+let s=0,last=0,lost=false,lostView=false;
+const AUTO=[4700,5500,6150];   // 도장을 안 찍고 지나가면 대신 찍히는 곳
+function setO(el,o){ const v=Math.max(0,Math.min(1,o)).toFixed(2); if(el._o!==v){ el._o=v; el.style.opacity=v; } }
+function tick(t){
+  const dt=Math.min(.05,(t-last)/1000||0); last=t;
+  const max=document.documentElement.scrollHeight-innerHeight, ts=max>0?scrollY/max:0;
+  s+=(ts-s)*Math.min(1,dt*10);
+  if(s>.985 && !lost){ lost=true; }
+  if(lost && s<.012){ lost=false; for(const k in rev) rev[k]=0; seals.length=0; $('sc').textContent=0; maskDirty=true; for(let i=0;i<NT;i++) dirty.add(i); }
+  lostView = lost && s<.97;
+  // 글이 나오면 그 자리에 색이 번짐 (한 번 번지면 남음)
+  if(!lost) for(const [id,a] of BLOCKS){ if(REG[id] && s>a){ const old=rev[id]||0, v=Math.min(1,old+dt/1.6); rev[id]=v; if(Math.round(v*10)!==Math.round(old*10)||(v===1&&old<1)){ maskDirty=true; markDirty(id); } } }
+  // 도장 구간
+  stampMode = !lost && s>F.stampA && s<F.stampB;
+  cv.classList.toggle('stamp',stampMode);
+  if(stampMode){ const [cx]=cam(s); for(const ax of AUTO){ if(cx>ax && seals.length<3 && !seals.some(q=>Math.abs(q.x-ax)<250) && seals.filter(q=>q.auto).length<3){ seals.push({x:ax,y:520+Math.random()*120,t:performance.now(),r:(Math.random()-.5)*.25,auto:1}); $('sc').textContent=seals.length; if(AC) stampSound(); } } }
+  stampFade = lost?1:ramp(s,.92,.945);
+  render(s,t);
+  for(const [id,a,b] of BLOCKS){ const fd=.008; let o=0; if(!lostView){ if(s>a&&s<b) o=Math.min(1,(s-a)/fd,(b-s)/fd); if(a<0) o=Math.min(1,(b-s)/fd); } setO($(id),o); }
+  setO($('lost'), lostView ? Math.min(1,(s-.03)/.02,(.95-s)/.02) : 0);
+  setO($('hint'), s<.03&&!lost?1:0);
+  setO($('stampHint'), stampMode && seals.length<3 ? 1 : 0);
+  $('again').classList.toggle('on', s>.975 || (lostView&&s>.06));
+  let nm=STOPS[0][0]; for(const [n,a] of STOPS) if(s>=a-.004) nm=n; if(lostView) nm='길을 잃음'; if($('pname').textContent!==nm) $('pname').textContent=nm;
+  { const bh=(s*100).toFixed(1)+'%'; const bi=$('bar').firstElementChild; if(bi._h!==bh){ bi._h=bh; bi.style.height=bh; } }
+  audioTick(s);
+  requestAnimationFrame(tick);
+}
+requestAnimationFrame(tick);
+</script>
+</body>
+</html>

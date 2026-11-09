@@ -4,67 +4,63 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <link rel="icon" href="data:,">
-<title>AS WRITTEN — 무릉도원 · 쓰인 만큼만 그려지는 두루마리</title>
-<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+KR:wght@400;600&family=Noto+Serif+TC:wght@400;600&display=swap" rel="stylesheet">
+<title>AS WRITTEN — 무릉도원</title>
 <style>
-  :root{--silk:#e2d4b4;--ink:#2a1c0e;--seal:#b3261e}
-  html,body{margin:0;background:#1b1611;color:var(--ink);font-family:"Noto Serif KR","Noto Serif TC",serif;-webkit-font-smoothing:antialiased}
-  body{height:2700vh}
-  #cv{position:fixed;inset:0;width:100%;height:100%;display:block;cursor:default}
-  #cv.stamp{cursor:crosshair}
-  .blk{position:fixed;left:50%;top:6vh;transform:translateX(-50%) translateZ(0);width:min(940px,92vw);text-align:center;opacity:0;pointer-events:none;
-       padding:22px 26px 26px;box-sizing:border-box;will-change:opacity;
-       background:radial-gradient(ellipse 62% 70% at 50% 50%,rgba(236,225,198,.94) 0%,rgba(236,225,198,.8) 55%,rgba(236,225,198,0) 100%)}
-  .blk.dark{background:none;color:#f3e9d2;text-shadow:0 1px 4px #000}
-  .lab{display:block;font-size:13px;letter-spacing:.42em;color:#8d2f22;margin-bottom:14px}
-  .dark .lab{color:#f0b9a4}
-  .big{margin:0;font-size:clamp(20px,2.3vw,29px);line-height:1.72;letter-spacing:.02em}
-  .huge{margin:0;font-size:clamp(26px,3.3vw,42px);line-height:1.6;letter-spacing:.05em}
-  .ref{display:block;margin-top:12px;font-family:"Noto Serif TC","Noto Serif KR",serif;font-size:16px;letter-spacing:.2em;color:#5b4128}
-  .dark .ref{color:#e9d9b8}
-  .ref small{display:block;margin-top:6px;font-size:12px;letter-spacing:.18em;font-family:"Noto Serif KR",serif}
-  .title{display:block;font-size:clamp(44px,6.4vw,78px);letter-spacing:.32em;font-weight:600;color:var(--ink);margin:0 0 12px;padding-left:.32em}
-  #place{position:fixed;left:24px;top:20px;font-size:12px;letter-spacing:.3em;color:#f3e9d2;pointer-events:none;background:rgba(27,22,17,.62);padding:10px 16px 11px;border-radius:12px}
-  #place b{display:block;margin-top:6px;font-size:18px;font-weight:600;letter-spacing:.08em}
-  #bar{position:fixed;right:26px;top:50%;transform:translateY(-50%);width:2px;height:44vh;background:rgba(243,233,210,.25);pointer-events:none}
-  #bar i{position:absolute;left:0;top:0;width:100%;background:var(--seal);height:0}
-  #hint{position:fixed;left:50%;bottom:9vh;transform:translateX(-50%);font-size:14px;letter-spacing:.2em;color:#f3e9d2;background:rgba(27,22,17,.7);padding:10px 20px;border-radius:22px;pointer-events:none;opacity:0;transition:opacity .5s;white-space:nowrap}
-  #hint i{display:inline-block;margin-left:8px;animation:bob 1.6s ease-in-out infinite;font-style:normal}
+  html,body{margin:0;background:#070908;color:#f6efe4;font-family:"Noto Serif KR","Noto Serif TC","Apple SD Gothic Neo",serif;-webkit-font-smoothing:antialiased}
+  body{height:2510vh}
+  #stage{position:fixed;inset:0;overflow:hidden;background:#070908}
+  #cv{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;will-change:transform}
+  #fog{position:fixed;inset:0;pointer-events:none;opacity:0;background:radial-gradient(ellipse at 50% 60%,rgba(222,230,232,.55),rgba(190,202,206,.85));will-change:opacity}
+  #shadeB{position:fixed;left:0;right:0;bottom:0;height:62vh;pointer-events:none;background:linear-gradient(to top,rgba(0,0,0,.88) 0,rgba(0,0,0,.6) 45%,rgba(0,0,0,0) 100%);transform:translateZ(0)}
+  #shadeT{position:fixed;left:0;right:0;top:0;height:22vh;pointer-events:none;background:linear-gradient(to bottom,rgba(0,0,0,.45),rgba(0,0,0,0))}
+  .blk{position:fixed;left:50%;bottom:11vh;transform:translateX(-50%) translateZ(0);width:min(920px,90vw);text-align:center;opacity:0;pointer-events:none;text-shadow:0 1px 3px rgba(0,0,0,.9);will-change:opacity;contain:layout paint;z-index:2}
+  .lab{display:block;font-size:14px;letter-spacing:.4em;color:#f4c2b4;margin-bottom:18px}
+  .big{margin:0;font-size:clamp(21px,2.5vw,31px);line-height:1.75;letter-spacing:.02em}
+  .huge{margin:0;font-size:clamp(28px,3.6vw,46px);line-height:1.6;letter-spacing:.04em}
+  .ref{display:block;margin-top:16px;font-size:16px;letter-spacing:.18em;opacity:.8;font-family:"Noto Serif TC","Noto Serif KR",serif}
+  .ref small{display:block;margin-top:6px;font-size:12px;letter-spacing:.2em;opacity:.8;font-family:"Noto Serif KR",serif}
+  .title{display:block;font-size:clamp(46px,7vw,84px);letter-spacing:.3em;color:#f4c2b4;font-weight:400;margin:0 0 18px;padding-left:.3em}
+.blk.rt{left:auto;right:7vw;transform:translateZ(0);width:min(640px,54vw);text-align:right}
+  @media (max-width:700px){.blk.rt{left:50%;right:auto;transform:translateX(-50%) translateZ(0);width:90vw;text-align:center}}
+  #hint{position:fixed;left:50%;bottom:4vh;transform:translateX(-50%);font-size:14px;letter-spacing:.3em;opacity:.9;pointer-events:none;text-shadow:0 2px 10px #000}
+  #hint i{display:inline-block;margin-left:10px;animation:bob 1.6s ease-in-out infinite}
   @keyframes bob{50%{transform:translateY(5px)}}
-  #stampHint{position:fixed;left:50%;bottom:6vh;transform:translateX(-50%);padding:12px 22px;border-radius:24px;background:rgba(27,22,17,.78);color:#f3e9d2;font-size:15px;letter-spacing:.14em;pointer-events:none;opacity:0;transition:opacity .4s;white-space:nowrap}
-  #stampHint b{color:#f0a08f}
-  #again{position:fixed;left:50%;bottom:6vh;transform:translateX(-50%);background:rgba(27,22,17,.55);color:#f3e9d2;border:1px solid rgba(243,233,210,.6);border-radius:26px;padding:12px 28px;font-family:inherit;font-size:15px;letter-spacing:.18em;cursor:pointer;opacity:0;pointer-events:none;transition:opacity .8s}
+  #place{position:fixed;left:36px;top:30px;font-size:14px;letter-spacing:.3em;color:#f4c2b4;text-shadow:0 1px 3px #000}
+  #place b{display:block;margin-top:8px;font-size:22px;font-weight:500;letter-spacing:.08em;color:#f6efe4}
+  #bar{position:fixed;right:30px;top:50%;transform:translateY(-50%);width:2px;height:46vh;background:rgba(246,239,228,.2)}
+  #bar i{position:absolute;left:0;top:0;width:100%;background:#f4c2b4;height:0}
+  #bar span{position:absolute;right:14px;transform:translateY(-50%);font-size:12px;letter-spacing:.14em;white-space:nowrap;opacity:.7;text-shadow:0 1px 6px #000}
+  #bar span::after{content:"";position:absolute;right:-17px;top:50%;width:6px;height:6px;margin-top:-3px;border-radius:50%;background:rgba(246,239,228,.7)}
+  #flash{position:fixed;inset:0;z-index:1;background:#fffaf0;opacity:0;pointer-events:none;will-change:opacity}
+  #again{position:fixed;z-index:3;left:50%;bottom:5vh;transform:translateX(-50%);background:rgba(0,0,0,.25);color:#f6efe4;border:1px solid rgba(246,239,228,.6);border-radius:28px;padding:13px 30px;font-family:inherit;font-size:15px;letter-spacing:.2em;cursor:pointer;opacity:0;pointer-events:none;transition:opacity .8s}
   #again.on{opacity:1;pointer-events:auto}
-  #snd{position:fixed;right:20px;bottom:20px;background:rgba(27,22,17,.6);color:#f3e9d2;border:1px solid rgba(243,233,210,.4);border-radius:18px;padding:7px 14px;font-family:inherit;font-size:13px;cursor:pointer}
-  #load{position:fixed;inset:0;z-index:9;display:flex;flex-direction:column;gap:16px;align-items:center;justify-content:center;background:#1b1611;color:#f3e9d2;transition:opacity .9s;text-align:center;padding:0 20px}
-  #load h1{margin:0;font-size:clamp(34px,5vw,56px);letter-spacing:.3em;font-weight:600;padding-left:.3em}
-  #load p{margin:0;font-size:15px;line-height:1.8;opacity:.85}
-  #go{background:none;color:#f3e9d2;border:1px solid rgba(240,160,143,.85);border-radius:30px;padding:14px 32px;font-family:inherit;font-size:16px;letter-spacing:.2em;cursor:pointer;animation:breathe 2.4s ease-in-out infinite}
-  @keyframes breathe{50%{color:#f0a08f;box-shadow:0 0 24px rgba(240,160,143,.3)}}
-  #load small{font-size:12px;opacity:.55;letter-spacing:.12em;line-height:1.7}
-  #credit{position:fixed;left:24px;bottom:20px;font-size:11px;letter-spacing:.06em;color:rgba(243,233,210,.85);pointer-events:none;background:rgba(27,22,17,.55);padding:6px 12px;border-radius:10px}
-  @media (max-width:700px){#place{left:12px;top:12px;padding:7px 11px}#place b{font-size:15px}#place span{font-size:10px}#bar{right:10px}.blk{top:84px;padding:14px 10px 18px}.big{font-size:17px;line-height:1.7}.huge{font-size:23px}.big br{display:none}.ref{font-size:12px;letter-spacing:.08em}.title{font-size:40px}#snd{bottom:auto;top:12px;right:12px}#credit{left:12px;right:12px;bottom:10px;font-size:9px}}
+  #snd{position:fixed;right:22px;bottom:22px;background:rgba(0,0,0,.55);color:#f6efe4;border:1px solid rgba(246,239,228,.4);border-radius:18px;padding:8px 15px;font-family:inherit;font-size:13px;cursor:pointer}
+  #load{position:fixed;inset:0;z-index:9;display:flex;flex-direction:column;gap:14px;align-items:center;justify-content:center;background:#070908;font-size:15px;letter-spacing:.3em;transition:opacity .9s}
+  #go{background:none;color:#f6efe4;border:1px solid rgba(244,194,180,.8);border-radius:30px;padding:15px 34px;font-family:inherit;font-size:16px;letter-spacing:.22em;cursor:pointer;animation:breathe 2.4s ease-in-out infinite}
+  @keyframes breathe{50%{color:#f4c2b4;box-shadow:0 0 24px rgba(244,194,180,.35)}}
+  #load small{font-size:12px;opacity:.55;letter-spacing:.2em}
+  @media (max-width:700px){#place{left:20px;top:20px}#place b{font-size:18px}#bar{right:16px;height:38vh}#bar span{display:none}.blk{bottom:13vh}#snd{bottom:auto;top:18px;right:16px}.ref{font-size:14px}}
 </style>
 </head>
 <body>
-<canvas id="cv"></canvas>
-<div id="place"><span>AS WRITTEN · 武陵桃源</span><b id="pname">두루마리</b></div>
+<div id="stage"><canvas id="cv"></canvas></div>
+<div id="fog"></div><div id="shadeT"></div><div id="shadeB"></div>
+<div id="place"><span>AS WRITTEN · 武陵桃源</span><b id="pname">시내</b></div>
 <div id="bar"><i></i></div>
 
 <div class="blk" id="b0"><span class="title">무릉도원</span>
-  <p class="big">도연명의 『도화원기』 320자. <br>이 두루마리에는 <b>글에 쓰인 것만</b> 그려진다.</p></div>
+  <p class="big">도연명이 남긴 『도화원기』는 모두 320자의 짧은 글이다.<br>그 글을 처음부터, 쓰인 만큼만 따라가 본다.</p></div>
 <div class="blk" id="c1"><span class="lab">시내</span>
-  <p class="big">진(晉)나라 태원 연간, 무릉에 고기잡이를 업으로 삼는 사람이 있었다. <br>시내를 따라가다가, 길이 얼마나 먼지 잊었다.</p>
+  <p class="big">진(晉)나라 태원 연간, 무릉에 고기잡이를 업으로 삼는 사람이 있었다.<br>시내를 따라가다가, 길이 얼마나 먼지 잊었다.</p>
   <span class="ref">晉太元中，武陵人捕魚為業。緣溪行，忘路之遠近。</span></div>
 <div class="blk" id="c2"><span class="lab">복숭아숲</span>
-  <p class="big">문득 복숭아꽃 숲을 만났다. <br>양쪽 기슭으로 수백 걸음, 다른 나무는 하나도 없었다. <br>향긋한 풀은 싱그럽고, 떨어지는 꽃잎이 어지러이 흩날렸다.</p>
+  <p class="big">문득 복숭아꽃 숲을 만났다.<br>양쪽 기슭으로 수백 걸음, 그 사이에 다른 나무는 하나도 없었다.<br>향긋한 풀은 싱그럽고, 떨어지는 꽃잎이 어지러이 흩날렸다.</p>
   <span class="ref">忽逢桃花林，夾岸數百步，中無雜樹，芳草鮮美，落英繽紛。</span></div>
 <div class="blk" id="c3"><span class="lab">복숭아숲</span>
-  <p class="big">어부는 이를 몹시 이상히 여겼다. <br>다시 앞으로 나아가, 그 숲이 끝나는 곳까지 가 보려 했다.</p>
+  <p class="big">어부는 이를 몹시 이상히 여겼다.<br>다시 앞으로 나아가, 그 숲이 끝나는 곳까지 가 보려 했다.</p>
   <span class="ref">漁人甚異之。復前行，欲窮其林。</span></div>
-<div class="blk" id="c4"><span class="lab">산</span>
-  <p class="big">숲은 물이 시작되는 곳에서 끝났고, <br>거기에 산이 하나 있었다.</p>
+<div class="blk" id="c4"><span class="lab">산의 입구</span>
+  <p class="big">숲은 물이 시작되는 곳에서 끝났고,<br>거기에 산이 하나 있었다.</p>
   <span class="ref">林盡水源，便得一山，</span></div>
 <div class="blk" id="c5a"><span class="lab">산의 입구</span>
   <p class="big">산에는 작은 입구가 있었는데,</p>
@@ -74,255 +70,189 @@
 <div class="blk" id="c6"><span class="lab">산의 입구</span>
   <p class="big">이에 배를 두고, 입구로 들어갔다.</p>
   <span class="ref">便舍船，從口入。</span></div>
-<div class="blk dark" id="c7"><span class="lab">좁은 굴</span>
-  <p class="big">처음에는 몹시 좁아, <br>겨우 사람 하나 지나갈 만했다.</p>
+<div class="blk" id="c7"><span class="lab">좁은 굴</span>
+  <p class="big">처음에는 몹시 좁아,<br>겨우 사람 하나 지나갈 만했다.</p>
   <span class="ref">初極狹，才通人。</span></div>
-<div class="blk dark" id="c8"><p class="huge">다시 수십 걸음을 가자,</p>
+<div class="blk" id="c8"><p class="huge">다시 수십 걸음을 가자,</p>
   <span class="ref">復行數十步，</span></div>
 <div class="blk" id="c9"><p class="huge">확 트이며 환하게 밝아졌다.</p>
   <span class="ref">豁然開朗。</span></div>
 <div class="blk" id="c10"><span class="lab">마을</span>
-  <p class="big">땅은 평평하고 넓었으며, 집들은 가지런했다. <br>좋은 밭과 아름다운 못, 뽕나무와 대나무가 있었다.</p>
+  <p class="big">땅은 평평하고 넓었으며, 집들은 가지런했다.<br>좋은 밭과 아름다운 못, 뽕나무와 대나무가 있었다.</p>
   <span class="ref">土地平曠，屋舍儼然，有良田美池桑竹之屬。</span></div>
 <div class="blk" id="c11"><span class="lab">마을</span>
-  <p class="big">밭두렁 길이 이리저리 통하고, <br>닭 우는 소리와 개 짖는 소리가 서로 들렸다.</p>
+  <p class="big">밭두렁 길이 이리저리 통하고,<br>닭 우는 소리와 개 짖는 소리가 서로 들렸다.</p>
   <span class="ref">阡陌交通，雞犬相聞。</span></div>
 <div class="blk" id="c12"><span class="lab">마을</span>
-  <p class="big">그 안에서 오가며 농사짓는 사람들, <br>남자와 여자의 옷차림은 모두 바깥 사람들 같았다.</p>
+  <p class="big">그 안에서 오가며 농사짓는 사람들,<br>남자와 여자의 옷차림은 모두 바깥 사람들 같았다.</p>
   <span class="ref">其中往來種作，男女衣著，悉如外人。</span></div>
 <div class="blk" id="c13"><span class="lab">마을</span>
-  <p class="big">누렇게 센 머리의 노인과 머리를 늘어뜨린 아이가 <br>모두 즐겁고 편안해 보였다.</p>
+  <p class="big">누렇게 센 머리의 노인과 머리를 늘어뜨린 아이가<br>모두 즐겁고 편안해 보였다.</p>
   <span class="ref">黃髮垂髫，並怡然自樂。</span></div>
 <div class="blk" id="c14"><span class="lab">마을</span>
-  <p class="big">그들은 어부를 보고 크게 놀라, 어디서 왔는지 물었다. <br>어부가 낱낱이 대답하자, 그를 집으로 청해 <br>술을 내고 닭을 잡아 밥을 지었다.</p>
+  <p class="big">그들은 어부를 보고 크게 놀라, 어디서 왔는지 물었다.<br>어부가 낱낱이 대답하자, 그를 집으로 청해<br>술을 내고 닭을 잡아 밥을 지었다.</p>
   <span class="ref">見漁人，乃大驚，問所從來。具答之。便要還家，設酒殺雞作食。</span></div>
 <div class="blk" id="c15"><span class="lab">마을</span>
-  <p class="big">마을 사람들이 소식을 듣고 모두 와서 물었다. <br>선조가 진(秦)나라 때의 난리를 피해 처자와 고을 사람을 이끌고 <br>이 외딴 곳에 들어온 뒤, 다시는 나가지 않았다고 했다.</p>
+  <p class="big">마을 사람들이 소식을 듣고 모두 와서 물었다.<br>선조가 진(秦)나라 때의 난리를 피해 처자와 고을 사람을 이끌고<br>이 외딴 곳에 들어온 뒤, 다시는 나가지 않았다고 했다.</p>
   <span class="ref">村中聞有此人，咸來問訊。自云先世避秦時亂，率妻子邑人來此絕境，不復出焉，遂與外人間隔。</span></div>
 <div class="blk" id="c16"><span class="lab">마을</span>
-  <p class="big">지금이 어느 시대냐고 물었다. <br>한(漢)나라가 있었던 것도 몰랐으니, <br>위(魏)나라와 진(晉)나라는 말할 것도 없었다.</p>
+  <p class="big">지금이 어느 시대냐고 물었다.<br>한(漢)나라가 있었던 것도 몰랐으니,<br>위(魏)나라와 진(晉)나라는 말할 것도 없었다.</p>
   <span class="ref">問今是何世，乃不知有漢，無論魏晉。</span></div>
-<div class="blk" id="c17"><span class="lab">마을</span>
-  <p class="big">어부가 들은 것을 하나하나 말해 주자, 모두 탄식했다. <br>다른 이들도 저마다 그를 집으로 불러 술과 음식을 냈다. <br>며칠을 머문 뒤, 그는 떠나겠다고 했다.</p>
+<div class="blk" id="c17"><span class="lab">떠남</span>
+  <p class="big">어부가 들은 것을 하나하나 말해 주자, 모두 탄식했다.<br>다른 이들도 저마다 그를 집으로 불러 술과 음식을 냈다.<br>며칠을 머문 뒤, 그는 떠나겠다고 했다.</p>
   <span class="ref">此人一一為具言所聞，皆歎惋。餘人各復延至其家，皆出酒食。停數日，辭去。</span></div>
 <div class="blk" id="c18"><span class="lab">떠남</span>
-  <p class="huge">그곳 사람이 말했다. <br>“바깥 사람들에게 말할 만한 것은 못 됩니다.”</p>
+  <p class="huge">그곳 사람이 말했다.<br>“바깥 사람들에게 말할 만한 것은 못 됩니다.”</p>
   <span class="ref">此中人語云：「不足為外人道也。」</span></div>
-<div class="blk" id="c19"><span class="lab">되돌아감</span>
-  <p class="big">나와서 배를 찾아, 왔던 길을 따라가며 <br>곳곳에 표시를 해 두었다.</p>
+<div class="blk" id="c19"><span class="lab">떠남</span>
+  <p class="big">나와서 배를 찾아, 왔던 길을 따라가며<br>곳곳에 표시를 해 두었다.</p>
   <span class="ref">既出，得其船，便扶向路，處處誌之。</span></div>
-<div class="blk" id="c20"><span class="lab">되돌아감</span>
-  <p class="big">고을에 이르러 태수를 찾아가 이 일을 말하자, <br>태수는 곧 사람을 보내 그를 따라가게 했다.</p>
+<div class="blk" id="c20"><span class="lab">떠남</span>
+  <p class="big">고을에 이르러 태수를 찾아가 이 일을 말하자,<br>태수는 곧 사람을 보내 그를 따라가게 했다.</p>
   <span class="ref">及郡下，詣太守，說如此。太守即遣人隨其往，</span></div>
 <div class="blk" id="c21"><p class="huge">표시해 둔 곳을 찾아갔으나,</p>
   <span class="ref">尋向所誌，</span></div>
 <div class="blk" id="c22"><p class="huge">끝내 길을 잃어, 다시는 찾지 못했다.</p>
   <span class="ref">遂迷，不復得路。</span></div>
 <div class="blk" id="c23"><span class="lab">길을 잃음</span>
-  <p class="big">남양의 유자기는 뜻이 높은 선비였다. <br>이 이야기를 듣고 기뻐하며 찾아가려 했으나, <br>이루지 못하고 얼마 뒤 병들어 죽었다.</p>
+  <p class="big">남양의 유자기는 뜻이 높은 선비였다.<br>이 이야기를 듣고 기뻐하며 찾아가려 했으나,<br>이루지 못하고 얼마 뒤 병들어 죽었다.</p>
   <span class="ref">南陽劉子驥，高尚士也，聞之，欣然規往。未果，尋病終。</span></div>
-<div class="blk" id="c24"><span class="title" style="font-size:clamp(26px,3.6vw,42px);letter-spacing:.12em;padding:0">그 뒤로는 나루를 묻는 이가 없었다.</span>
+<div class="blk" id="c24" style="bottom:17vh"><span class="title" style="font-size:clamp(28px,4vw,46px);letter-spacing:.12em;padding:0">그 뒤로는 나루를 묻는 이가 없었다.</span>
   <span class="ref">後遂無問津者。<small>『도화원기』는 여기서 끝난다.</small></span></div>
-<div class="blk" id="lost"><span class="lab">遂迷，不復得路</span>
-  <p class="big">되짚어 보지만, 그림도 표시도 다시 나타나지 않는다. <br>들어가려면 처음부터, 다시 시내를 따라가야 한다.</p></div>
-
-<div id="hint">스크롤하면 두루마리가 펼쳐져요<i>↓</i></div>
-<div id="stampHint">그림을 눌러 <b>표시</b>를 남기세요 · <span id="sc">0</span>/3</div>
+<div class="blk" id="lost" style="bottom:15vh"><span class="lab">遂迷，不復得路</span>
+  <p class="big">왔던 길을 되짚어 보지만, 표시해 둔 곳은 보이지 않는다.<br>들어가려면 처음부터, 다시 시내를 따라가야 한다.</p></div>
+<div id="flash"></div>
+<div id="hint">스크롤해서 시내 따라가기<i>↓</i></div>
 <button id="again">↑ 다시 찾아가 보기</button>
 <button id="snd">소리 끄기</button>
-<div id="credit">그림: 「桃花源圖」 17세기 작자 미상(구영 서명은 후대 위작) · 시카고 미술관 소장 · CC0</div>
-<div id="load">
-  <h1>무릉도원</h1>
-  <p>쓰인 만큼만 그려지는 두루마리</p>
-  <span id="ltxt">두루마리를 펴는 중 <b id="pct">0</b>%</span>
-  <button id="go" style="display:none">▶ 소리 켜고 펼치기</button>
-  <small>그림: 「桃花源圖」(The Peach Blossom Spring), 비단에 채색, 17세기 작자 미상 · 시카고 미술관(Art Institute of Chicago) 소장, CC0 <br>🎧 이어폰이나 스피커를 켜 주세요</small>
-</div>
+<div id="load"><span id="ltxt">시내를 거슬러 오르는 중 <b id="pct">0</b>%</span><button id="go" style="display:none">▶ 소리 켜고 시내 따라가기</button><small id="lsub">🎧 이어폰이나 스피커를 켜 주세요</small></div>
 
 <script>
-// ───── 두루마리 (가로 11250 × 세로 904 픽셀, 6조각) ─────
-const PW=11250, PH=904, TW=1875, NT=6, MS=8;   // MS: 색이 번지는 마스크 축소 비율
-// ───── 스크롤 → 카메라 [스크롤, 가운데 x, 가운데 y, 확대] ─────
-const KF=[[0,10820,452,1],[.05,10450,452,1.05],[.105,9750,560,1.35],[.16,9250,520,1.2],[.21,8850,380,1.1],[.25,8600,620,1.6],[.28,8480,660,1.85],[.305,8430,700,2.0],
-  [.34,8150,470,1.5],[.375,7850,470,1.5],[.41,7150,452,1.0],[.45,6850,452,1.05],[.49,6450,420,1.35],[.525,6000,560,1.3],[.56,5480,630,1.7],[.595,5380,620,2.0],
-  [.635,4318,430,1.4],[.675,3720,610,1.8],[.725,1600,430,1.7],[.765,1850,640,1.5],
-  [.80,3850,780,1.9],[.84,5200,452,1.1],[.87,6300,452,.8],[.895,6100,452,.38],[.93,6600,452,.38],[.96,10000,452,.9],[1,10820,452,1]];
-// 글 상자 [id, 나타남, 사라짐]
-const BLOCKS=[['b0',-1,.035],['c1',.04,.085],['c2',.095,.145],['c3',.15,.19],['c4',.2,.235],['c5a',.242,.262],['c5b',.267,.29],['c6',.295,.318],['c7',.325,.355],['c8',.36,.386],
-  ['c9',.394,.425],['c10',.43,.465],['c11',.47,.5],['c12',.505,.535],['c13',.54,.565],['c14',.57,.605],['c15',.61,.645],['c16',.65,.682],['c17',.705,.736],['c18',.743,.776],
-  ['c19',.785,.835],['c20',.845,.875],['c21',.88,.905],['c22',.91,.935],['c23',.94,.965],['c24',.972,9]];
-const STOPS=[['두루마리',0],['시내',.04],['복숭아숲',.095],['산의 입구',.2],['좁은 굴',.322],['마을',.392],['떠남',.735],['되돌아감',.78],['길을 잃음',.905]];
-// 글이 나오면 색이 번지는 곳 [id, x, y, 가로반경, 세로반경] — 쓰이지 않은 곳은 끝까지 밑그림으로 남음
-const REG={c1:[[10750,450,480,560],[10350,800,600,220]],c2:[[9700,600,900,430],[10250,640,520,360]],c3:[[9250,600,620,420]],c4:[[8850,330,720,400]],
-  c5a:[[8560,700,360,260]],c6:[[8543,745,320,190]],c7:[[8150,460,560,520]],c8:[[7800,460,520,520]],c9:[[7150,452,1300,720]],c10:[[6700,452,950,620]],
-  c11:[[6350,400,720,520]],c12:[[5900,600,720,420]],c13:[[5470,640,520,360]],c14:[[5200,600,620,460],[3740,620,420,300]],c15:[[4318,420,720,520]],c16:[[3740,620,520,360]],
-  c17:[[1560,420,720,520]],c18:[[1850,650,620,360]],c19:[[3850,800,420,210]]};
-const GLOW=[8385,690];   // 「빛이 있는 듯」
-const F={colorOut:[.9,.93], silkOut:[.915,.945], stampA:.80, stampB:.872};
-
+// ───── 스크롤 → 장면 ─────
+// 영상 시간(초): 시내 정지 0–2.5 · ①시내→복숭아숲 2.5–7.58 · ②숲→산 7.58–12.67 · ③입구→굴 12.67–17.75
+// ④굴→확트임 17.75–22.83 · ⑤골짜기 내려가기 22.83–26.83 → (겹침) 산에 둘러싸인 마을 26.03–32.03 → (겹침) 안개 출발 31.23–34.23 · ⑥되찾기→길잃음 34.23–39.32 · 끝 39.32–43.3
+const END=62.08;
+// [스크롤 시작, 끝, 영상 시작, 끝] — 글이 말하는 순간에 그림도 그렇게 보이도록 맞춤
+const MAP=[[0, 0.0456, 0, 0.0], [0.0456, 0.04769, 0.0, 0.25], [0.04769, 0.05032, 0.25, 0.5], [0.05032, 0.05357, 0.5, 0.75], [0.05357, 0.05745, 0.75, 1.0], [0.05745, 0.0618, 1.0, 1.25], [0.0618, 0.06637, 1.25, 1.5], [0.06637, 0.07084, 1.5, 1.75], [0.07084, 0.07491, 1.75, 2.0], [0.07491, 0.0784, 2.0, 2.25], [0.0784, 0.08126, 2.25, 2.5], [0.08126, 0.08355, 2.5, 2.75], [0.08355, 0.08542, 2.75, 3.0], [0.08542, 0.08704, 3.0, 3.25], [0.08704, 0.08868, 3.25, 3.5], [0.08868, 0.09083, 3.5, 3.75], [0.09083, 0.09393, 3.75, 4.0], [0.09393, 0.09829, 4.0, 4.25], [0.09829, 0.104, 4.25, 4.5], [0.104, 0.11081, 4.5, 4.75], [0.11081, 0.1182, 4.75, 5.0], [0.1182, 0.12557, 5.0, 5.25], [0.12557, 0.13236, 5.25, 5.5], [0.13236, 0.1382, 5.5, 5.75], [0.1382, 0.14294, 5.75, 6.0], [0.14294, 0.1467, 6.0, 6.25], [0.1467, 0.14976, 6.25, 6.5], [0.14976, 0.15231, 6.5, 6.75], [0.15231, 0.15461, 6.75, 7.0], [0.15461, 0.15692, 7.0, 7.25], [0.15692, 0.15946, 7.25, 7.5], [0.15946, 0.16238, 7.5, 7.75], [0.16238, 0.16574, 7.75, 8.0], [0.16574, 0.16969, 8.0, 8.25], [0.16969, 0.17412, 8.25, 8.5], [0.17412, 0.17899, 8.5, 8.75], [0.17899, 0.18431, 8.75, 9.0], [0.18431, 0.19022, 9.0, 9.25], [0.19022, 0.19692, 9.25, 9.5], [0.19692, 0.20451, 9.5, 9.75], [0.20451, 0.21286, 9.75, 10.0], [0.21286, 0.22155, 10.0, 10.25], [0.22155, 0.22998, 10.25, 10.5], [0.22998, 0.2376, 10.5, 10.75], [0.2376, 0.24409, 10.75, 11.0], [0.24409, 0.24937, 11.0, 11.25], [0.24937, 0.25354, 11.25, 11.5], [0.25354, 0.25686, 11.5, 11.75], [0.25686, 0.26, 11.75, 12.0], [0.26, 0.26315, 12.0, 12.25], [0.26315, 0.26622, 12.25, 12.5], [0.26622, 0.26917, 12.5, 12.75], [0.26917, 0.27202, 12.75, 13.0], [0.27202, 0.27478, 13.0, 13.25], [0.27478, 0.27772, 13.25, 13.5], [0.27772, 0.28178, 13.5, 13.75], [0.28178, 0.28741, 13.75, 14.0], [0.28741, 0.29456, 14.0, 14.25], [0.29456, 0.30264, 14.25, 14.5], [0.30264, 0.31091, 14.5, 14.75], [0.31091, 0.31889, 14.75, 15.0], [0.31889, 0.32626, 15.0, 15.25], [0.32626, 0.33264, 15.25, 15.5], [0.33264, 0.33773, 15.5, 15.75], [0.33773, 0.34156, 15.75, 16.0], [0.34156, 0.34453, 16.0, 16.25], [0.34453, 0.34715, 16.25, 16.5], [0.34715, 0.34982, 16.5, 16.75], [0.34982, 0.3525, 16.75, 17.0], [0.3525, 0.35509, 17.0, 17.25], [0.35509, 0.3575, 17.25, 17.5], [0.3575, 0.35968, 17.5, 17.75], [0.35968, 0.36163, 17.75, 18.0], [0.36163, 0.36342, 18.0, 18.25], [0.36342, 0.36544, 18.25, 18.5], [0.36544, 0.36794, 18.5, 18.75], [0.36794, 0.37092, 18.75, 19.0], [0.37092, 0.37426, 19.0, 19.25], [0.37426, 0.37782, 19.25, 19.5], [0.37782, 0.38157, 19.5, 19.75], [0.38157, 0.38556, 19.75, 20.0], [0.38556, 0.38984, 20.0, 20.25], [0.38984, 0.39453, 20.25, 20.5], [0.39453, 0.39982, 20.5, 20.75], [0.39982, 0.40581, 20.75, 21.0], [0.40581, 0.41226, 21.0, 21.25], [0.41226, 0.41885, 21.25, 21.5], [0.41885, 0.42521, 21.5, 21.75], [0.42521, 0.43097, 21.75, 22.0], [0.43097, 0.43581, 22.0, 22.25], [0.43581, 0.43969, 22.25, 22.5], [0.43969, 0.44295, 22.5, 22.75], [0.44295, 0.44639, 22.75, 23.0], [0.44639, 0.45014, 23.0, 23.25], [0.45014, 0.4541, 23.25, 23.5], [0.4541, 0.45809, 23.5, 23.75], [0.45809, 0.46189, 23.75, 24.0], [0.46189, 0.4653, 24.0, 24.25], [0.4653, 0.46822, 24.25, 24.5], [0.46822, 0.47063, 24.5, 24.75], [0.47063, 0.4726, 24.75, 25.0], [0.4726, 0.47424, 25.0, 25.25], [0.47424, 0.47567, 25.25, 25.5], [0.47567, 0.47699, 25.5, 25.75], [0.47699, 0.47835, 25.75, 26.0], [0.47835, 0.48004, 26.0, 26.25], [0.48004, 0.48227, 26.25, 26.5], [0.48227, 0.48527, 26.5, 26.75], [0.48527, 0.48917, 26.75, 27.0], [0.48917, 0.49387, 27.0, 27.25], [0.49387, 0.499, 27.25, 27.5], [0.499, 0.50404, 27.5, 27.75], [0.50404, 0.50858, 27.75, 28.0], [0.50858, 0.51292, 28.0, 28.25], [0.51292, 0.51746, 28.25, 28.5], [0.51746, 0.52204, 28.5, 28.75], [0.52204, 0.52647, 28.75, 29.0], [0.52647, 0.53121, 29.0, 29.25], [0.53121, 0.53769, 29.25, 29.5], [0.53769, 0.54638, 29.5, 29.75], [0.54638, 0.55677, 29.75, 30.0], [0.55677, 0.56761, 30.0, 30.25], [0.56761, 0.57748, 30.25, 30.5], [0.57748, 0.5852, 30.5, 30.75], [0.5852, 0.59035, 30.75, 31.0], [0.59035, 0.59348, 31.0, 31.25], [0.59348, 0.59618, 31.25, 31.5], [0.59618, 0.59919, 31.5, 31.75], [0.59919, 0.60242, 31.75, 32.0], [0.60242, 0.60572, 32.0, 32.25], [0.60572, 0.60894, 32.25, 32.5], [0.60894, 0.61204, 32.5, 32.75], [0.61204, 0.61508, 32.75, 33.0], [0.61508, 0.61822, 33.0, 33.25], [0.61822, 0.62169, 33.25, 33.5], [0.62169, 0.62564, 33.5, 33.75], [0.62564, 0.63016, 33.75, 34.0], [0.63016, 0.63519, 34.0, 34.25], [0.63519, 0.64061, 34.25, 34.5], [0.64061, 0.6463, 34.5, 34.75], [0.6463, 0.65218, 34.75, 35.0], [0.65218, 0.65827, 35.0, 35.25], [0.65827, 0.66459, 35.25, 35.5], [0.66459, 0.67113, 35.5, 35.75], [0.67113, 0.67782, 35.75, 36.0], [0.67782, 0.68452, 36.0, 36.25], [0.68452, 0.69116, 36.25, 36.5], [0.69116, 0.6977, 36.5, 36.75], [0.6977, 0.70424, 36.75, 37.0], [0.70424, 0.71087, 37.0, 37.25], [0.71087, 0.71771, 37.25, 37.5], [0.71771, 0.72476, 37.5, 37.75], [0.72476, 0.73194, 37.75, 38.0], [0.73194, 0.73908, 38.0, 38.25], [0.73908, 0.74593, 38.25, 38.5], [0.74593, 0.75222, 38.5, 38.75], [0.75222, 0.75774, 38.75, 39.0], [0.75774, 0.76234, 39.0, 39.25], [0.76234, 0.76638, 39.25, 39.5], [0.76638, 0.77031, 39.5, 39.75], [0.77031, 0.77398, 39.75, 40.0], [0.77398, 0.77707, 40.0, 40.25], [0.77707, 0.7795, 40.25, 40.5], [0.7795, 0.78194, 40.5, 40.75], [0.78194, 0.78464, 40.75, 41.0], [0.78464, 0.78757, 41.0, 41.25], [0.78757, 0.79061, 41.25, 41.5], [0.79061, 0.79359, 41.5, 41.75], [0.79359, 0.79634, 41.75, 42.0], [0.79634, 0.79878, 42.0, 42.25], [0.79878, 0.80087, 42.25, 42.5], [0.80087, 0.80265, 42.5, 42.75], [0.80265, 0.8042, 42.75, 43.0], [0.8042, 0.8056, 43.0, 43.25], [0.8056, 0.80696, 43.25, 43.5], [0.80696, 0.80835, 43.5, 43.75], [0.80835, 0.80988, 43.75, 44.0], [0.80988, 0.81163, 44.0, 44.25], [0.81163, 0.81367, 44.25, 44.5], [0.81367, 0.81603, 44.5, 44.75], [0.81603, 0.81868, 44.75, 45.0], [0.81868, 0.82154, 45.0, 45.25], [0.82154, 0.82444, 45.25, 45.5], [0.82444, 0.82722, 45.5, 45.75], [0.82722, 0.82977, 45.75, 46.0], [0.82977, 0.832, 46.0, 46.25], [0.832, 0.83395, 46.25, 46.5], [0.83395, 0.83569, 46.5, 46.75], [0.83569, 0.83735, 46.75, 47.0], [0.83735, 0.83908, 47.0, 47.25], [0.83908, 0.84102, 47.25, 47.5], [0.84102, 0.84332, 47.5, 47.75], [0.84332, 0.84605, 47.75, 48.0], [0.84605, 0.84919, 48.0, 48.25], [0.84919, 0.85262, 48.25, 48.5], [0.85262, 0.85617, 48.5, 48.75], [0.85617, 0.8596, 48.75, 49.0], [0.8596, 0.86272, 49.0, 49.25], [0.86272, 0.86542, 49.25, 49.5], [0.86542, 0.86768, 49.5, 49.75], [0.86768, 0.86955, 49.75, 50.0], [0.86955, 0.87113, 50.0, 50.25], [0.87113, 0.87251, 50.25, 50.5], [0.87251, 0.87379, 50.5, 50.75], [0.87379, 0.875, 50.75, 51.0], [0.875, 0.87619, 51.0, 51.25], [0.87619, 0.87736, 51.25, 51.5], [0.87736, 0.87853, 51.5, 51.75], [0.87853, 0.87969, 51.75, 52.0], [0.87969, 0.88086, 52.0, 52.25], [0.88086, 0.88203, 52.25, 52.5], [0.88203, 0.88321, 52.5, 52.75], [0.88321, 0.88439, 52.75, 53.0], [0.88439, 0.8856, 53.0, 53.25], [0.8856, 0.88685, 53.25, 53.5], [0.88685, 0.88818, 53.5, 53.75], [0.88818, 0.88962, 53.75, 54.0], [0.88962, 0.8912, 54.0, 54.25], [0.8912, 0.89297, 54.25, 54.5], [0.89297, 0.89492, 54.5, 54.75], [0.89492, 0.89702, 54.75, 55.0], [0.89702, 0.89937, 55.0, 55.25], [0.89937, 0.90204, 55.25, 55.5], [0.90204, 0.90488, 55.5, 55.75], [0.90488, 0.9078, 55.75, 56.0], [0.9078, 0.91069, 56.0, 56.25], [0.91069, 0.91345, 56.25, 56.5], [0.91345, 0.91599, 56.5, 56.75], [0.91599, 0.91829, 56.75, 57.0], [0.91829, 0.92043, 57.0, 57.25], [0.92043, 0.92242, 57.25, 57.5], [0.92242, 0.92429, 57.5, 57.75], [0.92429, 0.92613, 57.75, 58.0], [0.92613, 0.9281, 58.0, 58.25], [0.9281, 0.93038, 58.25, 58.5], [0.93038, 0.93313, 58.5, 58.75], [0.93313, 0.93647, 58.75, 59.0], [0.93647, 0.94037, 59.0, 59.25], [0.94037, 0.9447, 59.25, 59.5], [0.9447, 0.94922, 59.5, 59.75], [0.94922, 0.95363, 59.75, 60.0], [0.95363, 0.95774, 60.0, 60.25], [0.95774, 0.96142, 60.25, 60.5], [0.96142, 0.96471, 60.5, 60.75], [0.96471, 0.96772, 60.75, 61.0], [0.96772, 0.97057, 61.0, 61.25], [0.97057, 0.97332, 61.25, 61.5], [0.97332, 0.97597, 61.5, 61.75], [0.97597, 0.97848, 61.75, 62.0], [0.97848, 0.97927, 62.0, 62.083], [0.97927, 1, 62.083, 62.083]];
+const STOPS=[["시내", 0], ["복숭아숲", 0.0895], ["산의 입구", 0.2267], ["좁은 굴", 0.3461], ["마을", 0.4136], ["떠남", 0.7405], ["길을 잃음", 0.882]];
+const BLOCKS=[["b0", -1, 0.0388], ["c1", 0.0529, 0.0802], ["c2", 0.0993, 0.1458], ["c3", 0.1574, 0.1915], ["c4", 0.2362, 0.2611], ["c5a", 0.2671, 0.2811], ["c5b", 0.2871, 0.306], ["c6", 0.312, 0.3337], ["c7", 0.3402, 0.3609], ["c8", 0.3684, 0.3966], ["c9", 0.4081, 0.4403], ["c10", 0.4463, 0.4692], ["c11", 0.4875, 0.5137], ["c12", 0.5197, 0.5568], ["c13", 0.5903, 0.6151], ["c14", 0.6223, 0.6527], ["c15", 0.6587, 0.692], ["c16", 0.698, 0.7274], ["c17", 0.7334, 0.7647], ["c18", 0.7786, 0.8001], ["c19", 0.812, 0.8324], ["c20", 0.8419, 0.8664], ["c21", 0.8902, 0.9037], ["c22", 0.9097, 0.9239], ["c23", 0.934, 0.9574], ["c24", 0.9634, 9]];
+const K={"reveal": 0.4188, "caveA": 0.3248, "villA": 0.4162, "villB": 0.8099, "fogA": 0.8714, "cutA": 0.7746, "cutB": 0.8061, "quietA": 0.8902, "endA": 0.9634, "dS": 0.9277, "dT": 62.0833, "lostT0": 55.9};
 const $=id=>document.getElementById(id);
-// 카메라: 키프레임을 부드럽게 잇는 곡선(멈췄다 가는 느낌 없이)
-function cam(s){
-  let i=0; while(i<KF.length-2&&s>KF[i+1][0]) i++;
-  const p0=KF[Math.max(0,i-1)],p1=KF[i],p2=KF[i+1],p3=KF[Math.min(KF.length-1,i+2)];
-  const t=Math.max(0,Math.min(1,(s-p1[0])/(p2[0]-p1[0]||1)));
-  const cr=(a,b,c,d)=>{ const t2=t*t,t3=t2*t; return .5*((2*b)+(-a+c)*t+(2*a-5*b+4*c-d)*t2+(-a+3*b-3*c+d)*t3); };
-  return [cr(p0[1],p1[1],p2[1],p3[1]), cr(p0[2],p1[2],p2[2],p3[2]), Math.exp(cr(Math.log(p0[3]),Math.log(p1[3]),Math.log(p2[3]),Math.log(p3[3])))];
-}
-STOPS.forEach(([n,s])=>{ const sp=document.createElement('span'); });
+function videoTime(s){ let lo=0,hi=MAP.length-1; while(lo<hi){ const md=(lo+hi)>>1; if(MAP[md][1]<s) lo=md+1; else hi=md; } const [a,b,t0,t1]=MAP[lo]; const k=b>a?Math.max(0,Math.min(1,(s-a)/(b-a))):1; return t0+(t1-t0)*k; }
+STOPS.forEach(([n,s])=>{ const sp=document.createElement('span'); sp.textContent=n; sp.style.top=(s*100)+'%'; $('bar').appendChild(sp); });
 
-// ───── 그림 불러오기 ─────
-const col=[],fnt=[]; let loaded=0;
-function loadImg(src){ return new Promise(r=>{ const im=new Image(); im.onload=()=>{ loaded++; $('pct').textContent=Math.round(loaded/(NT*2)*100); r(im); }; im.onerror=()=>{ loaded++; r(null); }; im.src=src; }); }
-Promise.all([...Array(NT).keys()].map(i=>Promise.all([loadImg('t/f'+i+'.jpg'),loadImg('t/c'+i+'.jpg')]).then(([f,c])=>{ fnt[i]=f; col[i]=c; }))).then(()=>{ $('ltxt').style.display='none'; $('go').style.display='block'; });
-
-// ───── 화면 ─────
+// ───── 프레임 그림 (12장/초) ─────
+const NF=746, FPS2=12, frames=new Array(NF), bmp=new Map(), pend=new Set();
 const cv=$('cv'), ctx=cv.getContext('2d',{alpha:false});
-const mask=document.createElement('canvas'); mask.width=Math.ceil(PW/MS); mask.height=Math.ceil(PH/MS); const mctx=mask.getContext('2d');
-let CW=0,CH=0,DPR=1;
-function fit(){ DPR=1; /* 원본 그림 해상도가 화면과 비슷해서 1배면 충분 */ CW=Math.round(innerWidth*DPR); CH=Math.round(innerHeight*DPR); cv.width=CW; cv.height=CH; }
-addEventListener('resize',fit); fit();
-// 번짐 상태
-const rev={}; let maskDirty=true;
-function drawMask(){
-  mctx.clearRect(0,0,mask.width,mask.height);
-  for(const id in rev){ const p=Math.round(rev[id]*10)/10; if(p<=0) continue; const e=1-Math.pow(1-p,3);
-    for(const [x,y,rx,ry] of REG[id]){ mctx.save(); mctx.translate(x/MS,y/MS); mctx.scale(rx/MS*e,ry/MS*e);
-      const g=mctx.createRadialGradient(0,0,0,0,0,1); g.addColorStop(0,'rgba(0,0,0,1)'); g.addColorStop(.62,'rgba(0,0,0,.92)'); g.addColorStop(1,'rgba(0,0,0,0)');
-      mctx.fillStyle=g; mctx.beginPath(); mctx.arc(0,0,1,0,Math.PI*2); mctx.fill(); mctx.restore(); } }
-  maskDirty=false; }
-// 조각별 색 레이어(번진 부분만 색, 나머지는 투명)
-const comp=[], dirty=new Set([0,1,2,3,4,5]);
-function markDirty(id){ for(const [x,y,rx] of REG[id]){ const a=Math.floor((x-rx)/TW), b=Math.floor((x+rx)/TW); for(let i=Math.max(0,a);i<=Math.min(NT-1,b);i++) dirty.add(i); } }
-function updateComp(i0,i1){
-  if(maskDirty) drawMask();
-  let budget=1;
-  for(let i=i0;i<=i1&&budget>0;i++){ if(!dirty.has(i)||!col[i]) continue;
-    let c=comp[i]; if(!c){ c=comp[i]=document.createElement('canvas'); c.width=col[i].width; c.height=col[i].height; }
-    const x=c.getContext('2d'); x.globalCompositeOperation='source-over'; x.clearRect(0,0,c.width,c.height); x.drawImage(col[i],0,0);
-    x.globalCompositeOperation='destination-in'; x.imageSmoothingEnabled=true;
-    x.drawImage(mask,(i*TW)/MS,0,TW/MS,mask.height,0,0,TW,mask.height*MS);
-    c._ok=true; dirty.delete(i); budget--; }
+const IW=1024, IH=572; cv.width=IW; cv.height=IH;
+let dir=1, lastI=0, lastKey='';
+function warm(i){ if(!window.createImageBitmap) return;
+  const lo=Math.max(0,i-(dir<0?30:10)), hi=Math.min(NF-1,i+(dir>0?30:10));
+  const order=[]; for(let d=0;d<=30;d++){ for(const k of [i+d*dir,i-d*dir]) if(k>=lo&&k<=hi&&!order.includes(k)) order.push(k); }
+  for(const k of order){ if(pend.size>=6) break; const im=frames[k]; if(bmp.has(k)||pend.has(k)||!im) continue;
+    pend.add(k); createImageBitmap(im).then(b=>{ pend.delete(k); bmp.set(k,b); }).catch(()=>pend.delete(k)); }
+  if(bmp.size>70) for(const [k,b] of bmp){ if(k<lo-8||k>hi+8){ b.close&&b.close(); bmp.delete(k); } } }
+function drawFrame(x){
+  const i=Math.floor(x), f=x-i;
+  if(i!==lastI){ dir=i>lastI?1:-1; lastI=i; }
+  warm(i);
+  const a=bmp.get(i), b=bmp.get(Math.min(NF-1,i+1));
+  if(!a){ for(let d=1;d<=8;d++){ const k=bmp.has(i-d*dir)?i-d*dir:(bmp.has(i+d*dir)?i+d*dir:-1); if(k>=0){ if(lastKey!=='n'+k){ ctx.globalAlpha=1; ctx.drawImage(bmp.get(k),0,0); lastKey='n'+k; } return; } } return; }
+  const q=b?Math.round(f*8)/8:0, key=i+'_'+q; if(key===lastKey) return; lastKey=key;
+  ctx.globalAlpha=1; ctx.drawImage(a,0,0);
+  if(q>0){ ctx.globalAlpha=q; ctx.drawImage(b,0,0); ctx.globalAlpha=1; }
 }
-// 표시(도장)
-const seals=[]; let stampFade=0;
-function drawSeal(c,x,y,sz,a,rot){ c.save(); c.globalAlpha=a; c.translate(x,y); c.rotate(rot); c.fillStyle='#b3261e'; const r=sz*.12;
-  c.beginPath(); c.moveTo(-sz/2+r,-sz/2); c.arcTo(sz/2,-sz/2,sz/2,sz/2,r); c.arcTo(sz/2,sz/2,-sz/2,sz/2,r); c.arcTo(-sz/2,sz/2,-sz/2,-sz/2,r); c.arcTo(-sz/2,-sz/2,sz/2,-sz/2,r); c.fill();
-  c.strokeStyle='rgba(243,233,210,.9)'; c.lineWidth=sz*.05; c.strokeRect(-sz*.36,-sz*.36,sz*.72,sz*.72);
-  c.fillStyle='rgba(243,233,210,.95)'; c.font='600 '+(sz*.56)+'px "Noto Serif TC",serif'; c.textAlign='center'; c.textBaseline='middle'; c.fillText('誌',0,sz*.03); c.restore(); }
+let loadedN=0;
+(async()=>{ const q=[...Array(NF).keys()]; const worker=async()=>{ while(q.length){ const k=q.shift();
+    try{ const r=await fetch('f/'+String(k+1).padStart(3,'0')+'.jpg'); frames[k]=await r.blob(); }catch(e){}
+    loadedN++; $('pct').textContent=Math.round(loadedN/NF*100); } };
+  await Promise.all([0,1,2,3,4,5].map(worker));
+  warm(0); const wait=()=>(bmp.has(0)&&bmp.has(1))?($('ltxt').style.display='none',$('go').style.display='block',drawFrame(0)):setTimeout(wait,50); wait(); })();
 
-let view={x0:0,y0:0,w:PW,h:PH,k:1};
-function render(s,t){
-  const [cx,cy,z]=cam(s);
-  const vh=PH/z, vw=vh*CW/CH; let x0=vw>=PW?(PW-vw)/2:Math.max(0,Math.min(PW-vw,cx-vw/2)); let y0=vh>PH?(PH-vh)/2:Math.max(0,Math.min(PH-vh,cy-vh/2)); const k=CH/vh;
-  view={x0,y0,w:vw,h:vh,k};
-  ctx.globalAlpha=1; ctx.fillStyle='#1b1611'; ctx.fillRect(0,0,CW,CH);
-  // 두루마리 밖은 어둡게, 안은 밑그림
-  const silkOut=lostView?1:ramp(s,F.silkOut[0],F.silkOut[1]), colorOut=lostView?1:ramp(s,F.colorOut[0],F.colorOut[1]);
-  const i0=Math.max(0,Math.floor(x0/TW)), i1=Math.min(NT-1,Math.floor((x0+vw)/TW));
-  for(let i=i0;i<=i1;i++){ const im=fnt[i]; if(!im) continue; ctx.drawImage(im,(i*TW-x0)*k,(0-y0)*k,im.width*k,im.height*k); }
-  // 글에 쓰인 곳만 색이 번짐 (조각별로 미리 합쳐 둔 그림을 그대로 붙임 → 매 프레임 가벼움)
-  if(colorOut<1){
-    updateComp(i0,i1);
-    ctx.globalAlpha=1-colorOut;
-    for(let i=i0;i<=i1;i++){ const c=comp[i]; if(c&&c._ok) ctx.drawImage(c,(i*TW-x0)*k,(0-y0)*k,c.width*k,c.height*k); }
-    ctx.globalAlpha=1;
-  }
-  // 빛이 있는 듯
-  const gl=Math.max(0,Math.min(1,(s-.262)/.01))*Math.max(0,Math.min(1,(.322-s)/.01));
-  if(gl>0){ const gx=(GLOW[0]-x0)*k, gy=(GLOW[1]-y0)*k, R=(60+10*Math.sin(t/600))*k; const g=ctx.createRadialGradient(gx,gy,0,gx,gy,R);
-    g.addColorStop(0,'rgba(255,248,220,'+(.85*gl)+')'); g.addColorStop(.35,'rgba(255,240,200,'+(.45*gl)+')'); g.addColorStop(1,'rgba(255,240,200,0)'); ctx.fillStyle=g; ctx.fillRect(gx-R,gy-R,R*2,R*2); }
-  // 표시(도장)
-  const sa=(1-silkOut*1.2)*(1-stampFade);
-  if(sa>0) for(const sl of seals){ const a=Math.min(1,(t-sl.t)/180); drawSeal(ctx,(sl.x-x0)*k,(sl.y-y0)*k,Math.max(46*k,40*DPR)*(1+.08*Math.sin(t/400)*ramp(s,.88,.9)),Math.max(0,sa)*a,sl.r); }
-  // 빈 비단으로 (길을 잃음)
-  if(silkOut>0){ ctx.globalAlpha=silkOut*.92; ctx.fillStyle='#e2d4b4'; const xa=Math.max(0,(560-x0)*k), xb=Math.min(CW,(10930-x0)*k); const ya=Math.max(0,(0-y0)*k), yb=Math.min(CH,(PH-y0)*k); ctx.fillRect(xa,ya,xb-xa,yb-ya); ctx.globalAlpha=1; }
-  // 좁은 굴: 어둠 속 좁은 틈 → 확 트임
-  const inCave=s>.318&&s<.41;
-  if(inCave){ const op=s<.392?1:Math.max(0,1-(s-.392)/.012); const slitW=CW*(s<.36?.16-.08*((s-.318)/.042):.08+.04*Math.max(0,(s-.375)/.017)); const sx=CW/2;
-    ctx.save(); ctx.globalAlpha=Math.min(1,(s-.318)/.008)*op; ctx.fillStyle='#0d0a07';
-    const g=ctx.createLinearGradient(sx-slitW,0,sx+slitW,0); g.addColorStop(0,'rgba(13,10,7,1)'); g.addColorStop(.38,'rgba(13,10,7,.0)'); g.addColorStop(.62,'rgba(13,10,7,.0)'); g.addColorStop(1,'rgba(13,10,7,1)');
-    ctx.fillRect(0,0,sx-slitW,CH); ctx.fillRect(sx+slitW,0,CW-sx-slitW,CH); ctx.fillStyle=g; ctx.fillRect(sx-slitW,0,slitW*2,CH); ctx.restore(); }
-  const fl=Math.max(0,.75-Math.abs(s-.395)/.01*.75); if(fl>0){ ctx.globalAlpha=fl; ctx.fillStyle='#fffaf0'; ctx.fillRect(0,0,CW,CH); ctx.globalAlpha=1; }
-}
-function ramp(s,a,b){ return Math.max(0,Math.min(1,(s-a)/(b-a))); }
-
-// ───── 도장 찍기 ─────
-let stampMode=false;
-function addSeal(px,py){ if(seals.length>=3) return; seals.push({x:px,y:py,t:performance.now(),r:(Math.random()-.5)*.25}); $('sc').textContent=seals.length; if(AC) stampSound(); }
-cv.addEventListener('pointerdown',e=>{ if(!stampMode) return; const px=view.x0+e.clientX*DPR/view.k, py=view.y0+e.clientY*DPR/view.k; addSeal(px,py); });
-
-// ───── 소리 (낮고 차분하게, 잡음 없이, 마지막에 리미터) ─────
+// ───── 소리 (작고 부드럽게: 모든 소리는 마지막에 리미터를 거쳐 절대 찢어지지 않음) ─────
 let AC=null,A={},sound=true;
-const Gn=v=>{ const g=AC.createGain(); g.gain.value=v; return g; };
+const G=v=>{ const g=AC.createGain(); g.gain.value=v; return g; };
 const Fl=(t,f,q)=>{ const x=AC.createBiquadFilter(); x.type=t; x.frequency.value=f; if(q) x.Q.value=q; return x; };
+function brown(){ const n=AC.sampleRate*4,b=AC.createBuffer(1,n,AC.sampleRate),d=b.getChannelData(0); let l=0,m=0;
+  for(let i=0;i<n;i++){ l=(l+.02*(Math.random()*2-1))/1.02; d[i]=l; m=Math.max(m,Math.abs(l)); } for(let i=0;i<n;i++) d[i]/=m; // 최대 1로 맞춤
+  const f=2000; for(let i=0;i<f;i++){ const k=i/f; d[i]*=k; d[n-1-i]*=k; } return b; }   // 이음새 딸깍 방지
+function loopSrc(b){ const s=AC.createBufferSource(); s.buffer=b; s.loop=true; s.start(0,Math.random()*2); return s; }
 function initAudio(){
   if(AC){ AC.resume(); return; }
   try{ AC=new (window.AudioContext||window.webkitAudioContext)(); }catch(e){ return; }
+  A.B=brown();
   const lim=AC.createDynamicsCompressor(); lim.threshold.value=-20; lim.knee.value=6; lim.ratio.value=20; lim.attack.value=.003; lim.release.value=.25;
-  A.master=Gn(.4); A.out=Gn(sound?1:0); A.out.connect(lim); lim.connect(A.master); A.master.connect(AC.destination);
+  A.master=G(.4); A.out=G(sound?1:0); A.out.connect(lim); lim.connect(A.master); A.master.connect(AC.destination);
   const ir=AC.createBuffer(2,AC.sampleRate*2.5,AC.sampleRate); for(let c=0;c<2;c++){ const d=ir.getChannelData(c); for(let i=0;i<d.length;i++) d[i]=(Math.random()*2-1)*Math.pow(1-i/d.length,3)*.5; }
-  A.rev=AC.createConvolver(); A.rev.buffer=ir; A.revIn=Gn(.35); A.revIn.connect(A.rev); A.rev.connect(Gn(.25)).connect(A.out);
-  A.music=Gn(0); A.mlp=Fl('lowpass',700,.5); A.mlp.connect(A.music); A.music.connect(A.out); A.music.connect(A.revIn);
-  A.pad=[0,1,2].map(()=>{ const o=AC.createOscillator(); o.type='sine'; const g=Gn(.025); o.connect(g); g.connect(A.mlp); o.start(); return o; });
+  A.rev=AC.createConvolver(); A.rev.buffer=ir; A.revIn=G(.3); A.revIn.connect(A.rev); A.rev.connect(G(.25)).connect(A.out);
+  // (쉬익·웅 하는 잡음 계열 소리는 모두 뺌)
+  // 음악: 은은하게 깔리는 화음 + 줄 뜯는 선율
+  A.music=G(0); A.mlp=Fl('lowpass',900,.5); A.mlp.connect(A.music); A.music.connect(A.out); A.music.connect(A.revIn);
+  A.pad=[0,1,2].map(()=>{ const o=AC.createOscillator(); o.type='sine'; const g=G(.025); o.connect(g); g.connect(A.mlp); o.start(); return o; });
   A.chord=-1; A.note=-1; A.t0=AC.currentTime;
 }
 const hz=m=>440*Math.pow(2,(m-69)/12);
+// 차분한 오음(우조: D F G A C) — 낮은 음역, 느리고 띄엄띄엄
 const PADS=[[38,45,50],[36,43,48],[41,48,53],[38,45,53]];
 const MEL=[50,null,null,57,null,null,55,null,53,null,null,null, 50,null,null,null,48,null,50,null,null,null,null,null];
-function pluck(f,amp){ if(!AC) return; const t=AC.currentTime, g=AC.createGain(), lp=Fl('lowpass',900,.3);
+function pluck(f,amp){ // 칠현금처럼 낮고 둥글게 뜯는 소리
+  if(!AC) return; const t=AC.currentTime, g=AC.createGain(), lp=Fl('lowpass',900,.3);
   g.gain.setValueAtTime(0,t); g.gain.linearRampToValueAtTime(amp,t+.02); g.gain.exponentialRampToValueAtTime(.0003,t+4.5);
-  [[1,1],[2,.18]].forEach(([h,v])=>{ const o=AC.createOscillator(), og=Gn(v); o.type='triangle'; o.frequency.setValueAtTime(f*h*1.004,t); o.frequency.exponentialRampToValueAtTime(f*h,t+.25); o.connect(og); og.connect(lp); o.start(t); o.stop(t+4.6); });
+  [[1,1],[2,.18]].forEach(([h,v])=>{ const o=AC.createOscillator(), og=G(v); o.type='triangle'; o.frequency.setValueAtTime(f*h*1.004,t); o.frequency.exponentialRampToValueAtTime(f*h,t+.25); o.connect(og); og.connect(lp); o.start(t); o.stop(t+4.6); });
   lp.connect(g); g.connect(A.music); }
-function stampSound(){ const t=AC.currentTime, o=AC.createOscillator(), g=AC.createGain(); o.frequency.setValueAtTime(130,t); o.frequency.exponentialRampToValueAtTime(70,t+.18);
-  g.gain.setValueAtTime(0,t); g.gain.linearRampToValueAtTime(.35,t+.006); g.gain.exponentialRampToValueAtTime(.0005,t+.3); o.connect(g); g.connect(A.out); o.start(t); o.stop(t+.35); }
 let prevS=0;
 function crossed(a,b,x){ return (a<x&&b>=x)||(a>x&&b<=x); }
-function audioTick(s){
+function audioTick(dt,s,v){
   if(!AC||AC.state!=='running') return;
-  const ct=AC.currentTime, cave=s>.318&&s<.394, fog=s>.86||lost, cut=s>.733&&s<.776;
+  const ct=AC.currentTime;
+  const cave = s>K.caveA&&s<K.villA, village = s>K.villA&&s<K.villB, fog = s>K.fogA || lost;
   A.revIn.gain.setTargetAtTime(cave?.6:.35,ct,.6);
-  A.music.gain.setTargetAtTime(sound&&!cut?(lost?.35:(fog?.55:.9)):0,ct,cut?.15:1.5);
-  A.mlp.frequency.setTargetAtTime(cave?320:(fog?380:(s>.394&&s<.735?900:650)),ct,1.5);
+  // 음악: 굴 안에선 더 낮고 어둡게 → 확 트이면 화음이 천천히 열림 → “말할 것 못 됩니다”에서 멈춤 → 안개 속엔 낮은 화음만
+  const cut=(s>K.cutA&&s<K.cutB), music = sound&&!cut ? (lost?.35:(fog?.55:.9)) : 0;
+  A.music.gain.setTargetAtTime(music,ct,cut?.15:1.5);
+  A.mlp.frequency.setTargetAtTime(cave?320:(fog?380:(village?900:600)),ct,1.5);
   const t=ct-A.t0, ci=Math.floor(t/10)%4;
   if(ci!==A.chord){ A.chord=ci; const lo=fog?-12:0; PADS[ci].forEach((m,i)=>A.pad[i].frequency.setTargetAtTime(hz(m+lo),ct,2.5)); }
   const ni=Math.floor(t/1.7)%MEL.length;
-  if(ni!==A.note){ A.note=ni; const m=MEL[ni]; if(m!==null&&!cut&&!lost&&!(s>.88&&s<.972)&&(!cave||ni===0)) pluck(hz(m-(cave?12:0)),fog?.05:.08); }
-  if(crossed(prevS,s,.394)) [62,66,69].forEach((m,i)=>setTimeout(()=>pluck(hz(m-12),.06),i*220));
-  if(crossed(prevS,s,.972)) pluck(hz(38),.1);
+  if(ni!==A.note){ A.note=ni; const m=MEL[ni];
+    const play = m!==null && !cut && !lost && !(s>K.quietA&&s<K.endA) && (!cave || ni===0);
+    if(play) pluck(hz(m-(cave?12:0)), fog?.05:.08); }
+  if(crossed(prevS,s,K.endA)) pluck(hz(38),.1);
   prevS=s;
 }
 $('go').addEventListener('click',()=>{ sound=true; initAudio(); $('load').style.opacity=0; setTimeout(()=>$('load').remove(),1000); });
 $('snd').addEventListener('click',()=>{ sound=!sound; $('snd').textContent=sound?'소리 끄기':'소리 켜기'; initAudio(); A.out.gain.setTargetAtTime(sound?1:0,AC.currentTime,.1); });
+['pointerdown','keydown','touchstart'].forEach(e=>addEventListener(e,()=>{ if(sound) initAudio(); },{passive:true}));
 $('again').addEventListener('click',()=>scrollTo({top:0,behavior:'smooth'}));
 
 // ───── 매 프레임 ─────
-let s=0,last=0,lost=false,lostView=false;
-const AUTO=[4700,5500,6150];   // 도장을 안 찍고 지나가면 대신 찍히는 곳
-function setO(el,o){ const v=Math.max(0,Math.min(1,o)).toFixed(2); if(el._o!==v){ el._o=v; el.style.opacity=v; } }
+// 끝까지 읽은 뒤 되돌아가면: 글 그대로 “길을 잃는다” — 안개만 보이고, 맨 처음(시내 입구)까지 가야 다시 열린다
+let s=0, last=0, lost=false;
+function setO(el,o){ const ov=Math.max(0,o).toFixed(2); if(el._o!==ov){ el._o=ov; el.style.opacity=ov; } }
 function tick(t){
   const dt=Math.min(.05,(t-last)/1000||0); last=t;
   const max=document.documentElement.scrollHeight-innerHeight, ts=max>0?scrollY/max:0;
-  s+=(ts-s)*Math.min(1,dt*10);
-  if(s>.985 && !lost){ lost=true; }
-  if(lost && s<.012){ lost=false; for(const k in rev) rev[k]=0; seals.length=0; $('sc').textContent=0; maskDirty=true; for(let i=0;i<NT;i++) dirty.add(i); }
-  lostView = lost && s<.97;
-  // 글이 나오면 그 자리에 색이 번짐 (한 번 번지면 남음)
-  if(!lost) for(const [id,a] of BLOCKS){ if(REG[id] && s>a){ const old=rev[id]||0, v=Math.min(1,old+dt/1.6); rev[id]=v; if(Math.round(v*10)!==Math.round(old*10)||(v===1&&old<1)){ maskDirty=true; markDirty(id); } } }
-  // 도장 구간
-  stampMode = !lost && s>F.stampA && s<F.stampB;
-  cv.classList.toggle('stamp',stampMode);
-  if(stampMode){ const [cx]=cam(s); for(const ax of AUTO){ if(cx>ax && seals.length<3 && !seals.some(q=>Math.abs(q.x-ax)<250) && seals.filter(q=>q.auto).length<3){ seals.push({x:ax,y:520+Math.random()*120,t:performance.now(),r:(Math.random()-.5)*.25,auto:1}); $('sc').textContent=seals.length; if(AC) stampSound(); } } }
-  stampFade = lost?1:ramp(s,.92,.945);
-  render(s,t);
-  for(const [id,a,b] of BLOCKS){ const fd=.008; let o=0; if(!lostView){ if(s>a&&s<b) o=Math.min(1,(s-a)/fd,(b-s)/fd); if(a<0) o=Math.min(1,(b-s)/fd); } setO($(id),o); }
-  setO($('lost'), lostView ? Math.min(1,(s-.03)/.02,(.95-s)/.02) : 0);
-  setO($('hint'), s<.03&&!lost?1:0);
-  setO($('stampHint'), stampMode && seals.length<3 ? 1 : 0);
-  $('again').classList.toggle('on', s>.975 || (lostView&&s>.06));
-  let nm=STOPS[0][0]; for(const [n,a] of STOPS) if(s>=a-.004) nm=n; if(lostView) nm='길을 잃음'; if($('pname').textContent!==nm) $('pname').textContent=nm;
+  const prev=s; s+=(ts-s)*Math.min(1,dt*12);
+  if(s>.985) lost=true;
+  if(lost&&s<.012) lost=false;
+  const lostView = lost && s<K.dS;
+  // 그림
+  const vt = lostView ? K.lostT0+(s/K.dS)*(K.dT-K.lostT0) : videoTime(s);
+  drawFrame(Math.max(0,Math.min(NF-1,vt*FPS2)));
+  setO($('fog'), lostView ? .55 : (s>K.dS ? Math.min(.25,(s-K.dS)/(1-K.dS)*.25) : 0));
+  // 확 트이는 순간 하얗게
+  setO($('flash'), lostView?0:Math.max(0,.6-Math.abs(s-K.reveal)/.015*.6));
+  // 글 상자
+  for(const [id,a,b] of BLOCKS){ const fade=.01; let o=0; if(!lostView){ if(s>a&&s<b) o=Math.min(1,(s-a)/fade,(b-s)/fade); if(a<0) o=Math.min(1,(b-s)/fade); } setO($(id),o); }
+  setO($('lost'), lostView ? Math.min(1,(K.dS-s)/.02, s/.02) : 0);
+  setO($('hint'), s<.03&&!lost ? 1 : 0);
+  $('again').classList.toggle('on', s>K.endA+.01 || (lostView && s>.05));
+  // 장소 이름, 진행 막대
+  let nm=STOPS[0][0]; for(const [name,at] of STOPS) if(s>=at-.005) nm=name;
+  if(lostView) nm='길을 잃음';
+  if($('pname').textContent!==nm) $('pname').textContent=nm;
   { const bh=(s*100).toFixed(1)+'%'; const bi=$('bar').firstElementChild; if(bi._h!==bh){ bi._h=bh; bi.style.height=bh; } }
-  audioTick(s);
+  audioTick(dt,s,Math.abs(s-prev)/Math.max(dt,.001));
   requestAnimationFrame(tick);
 }
 requestAnimationFrame(tick);
